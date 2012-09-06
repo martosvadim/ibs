@@ -1,3 +1,0 @@
-ibs
-===
-Internet Banking System

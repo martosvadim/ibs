@@ -1,0 +1,7 @@
+Develop branch is for unstable develop code. 
+As soon as code become stable and ready for testing, it showld be freezed in master branch with a tag, 
+that represent it's version.
+The rools are simple: 
+1)try not to change file that wasn't created by you
+2)don't merge master branch with develop branch, that contains unstable code
+
