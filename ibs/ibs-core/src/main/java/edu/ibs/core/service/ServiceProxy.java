@@ -28,11 +28,11 @@ public final class ServiceProxy {
 		throw new IllegalArgumentException(String.format("User %s is not in role %s", admin, Role.ADMIN));
 	}
 
-	public static User get(String email, String passwd) {
+	public static User login(String email, String passwd) {
 		return service.getUser(email, passwd);
 	}
 
-	public static User create(String email, String passwd) {
+	public static User register(String email, String passwd) {
 		return service.createUser(Role.USER, email, passwd);
 	}
 }
