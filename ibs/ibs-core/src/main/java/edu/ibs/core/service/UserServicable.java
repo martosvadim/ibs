@@ -1,10 +1,10 @@
 package edu.ibs.core.service;
 
-import edu.ibs.core.beans.BankBook;
-import edu.ibs.core.beans.SavedPayment;
-import edu.ibs.core.beans.Transaction;
-import edu.ibs.core.beans.User;
-import java.util.Currency;
+import edu.ibs.core.entity.BankBook;
+import edu.ibs.core.entity.SavedPayment;
+import edu.ibs.core.entity.Transaction;
+import edu.ibs.core.entity.Transaction.TransactionType;
+import edu.ibs.core.entity.User;
 import java.util.List;
 
 /**
@@ -17,13 +17,13 @@ public interface UserServicable extends Servicable {
 
 	public List<BankBook> getBankBooks(User user);
 
-	public Transaction transfer(User user, BankBook from, BankBook to, Transaction.Type type, Currency currency, long amount);
+	public Transaction transfer(BankBook from, BankBook to, TransactionType type, long amount);
 
-	public SavedPayment savePayment(Transaction transaction);
+	public SavedPayment savePayment(Transaction transaction, User owner);
 
 	public List<SavedPayment> getSavedPayments(User user);
 
-	public List<Transaction> getHistory(User user, Transaction.Type type);
+	public List<Transaction> getHistory(User user, TransactionType type);
 
 	public boolean deleteSavedPayment(SavedPayment payment);
 }

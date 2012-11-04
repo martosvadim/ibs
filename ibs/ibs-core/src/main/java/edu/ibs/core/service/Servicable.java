@@ -1,7 +1,7 @@
 package edu.ibs.core.service;
 
-import edu.ibs.core.beans.User;
-import java.util.Currency;
+import edu.ibs.core.entity.Currency;
+import edu.ibs.core.entity.User;
 import java.util.List;
 
 /**

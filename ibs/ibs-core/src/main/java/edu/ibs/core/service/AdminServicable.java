@@ -1,10 +1,6 @@
 package edu.ibs.core.service;
 
-import edu.ibs.core.beans.BankBook;
-import edu.ibs.core.beans.Request;
-import edu.ibs.core.beans.Transaction;
-import edu.ibs.core.beans.User;
-import java.util.Currency;
+import edu.ibs.core.entity.*;
 import java.util.List;
 
 /**
@@ -15,9 +11,9 @@ public interface AdminServicable extends Servicable {
 
 	public User createUser(User.Role role, String email, String passwd);
 
-	public boolean createBankBook(User user, Currency currency, long balance);
+	public BankBook createBankBook(User user, Currency currency, long balance);
 
-	public boolean addMoney(BankBook bankBook, Currency currency, long amount);
+	public boolean addMoney(BankBook bankBook, long amount);
 
 	public boolean deleteUser(User user);
 
@@ -28,6 +24,4 @@ public interface AdminServicable extends Servicable {
 	public List<Request> getAllRequests();
 
 	public List<Request> getForLast(long milliseconds);
-
-	public boolean process(Request request, boolean submit);
 }

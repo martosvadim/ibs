@@ -1,7 +1,7 @@
 package edu.ibs.core.service;
 
-import edu.ibs.core.beans.User;
-import edu.ibs.core.beans.User.Role;
+import edu.ibs.core.entity.User;
+import edu.ibs.core.entity.User.Role;
 
 /**
  *
