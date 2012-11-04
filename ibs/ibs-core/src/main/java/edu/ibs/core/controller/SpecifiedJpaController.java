@@ -192,4 +192,19 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			}
 		}
 	}
+
+	public void addMoney(BankBook bankBook, long amount) {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			em.getTransaction().begin();
+			em.refresh(bankBook, LockModeType.PESSIMISTIC_WRITE);
+			bankBook.setBalance(bankBook.getBalance() + amount);
+			em.getTransaction().commit();
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
 }

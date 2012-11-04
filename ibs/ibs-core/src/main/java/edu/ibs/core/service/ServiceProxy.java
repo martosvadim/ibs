@@ -34,6 +34,6 @@ public final class ServiceProxy {
 	}
 
 	public static User register(String email, String passwd) {
-		return service.createUser(Role.USER, email, passwd);
+		return service.create(Role.USER, email, passwd);
 	}
 }

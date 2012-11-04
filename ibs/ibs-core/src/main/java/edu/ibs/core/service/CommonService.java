@@ -22,7 +22,7 @@ final class CommonService implements UserServicable, AdminServicable {
 	private final Logger log = Logger.getLogger(CommonService.class);
 
 	@Override
-	public User createUser(User.Role role, String email, String passwd) {
+	public User create(User.Role role, String email, String passwd) {
 		if (!EMAIL_PATTERN.matcher(email).matches()) {
 			throw new IllegalArgumentException(String.format("Invalid email: '%s'", email));
 		} else {
@@ -33,7 +33,15 @@ final class CommonService implements UserServicable, AdminServicable {
 	}
 
 	@Override
-	public boolean updateUser(User user) {
+	public boolean update(User user) {
+		try {
+			source.update(user);
+			return true;
+		} catch (NonexistentEntityException ex) {
+			log.error(String.format("User %s doesn't exist", user), ex);
+		} catch (Exception ex) {
+			log.error(null, ex);
+		}
 		return false;
 	}
 
@@ -65,14 +73,14 @@ final class CommonService implements UserServicable, AdminServicable {
 	}
 
 	@Override
-	public boolean deleteSavedPayment(SavedPayment payment) {
+	public boolean delete(SavedPayment payment) {
 		try {
 			source.delete(SavedPayment.class, payment.getId());
+			return true;
 		} catch (NonexistentEntityException ex) {
 			log.error(String.format("Payment %s doesn't exist", payment), ex);
-			return false;
 		}
-		return true;
+		return false;
 	}
 
 	@Override
@@ -91,7 +99,7 @@ final class CommonService implements UserServicable, AdminServicable {
 	}
 
 	@Override
-	public BankBook createBankBook(User user, Currency currency, long balance) {
+	public BankBook create(User user, Currency currency, long balance) {
 		BankBook book = new BankBook(balance, false, currency, user);
 		source.insert(book);
 		return book;
@@ -99,11 +107,12 @@ final class CommonService implements UserServicable, AdminServicable {
 
 	@Override
 	public boolean addMoney(BankBook bankBook, long amount) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		source.addMoney(bankBook, amount);
+		return true;
 	}
 
 	@Override
-	public boolean deleteUser(User user) {
+	public boolean delete(User user) {
 		try {
 			source.delete(User.class, user.getId());
 			return true;
@@ -113,12 +122,14 @@ final class CommonService implements UserServicable, AdminServicable {
 		}
 	}
 
-	public boolean updateCurrency(Currency currency) {
-		return false;
+	@Override
+	public boolean update(List<Currency> currencies) {
+		source.update(currencies);
+		return true;
 	}
 
 	@Override
-	public boolean rollbackTransaction(Transaction transaction) {
+	public boolean rollback(Transaction transaction) {
 		return source.rollback(transaction);
 	}
 
@@ -127,6 +138,7 @@ final class CommonService implements UserServicable, AdminServicable {
 		return source.selectAll(Request.class);
 	}
 
+	@Override
 	public List<Request> getForLast(long milliseconds) {
 		long to = System.currentTimeMillis();
 		long from = to - milliseconds;

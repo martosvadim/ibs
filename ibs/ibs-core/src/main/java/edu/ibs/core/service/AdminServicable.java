@@ -10,17 +10,17 @@ import java.util.List;
  */
 public interface AdminServicable extends Servicable {
 
-	public User createUser(User.Role role, String email, String passwd);
+	public User create(User.Role role, String email, String passwd);
 
-	public BankBook createBankBook(User user, Currency currency, long balance);
+	public BankBook create(User user, Currency currency, long balance);
 
 	public boolean addMoney(BankBook bankBook, long amount);
 
-	public boolean deleteUser(User user);
+	public boolean delete(User user);
 
-	public boolean updateCurrency(Currency currency);
+	public boolean update(List<Currency> currencies);
 
-	public boolean rollbackTransaction(Transaction transaction);
+	public boolean rollback(Transaction transaction);
 
 	public List<Request> getAllRequests();
 

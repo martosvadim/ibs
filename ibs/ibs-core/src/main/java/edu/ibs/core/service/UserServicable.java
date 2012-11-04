@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface UserServicable extends Servicable {
 
-	public boolean updateUser(User user);
+	public boolean update(User user);
 
 	public List<BankBook> getBankBooks(User user);
 
@@ -26,5 +26,5 @@ public interface UserServicable extends Servicable {
 
 	public List<Transaction> getHistory(User user, TransactionType type);
 
-	public boolean deleteSavedPayment(SavedPayment payment);
+	public boolean delete(SavedPayment payment);
 }
