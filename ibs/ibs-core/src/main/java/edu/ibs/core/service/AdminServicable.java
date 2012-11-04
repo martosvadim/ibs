@@ -4,8 +4,9 @@ import edu.ibs.core.entity.*;
 import java.util.List;
 
 /**
+ * @date Oct 22, 2012
  *
- * @author Vadim Martos @date Oct 22, 2012
+ * @author Vadim Martos
  */
 public interface AdminServicable extends Servicable {
 

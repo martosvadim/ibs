@@ -8,8 +8,9 @@ import edu.ibs.core.entity.User;
 import java.util.List;
 
 /**
+ * @date Oct 22, 2012
  *
- * @author Vadim Martos @date Oct 22, 2012
+ * @author Vadim Martos
  */
 public interface UserServicable extends Servicable {
 

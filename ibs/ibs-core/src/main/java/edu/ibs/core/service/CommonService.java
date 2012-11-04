@@ -10,8 +10,9 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 /**
+ * @date Oct 22, 2012
  *
- * @author Vadim Martos @date Oct 22, 2012
+ * @author Vadim Martos
  */
 final class CommonService implements UserServicable, AdminServicable {
 

@@ -4,8 +4,9 @@ import edu.ibs.core.entity.User;
 import edu.ibs.core.entity.User.Role;
 
 /**
+ * @date Oct 22, 2012
  *
- * @author Vadim Martos @date Oct 22, 2012
+ * @author Vadim Martos
  */
 public final class ServiceProxy {
 
