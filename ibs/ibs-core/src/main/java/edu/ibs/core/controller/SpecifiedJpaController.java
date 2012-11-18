@@ -60,7 +60,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			from = em.find(BankBook.class, from.getId(), LockModeType.PESSIMISTIC_WRITE);
 			to = em.find(BankBook.class, to.getId(), LockModeType.PESSIMISTIC_WRITE);
 			//todo check for converting
-			if (from.le(money)) {
+			if (from.ge(money)) {
 				from.subtract(money);
 				to.add(money);
 				tr = new Transaction(money, type, from, to);
@@ -89,7 +89,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			if (to.ge(tr.getMoney())) {
 				from.add(tr.getMoney());
 				to.subtract(tr.getMoney());
-				rollback = new Transaction(null, tr.getType(), to, from);
+				rollback = new Transaction(tr.getMoney(), tr.getType(), to, from);
 				em.persist(rollback);
 			}
 			em.getTransaction().commit();

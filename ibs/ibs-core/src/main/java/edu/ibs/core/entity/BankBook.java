@@ -108,6 +108,7 @@ public class BankBook implements Serializable, AbstractEntity {
 		return currency;
 	}
 
+	@Override
 	public long getId() {
 		return id;
 	}

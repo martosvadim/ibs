@@ -1,11 +1,11 @@
 package edu.ibs.core.controller;
 
 import edu.ibs.core.controller.exceptions.NonexistentEntityException;
-import edu.ibs.core.entity.*;
 import edu.ibs.core.entity.Transaction.TransactionType;
+import edu.ibs.core.entity.*;
 import edu.ibs.core.entity.User.Role;
-import org.junit.*;
 import static org.junit.Assert.*;
+import org.junit.*;
 
 /**
  *
@@ -74,8 +74,8 @@ public class SpecifiedJpaControllerTest {
 		Transaction tr = controller.pay(from, to, money, TransactionType.PAYMENT);
 		Transaction rollback = controller.rollback(tr);
 		assertNotNull(rollback);
-		assertEquals(rollback.getMoney().integer(), 100);
-		assertEquals(rollback.getMoney().currency(), from.getCurrency());
+		assertEquals(rollback.getMoney().integer(), 50);
+		assertEquals(rollback.getMoney().currency(), to.getCurrency());
 		from = controller.select(BankBook.class, from.getId());
 		assertEquals(from.getMoney().integer(), 100);
 		to = controller.select(BankBook.class, to.getId());
