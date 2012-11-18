@@ -1,6 +1,7 @@
 package edu.ibs.core.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -18,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 	@NamedQuery(name = "Currency.findByFactor", query = "SELECT c FROM Currency c WHERE c.factor = :factor")})
 public class Currency implements Serializable, AbstractEntity {
 
+	private static final int[] CENTS_FACTOR = {1, 10, 100, 1000};
 	public static final long DEFAULT_COUNTRY_CURRENCY_ID = 1L;
 	private static final long serialVersionUID = 78234520985323L;
 	@Id
@@ -31,16 +33,25 @@ public class Currency implements Serializable, AbstractEntity {
 	@Basic(optional = false)
 	@Column(name = "factor")
 	private float factor;
+	@Basic(optional = false)
+	@Column(name = "fraction", updatable = false)
+	@Enumerated(EnumType.STRING)
+	private Fraction fraction;
 
 	public Currency() {
 	}
 
-	public Currency(String name, float factor) {
+	public Currency(String name, float factor, Fraction fraction) {
 		this.name = name;
 		this.factor = factor;
+		this.fraction = fraction;
 	}
 
-	public float getFactor() {
+	public BigDecimal getFactor() {
+		return BigDecimal.valueOf(factor);
+	}
+
+	public float getFloatFactor() {
 		return factor;
 	}
 
@@ -54,6 +65,10 @@ public class Currency implements Serializable, AbstractEntity {
 
 	public String getName() {
 		return name;
+	}
+
+	public Fraction getFraction() {
+		return fraction;
 	}
 
 	@Override
@@ -76,5 +91,26 @@ public class Currency implements Serializable, AbstractEntity {
 		int hash = 3;
 		hash = 97 * hash + (int) (this.id ^ (this.id >>> 32));
 		return hash;
+	}
+
+	/**
+	 * Contains information about how much digits fraction part of currency
+	 * should have.
+	 */
+	public static enum Fraction {
+
+		ZERO(1),
+		ONE(10),
+		TWO(100),
+		THREE(1000);
+		private int digit;
+
+		private Fraction(int digit) {
+			this.digit = digit;
+		}
+
+		public int multiply() {
+			return digit;
+		}
 	}
 }

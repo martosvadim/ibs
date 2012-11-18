@@ -1,6 +1,7 @@
 package edu.ibs.core.service;
 
 import edu.ibs.core.entity.*;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,9 +13,9 @@ public interface AdminServicable extends Servicable {
 
 	public User create(User.Role role, String email, String passwd);
 
-	public BankBook create(User user, Currency currency, long balance);
+	public BankBook create(User user, Money money);
 
-	public boolean addMoney(BankBook bankBook, long amount);
+	public boolean addMoney(BankBook bankBook, Money money);
 
 	public boolean delete(User user);
 
@@ -24,5 +25,5 @@ public interface AdminServicable extends Servicable {
 
 	public List<Request> getAllRequests();
 
-	public List<Request> getForLast(long milliseconds);
+	public List<Request> getRequests(Date from, Date to);
 }

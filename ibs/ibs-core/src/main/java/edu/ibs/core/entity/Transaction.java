@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
 	@NamedQuery(name = "Transaction.findAll", query = "SELECT t FROM Transaction t"),
 	@NamedQuery(name = "Transaction.findById", query = "SELECT t FROM Transaction t WHERE t.id = :id"),
-	@NamedQuery(name = "Transaction.history", query = "SELECT t FROM Transaction t WHERE t.type = :type AND (SELECT bb.ownerID from BankBook bb where bb.id = t.toBankBookID) = :ownerID"),
+//	@NamedQuery(name = "Transaction.history", query = "SELECT t FROM Transaction t WHERE t.type = :type AND (SELECT bb.ownerID from BankBook bb where bb.id = t.toBankBookID) = :ownerID"),
 	@NamedQuery(name = "Transaction.findByAmount", query = "SELECT t FROM Transaction t WHERE t.amount = :amount"),
 	@NamedQuery(name = "Transaction.findByType", query = "SELECT t FROM Transaction t WHERE t.type = :type")})
 public class Transaction implements Serializable, AbstractEntity {
@@ -44,24 +44,30 @@ public class Transaction implements Serializable, AbstractEntity {
 	@JoinColumn(name = "fromBankBookID", referencedColumnName = "id", updatable = false)
 	@ManyToOne(optional = false)
 	private BankBook from;
+	@Transient
+	private Money money;
 
 	public Transaction() {
 	}
 
-	public Transaction(long amount, TransactionType type, Currency currency, BankBook to, BankBook from) {
-		this.amount = amount;
+	private void validateMoney() {
+		if (money == null) {
+			money = new Money(amount, currency);
+		}
+	}
+
+	public Transaction(Money money, TransactionType type, BankBook from, BankBook to) {
+		this.amount = money.balance();
 		this.type = type;
-		this.currency = currency;
+		this.currency = money.currency();
 		this.to = to;
 		this.from = from;
+		this.money = money;
 	}
 
-	public long getAmount() {
-		return amount;
-	}
-
-	public Currency getCurrency() {
-		return currency;
+	public Money getMoney() {
+		validateMoney();
+		return money;
 	}
 
 	public BankBook getFrom() {
@@ -104,7 +110,7 @@ public class Transaction implements Serializable, AbstractEntity {
 
 	@Override
 	public String toString() {
-		return "Transaction{" + "id=" + id + ", amount=" + amount + ", type=" + type + ", currency=" + currency + ", to=" + to + ", from=" + from + '}';
+		return "Transaction{" + "id=" + id + ", amount=" + amount + ", type=" + type + ", currency=" + currency + ", to=" + to + ", from=" + from + ", money=" + money + '}';
 	}
 
 	public static enum TransactionType {

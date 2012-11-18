@@ -1,10 +1,7 @@
 package edu.ibs.core.service;
 
-import edu.ibs.core.entity.BankBook;
-import edu.ibs.core.entity.SavedPayment;
-import edu.ibs.core.entity.Transaction;
+import edu.ibs.core.entity.*;
 import edu.ibs.core.entity.Transaction.TransactionType;
-import edu.ibs.core.entity.User;
 import java.util.List;
 
 /**
@@ -18,7 +15,7 @@ public interface UserServicable extends Servicable {
 
 	public List<BankBook> getBankBooks(User user);
 
-	public Transaction transfer(BankBook from, BankBook to, TransactionType type, long amount);
+	public Transaction transfer(BankBook from, BankBook to, Money money, TransactionType type);
 
 	public SavedPayment savePayment(Transaction transaction, User owner);
 

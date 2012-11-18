@@ -1,9 +1,10 @@
 package edu.ibs.core;
 
 import edu.ibs.core.controller.CSUIDJpaController;
+import edu.ibs.core.entity.BankBook;
+import edu.ibs.core.entity.Currency;
+import edu.ibs.core.entity.Money;
 import edu.ibs.core.entity.User;
-import java.util.List;
-import javax.persistence.EntityManager;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
@@ -18,20 +19,14 @@ public class App {
 
 	public static void main(String[] args) throws Exception {
 		CSUIDJpaController jpa = new CSUIDJpaController();
-		User u = new User(User.Role.USER, "vadimk.martos@gmail.com");
+		BankBook b = jpa.select(BankBook.class, 1l);
+		User u = new User(User.Role.USER, "vadim.martos@gmail.com", "asd");
 		jpa.insert(u);
-		EntityManager em = jpa.createEntityManager();
-		em.getTransaction().begin();
-		em.flush();
-		User u1 = em.find(User.class, u.getId());
-		u1.setFirstName("vadim");
-		em.getTransaction().commit();
-		List<User> list = jpa.selectAll(User.class);
-		int count = jpa.count(User.class);
-		u.setFirstName("vadim");
-		jpa.update(u);
-		u = jpa.select(User.class, u.getId());
-		jpa.delete(User.class, u.getId());
+		Currency curr = new Currency("USD", 8350f, Currency.Fraction.TWO);
+		jpa.insert(curr);
+		Money money = new Money(100, curr);
+		BankBook book = new BankBook(money, u, false);
+		jpa.insert(book);
 		int i = 0;
 	}
 }

@@ -31,9 +31,6 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		try {
 			em = createEntityManager();
 			em.getTransaction().begin();
-			for (Currency c : currency) {
-				em.refresh(c, LockModeType.PESSIMISTIC_READ);
-			}
 			int i = 0;
 			for (Iterator<Currency> it = currency.iterator(); it.hasNext(); ++i) {
 				Currency c = it.next();
@@ -51,23 +48,22 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		}
 	}
 
-	public Transaction pay(BankBook from, BankBook to, long amount, TransactionType type) {
+	public Transaction pay(BankBook from, BankBook to, Money money, TransactionType type) {
 		EntityManager em = null;
 		try {
+			Transaction tr = null;
 			em = createEntityManager();
 			em.getTransaction().begin();
-			em.refresh(from, LockModeType.PESSIMISTIC_WRITE);
-			em.refresh(to, LockModeType.PESSIMISTIC_WRITE);
-			//todo fix rounding
-			long money = (long) (amount * to.getCurrency().getFactor() / from.getCurrency().getFactor());
-			long balance = from.getBalance();
-			Transaction tr = null;
-			if (balance < money) {
-				return tr;
-			} else {
-				from.setBalance(balance - money);
-				to.setBalance(to.getBalance() + amount);
-				tr = new Transaction(amount, type, to.getCurrency(), to, from);
+			/*
+			 * select for update lock
+			 */
+			from = em.find(BankBook.class, from.getId(), LockModeType.PESSIMISTIC_WRITE);
+			to = em.find(BankBook.class, to.getId(), LockModeType.PESSIMISTIC_WRITE);
+			//todo check for converting
+			if (from.le(money)) {
+				from.subtract(money);
+				to.add(money);
+				tr = new Transaction(money, type, from, to);
 				em.persist(tr);
 			}
 			em.getTransaction().commit();
@@ -79,25 +75,25 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		}
 	}
 
-	public boolean rollback(Transaction tr) {
+	public Transaction rollback(Transaction tr) {
 		EntityManager em = null;
 		try {
+			Transaction rollback = null;
 			em = createEntityManager();
 			em.getTransaction().begin();
 			BankBook from = tr.getFrom();
 			BankBook to = tr.getTo();
-			em.refresh(from, LockModeType.PESSIMISTIC_WRITE);
-			em.refresh(to, LockModeType.PESSIMISTIC_WRITE);
-			if (to.getBalance() < tr.getAmount()) {
-				return false;
-			} else {
-				//todo fix rounding
-				long money = (long) (tr.getAmount() * to.getCurrency().getFactor() / from.getCurrency().getFactor());
-				from.setBalance(from.getBalance() + money);
-				to.setBalance(to.getBalance() - tr.getAmount());
+			from = em.find(BankBook.class, from.getId(), LockModeType.PESSIMISTIC_WRITE);
+			to = em.find(BankBook.class, to.getId(), LockModeType.PESSIMISTIC_WRITE);
+			// todo check for convertation
+			if (to.ge(tr.getMoney())) {
+				from.add(tr.getMoney());
+				to.subtract(tr.getMoney());
+				rollback = new Transaction(null, tr.getType(), to, from);
+				em.persist(rollback);
 			}
 			em.getTransaction().commit();
-			return false;
+			return rollback;
 		} finally {
 			if (em != null) {
 				em.close();
@@ -193,13 +189,13 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		}
 	}
 
-	public void addMoney(BankBook bankBook, long amount) {
+	public void addMoney(BankBook bankBook, Money money) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
 			em.getTransaction().begin();
 			em.refresh(bankBook, LockModeType.PESSIMISTIC_WRITE);
-			bankBook.setBalance(bankBook.getBalance() + amount);
+			bankBook.add(money);
 			em.getTransaction().commit();
 		} finally {
 			if (em != null) {

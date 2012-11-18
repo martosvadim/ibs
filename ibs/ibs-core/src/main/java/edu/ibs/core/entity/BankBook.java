@@ -37,23 +37,63 @@ public class BankBook implements Serializable, AbstractEntity {
 	@JoinColumn(name = "ownerID", referencedColumnName = "id", updatable = false, nullable = false)
 	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private User owner;
+	@Transient
+	private volatile Money money;
 
-	public BankBook() {
+	protected BankBook() {
 	}
 
-	public BankBook(long balance, boolean freezed, Currency currency, User owner) {
-		this.balance = balance;
+	public BankBook(Money money, User owner, boolean freezed) {
+		this.money = money;
+		this.balance = money.balance();
 		this.freezed = freezed;
-		this.currency = currency;
+		this.currency = money.currency();
 		this.owner = owner;
 	}
 
-	public long getBalance() {
-		return balance;
+	private void validateMoney() {
+		if (this.money == null) {
+			this.money = new Money(this.balance, this.currency);
+		}
 	}
 
-	public void setBalance(long balance) {
-		this.balance = balance;
+	public Money subtract(Money other) {
+		validateMoney();
+		this.money = money.subtract(other);
+		this.balance = money.balance();
+		return this.money;
+	}
+
+	public boolean lt(Money other) {
+		validateMoney();
+		return money.lt(other);
+	}
+
+	public boolean le(Money other) {
+		validateMoney();
+		return money.le(other);
+	}
+
+	public boolean gt(Money other) {
+		validateMoney();
+		return money.gt(other);
+	}
+
+	public boolean ge(Money other) {
+		validateMoney();
+		return money.ge(other);
+	}
+
+	public Money add(Money other) {
+		validateMoney();
+		this.money = money.add(other);
+		this.balance = money.balance();
+		return this.money;
+	}
+
+	public Money getMoney() {
+		validateMoney();
+		return money;
 	}
 
 	public boolean isFreezed() {
@@ -74,6 +114,15 @@ public class BankBook implements Serializable, AbstractEntity {
 
 	public User getOwner() {
 		return owner;
+	}
+
+	public void copyFrom(BankBook other) {
+		this.id = other.id;
+		this.balance = other.balance;
+		this.currency = other.currency;
+		this.freezed = other.freezed;
+		this.owner = other.owner;
+		this.money = new Money(balance, currency);
 	}
 
 	@Override

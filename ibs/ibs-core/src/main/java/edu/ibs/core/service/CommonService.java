@@ -26,7 +26,7 @@ final class CommonService implements UserServicable, AdminServicable {
 		if (!EMAIL_PATTERN.matcher(email).matches()) {
 			throw new IllegalArgumentException(String.format("Invalid email: '%s'", email));
 		} else {
-			User u = new User(role, email);
+			User u = new User(role, email, passwd);
 			source.insert(u);
 			return u;
 		}
@@ -51,8 +51,8 @@ final class CommonService implements UserServicable, AdminServicable {
 	}
 
 	@Override
-	public Transaction transfer(BankBook from, BankBook to, TransactionType type, long amount) {
-		return source.pay(from, to, amount, type);
+	public Transaction transfer(BankBook from, BankBook to, Money money, TransactionType type) {
+		return source.pay(from, to, money, type);
 	}
 
 	@Override
@@ -99,15 +99,15 @@ final class CommonService implements UserServicable, AdminServicable {
 	}
 
 	@Override
-	public BankBook create(User user, Currency currency, long balance) {
-		BankBook book = new BankBook(balance, false, currency, user);
+	public BankBook create(User user, Money money) {
+		BankBook book = new BankBook(money, user, false);
 		source.insert(book);
 		return book;
 	}
 
 	@Override
-	public boolean addMoney(BankBook bankBook, long amount) {
-		source.addMoney(bankBook, amount);
+	public boolean addMoney(BankBook bankBook, Money money) {
+		source.addMoney(bankBook, money);
 		return true;
 	}
 
@@ -130,7 +130,7 @@ final class CommonService implements UserServicable, AdminServicable {
 
 	@Override
 	public boolean rollback(Transaction transaction) {
-		return source.rollback(transaction);
+		return source.rollback(transaction) != null;
 	}
 
 	@Override
@@ -139,9 +139,7 @@ final class CommonService implements UserServicable, AdminServicable {
 	}
 
 	@Override
-	public List<Request> getForLast(long milliseconds) {
-		long to = System.currentTimeMillis();
-		long from = to - milliseconds;
-		return source.requests(new Date(from), new Date(to));
+	public List<Request> getRequests(Date from, Date to) {
+		return source.requests(from, to);
 	}
 }

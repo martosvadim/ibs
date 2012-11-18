@@ -10,6 +10,7 @@ create table User
 	firstName varchar(255),
 	lastName varchar(255),
 	email varchar(255) unique not null,
+	password varchar(255) not null,
 	description varchar(255)
 ) ENGINE InnoDB;
 
@@ -17,10 +18,11 @@ create table Currency
 (
 	id bigint primary key auto_increment,
 	name varchar(255) unique not null,
-	factor float not null
+	factor float not null,
+	fraction enum('ZERO', 'ONE', 'TWO', 'THREE') not null
 )engine InnoDB;
 
-insert into Currency (id, name, factor) values(1, 'Br', 1);
+insert into Currency (id, name, factor) values(1, 'Br', 1, 'ZERO');
 
 create table BankBook
 (

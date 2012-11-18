@@ -25,17 +25,13 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 		try {
 			em = createEntityManager();
 			em.getTransaction().begin();
-			insert(em, entity);
+			em.persist(entity);
 			em.getTransaction().commit();
 		} finally {
 			if (em != null) {
 				em.close();
 			}
 		}
-	}
-
-	public <T extends AbstractEntity> void insert(EntityManager em, T entity) {
-		em.persist(entity);
 	}
 
 	public <T extends AbstractEntity> void update(T entity) throws NonexistentEntityException, Exception {
@@ -43,18 +39,8 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 		try {
 			em = createEntityManager();
 			em.getTransaction().begin();
-			update(em, entity);
-			em.getTransaction().commit();
-		} finally {
-			if (em != null) {
-				em.close();
-			}
-		}
-	}
-
-	public <T extends AbstractEntity> void update(EntityManager em, T entity) throws NonexistentEntityException, Exception {
-		try {
 			entity = em.merge(entity);
+			em.getTransaction().commit();
 		} catch (Exception ex) {
 			String msg = ex.getLocalizedMessage();
 			if (msg == null || msg.length() == 0) {
@@ -64,16 +50,6 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 				}
 			}
 			throw ex;
-		}
-	}
-
-	public <T extends AbstractEntity> void delete(Class<T> clazz, long id) throws NonexistentEntityException {
-		EntityManager em = null;
-		try {
-			em = createEntityManager();
-			em.getTransaction().begin();
-			delete(em, clazz, id);
-			em.getTransaction().commit();
 		} finally {
 			if (em != null) {
 				em.close();
@@ -81,15 +57,27 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 		}
 	}
 
-	public <T extends AbstractEntity> void delete(EntityManager em, Class<T> clazz, long id) throws NonexistentEntityException {
+	public <T extends AbstractEntity> void delete(Class<T> clazz, long id) throws NonexistentEntityException {
+		EntityManager em = null;
 		T entity;
 		try {
+			em = createEntityManager();
+			em.getTransaction().begin();
 			entity = em.getReference(clazz, id);
 			entity.getId();
+			em.remove(entity);
+			em.getTransaction().commit();
 		} catch (EntityNotFoundException enfe) {
 			throw new NonexistentEntityException("The request with id " + id + " no longer exists.", enfe);
+		} finally {
+			if (em != null) {
+				em.close();
+			}
 		}
-		em.remove(entity);
+	}
+
+	public <T extends AbstractEntity> boolean exist(Class<T> clazz, long id) {
+		return select(clazz, id) != null;
 	}
 
 	public <T extends AbstractEntity> List<T> selectAll(Class<T> clazz) {

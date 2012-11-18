@@ -40,15 +40,19 @@ public class User implements Serializable, AbstractEntity {
 	@Basic(optional = false)
 	@Column(name = "email", unique = true, updatable = false)
 	private String email;
+	@Basic(optional = false)
+	@Column(name = "password", updatable = true)
+	private String password;
 	@Column(name = "description")
 	private String description;
 
 	public User() {
 	}
 
-	public User(Role role, String email) {
+	public User(Role role, String email, String password) {
 		this.role = role;
 		this.email = email;
+		this.password = password;
 	}
 
 	public String getDescription() {
@@ -85,6 +89,10 @@ public class User implements Serializable, AbstractEntity {
 
 	public Role getRole() {
 		return role;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 
 	@Override
