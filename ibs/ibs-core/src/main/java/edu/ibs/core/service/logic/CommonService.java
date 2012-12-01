@@ -1,9 +1,11 @@
-package edu.ibs.core.service;
+package edu.ibs.core.service.logic;
 
 import edu.ibs.core.controller.SpecifiedJpaController;
 import edu.ibs.core.controller.exceptions.NonexistentEntityException;
 import edu.ibs.core.entity.Transaction.TransactionType;
 import edu.ibs.core.entity.*;
+import edu.ibs.core.service.AdminServicable;
+import edu.ibs.core.service.UserServicable;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -14,7 +16,7 @@ import org.apache.log4j.Logger;
  *
  * @author Vadim Martos
  */
-final class CommonService implements UserServicable, AdminServicable {
+public final class CommonService implements UserServicable, AdminServicable {
 
 	public static final String VALID_EMAIL_REGEXP = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	private static final Pattern EMAIL_PATTERN = Pattern.compile(VALID_EMAIL_REGEXP);
@@ -22,7 +24,7 @@ final class CommonService implements UserServicable, AdminServicable {
 	private final Logger log = Logger.getLogger(CommonService.class);
 
 	@Override
-	public User create(User.Role role, String email, String passwd) {
+	public User create(User.Role role, String email, String passwd) throws IllegalArgumentException {
 		if (!EMAIL_PATTERN.matcher(email).matches()) {
 			throw new IllegalArgumentException(String.format("Invalid email: '%s'", email));
 		} else {
@@ -33,16 +35,14 @@ final class CommonService implements UserServicable, AdminServicable {
 	}
 
 	@Override
-	public boolean update(User user) {
+	public void update(User user) {
 		try {
 			source.update(user);
-			return true;
 		} catch (NonexistentEntityException ex) {
-			log.error(String.format("User %s doesn't exist", user), ex);
+			log.error(ex);
 		} catch (Exception ex) {
-			log.error(null, ex);
+			log.error(ex);
 		}
-		return false;
 	}
 
 	@Override
@@ -73,19 +73,17 @@ final class CommonService implements UserServicable, AdminServicable {
 	}
 
 	@Override
-	public boolean delete(SavedPayment payment) {
+	public void delete(SavedPayment payment) {
 		try {
 			source.delete(SavedPayment.class, payment.getId());
-			return true;
 		} catch (NonexistentEntityException ex) {
-			log.error(String.format("Payment %s doesn't exist", payment), ex);
+			log.error(ex);
 		}
-		return false;
 	}
 
 	@Override
 	public User getUser(String email, String passwd) {
-		return null;
+		return source.user(email, passwd);
 	}
 
 	@Override
@@ -107,30 +105,30 @@ final class CommonService implements UserServicable, AdminServicable {
 
 	@Override
 	public boolean addMoney(BankBook bankBook, Money money) {
+		if (bankBook.isFreezed() || !bankBook.getCurrency().equals(money.currency())) {
+			return false;
+		}
 		source.addMoney(bankBook, money);
 		return true;
 	}
 
 	@Override
-	public boolean delete(User user) {
+	public void delete(User user) {
 		try {
 			source.delete(User.class, user.getId());
-			return true;
 		} catch (NonexistentEntityException ex) {
 			log.error(String.format("User with id %s doesn't exist", user.getId()), ex);
-			return false;
 		}
 	}
 
 	@Override
-	public boolean update(List<Currency> currencies) {
-		source.update(currencies);
-		return true;
+	public void update(List<Currency> currencies) {
+		source.batchUpdate(currencies);
 	}
 
 	@Override
-	public boolean rollback(Transaction transaction) {
-		return source.rollback(transaction) != null;
+	public void rollback(Transaction transaction) {
+		source.rollback(transaction);
 	}
 
 	@Override

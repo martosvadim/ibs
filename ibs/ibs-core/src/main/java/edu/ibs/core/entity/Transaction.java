@@ -50,12 +50,6 @@ public class Transaction implements Serializable, AbstractEntity {
 	public Transaction() {
 	}
 
-	private void validateMoney() {
-		if (money == null) {
-			money = new Money(amount, currency);
-		}
-	}
-
 	public Transaction(Money money, TransactionType type, BankBook from, BankBook to) {
 		this.amount = money.balance();
 		this.type = type;
@@ -63,6 +57,12 @@ public class Transaction implements Serializable, AbstractEntity {
 		this.to = to;
 		this.from = from;
 		this.money = money;
+	}
+
+	private void validateMoney() {
+		if (money == null) {
+			money = new Money(amount, currency);
+		}
 	}
 
 	public Money getMoney() {

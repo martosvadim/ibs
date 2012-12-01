@@ -1,5 +1,6 @@
 package edu.ibs.core.service;
 
+import edu.ibs.core.controller.exceptions.NonexistentEntityException;
 import edu.ibs.core.entity.*;
 import java.util.Date;
 import java.util.List;
@@ -17,11 +18,11 @@ public interface AdminServicable extends Servicable {
 
 	public boolean addMoney(BankBook bankBook, Money money);
 
-	public boolean delete(User user);
+	public void delete(User user) throws NonexistentEntityException, Exception;
 
-	public boolean update(List<Currency> currencies);
+	public void update(List<Currency> currencies) throws NonexistentEntityException;
 
-	public boolean rollback(Transaction transaction);
+	public void rollback(Transaction transaction);
 
 	public List<Request> getAllRequests();
 

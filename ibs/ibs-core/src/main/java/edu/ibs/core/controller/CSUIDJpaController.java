@@ -3,6 +3,7 @@ package edu.ibs.core.controller;
 import edu.ibs.core.controller.exceptions.NonexistentEntityException;
 import edu.ibs.core.entity.AbstractEntity;
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -34,12 +35,34 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 		}
 	}
 
+	public <T extends AbstractEntity> void batchUpdate(List<T> entities) {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			em.getTransaction().begin();
+			int i = 0;
+			for (Iterator<T> it = entities.iterator(); it.hasNext(); ++i) {
+				T t = it.next();
+				em.merge(t);
+				if (i % BATCH_SIZE == 0) {
+					em.flush();
+					em.clear();
+				}
+			}
+			em.getTransaction().commit();
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
 	public <T extends AbstractEntity> void update(T entity) throws NonexistentEntityException, Exception {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
 			em.getTransaction().begin();
-			entity = em.merge(entity);
+			em.merge(entity);
 			em.getTransaction().commit();
 		} catch (Exception ex) {
 			String msg = ex.getLocalizedMessage();

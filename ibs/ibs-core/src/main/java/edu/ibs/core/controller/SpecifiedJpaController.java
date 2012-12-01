@@ -26,28 +26,6 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		return instance;
 	}
 
-	public void update(List<Currency> currency) {
-		EntityManager em = null;
-		try {
-			em = createEntityManager();
-			em.getTransaction().begin();
-			int i = 0;
-			for (Iterator<Currency> it = currency.iterator(); it.hasNext(); ++i) {
-				Currency c = it.next();
-				em.merge(c);
-				if (i % BATCH_SIZE == 0) {
-					em.flush();
-					em.clear();
-				}
-			}
-			em.getTransaction().commit();
-		} finally {
-			if (em != null) {
-				em.close();
-			}
-		}
-	}
-
 	public Transaction pay(BankBook from, BankBook to, Money money, TransactionType type) {
 		EntityManager em = null;
 		try {
@@ -75,12 +53,31 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		}
 	}
 
+	public User user(String email, String passwd) {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			CriteriaQuery<User> criteria = em.getCriteriaBuilder().createQuery(User.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			Root<User> user = criteria.from(User.class);
+			Expression<String> emailExpr = user.get("email");
+			Expression<String> passwdExpr = user.get("password");
+			criteria.select(user).where(cb.and(cb.equal(emailExpr, email), cb.equal(passwdExpr, passwd)));
+			return em.createQuery(criteria).getSingleResult();
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
 	public Transaction rollback(Transaction tr) {
 		EntityManager em = null;
 		try {
 			Transaction rollback = null;
 			em = createEntityManager();
 			em.getTransaction().begin();
+			tr = em.find(Transaction.class, tr.getId(), LockModeType.PESSIMISTIC_WRITE);
 			BankBook from = tr.getFrom();
 			BankBook to = tr.getTo();
 			from = em.find(BankBook.class, from.getId(), LockModeType.PESSIMISTIC_WRITE);
