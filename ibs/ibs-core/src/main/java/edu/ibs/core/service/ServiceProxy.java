@@ -1,6 +1,5 @@
 package edu.ibs.core.service;
 
-import edu.ibs.core.service.logic.CommonService;
 import edu.ibs.core.entity.User;
 import edu.ibs.core.entity.User.Role;
 import edu.ibs.core.service.logic.ApplicationContextProvider;
@@ -12,8 +11,8 @@ import edu.ibs.core.service.logic.ApplicationContextProvider;
  */
 public final class ServiceProxy {
 
-	private static final UserServicable userLogic = ApplicationContextProvider.provide().getBeansOfType(CommonService.class).get("userLogic");
-	private static final AdminServicable adminLogic = ApplicationContextProvider.provide().getBeansOfType(CommonService.class).get("adminLogic");
+	private static final UserServicable userLogic = (UserServicable) ApplicationContextProvider.provide().getBean("userLogic");
+	private static final AdminServicable adminLogic = (AdminServicable) ApplicationContextProvider.provide().getBean("adminLogic");
 
 	private ServiceProxy() {
 	}
