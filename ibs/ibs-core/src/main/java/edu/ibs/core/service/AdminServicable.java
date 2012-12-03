@@ -14,9 +14,9 @@ public interface AdminServicable extends Servicable {
 
 	public User create(User.Role role, String email, String passwd) throws PersistenceException, IllegalArgumentException;
 
-	public BankBook create(User user, Money money) throws IllegalArgumentException;
+	public BankBook create(User user, Money money) throws IllegalArgumentException, IllegalArgumentException;
 
-	public boolean addMoney(BankBook bankBook, Money money) throws IllegalArgumentException;
+	public boolean addMoney(BankBook bankBook, Money money) throws IllegalArgumentException, IllegalArgumentException;
 
 	public void delete(User user) throws PersistenceException;
 
@@ -24,7 +24,7 @@ public interface AdminServicable extends Servicable {
 
 	public void rollback(Transaction transaction) throws IllegalArgumentException;
 
-	public List<Request> getAllRequests();
+	public List<Request> getAllRequests() throws PersistenceException;
 
-	public List<Request> getRequests(Date from, Date to);
+	public List<Request> getRequests(Date from, Date to) throws PersistenceException, IllegalArgumentException;
 }
