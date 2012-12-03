@@ -1,6 +1,5 @@
 package edu.ibs.core.controller;
 
-import edu.ibs.core.controller.exceptions.NonexistentEntityException;
 import edu.ibs.core.entity.Transaction.TransactionType;
 import edu.ibs.core.entity.*;
 import edu.ibs.core.entity.User.Role;
@@ -47,12 +46,27 @@ public class SpecifiedJpaControllerTest {
 	}
 
 	@After
-	public void tearDown() throws NonexistentEntityException {
-		controller.delete(BankBook.class, from.getId());
-		controller.delete(BankBook.class, to.getId());
-		controller.delete(Currency.class, usd.getId());
-		controller.delete(Currency.class, eur.getId());
-		controller.delete(User.class, user.getId());
+	public void tearDown() throws Exception {
+		try {
+			controller.delete(BankBook.class, from.getId());
+		} catch (Throwable ignore) {
+		}
+		try {
+			controller.delete(BankBook.class, to.getId());
+		} catch (Throwable ignore) {
+		}
+		try {
+			controller.delete(Currency.class, usd.getId());
+		} catch (Throwable ignore) {
+		}
+		try {
+			controller.delete(Currency.class, eur.getId());
+		} catch (Throwable ignore) {
+		}
+		try {
+			controller.delete(User.class, user.getId());
+		} catch (Throwable ignore) {
+		}
 	}
 
 	@Test

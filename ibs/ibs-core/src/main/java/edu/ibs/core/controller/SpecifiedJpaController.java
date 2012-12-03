@@ -3,7 +3,6 @@ package edu.ibs.core.controller;
 import edu.ibs.core.entity.Transaction.TransactionType;
 import edu.ibs.core.entity.*;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -71,13 +70,16 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		}
 	}
 
-	public Transaction rollback(Transaction tr) {
+	public Transaction rollback(Transaction tr) throws IllegalArgumentException {
 		EntityManager em = null;
 		try {
 			Transaction rollback = null;
 			em = createEntityManager();
 			em.getTransaction().begin();
 			tr = em.find(Transaction.class, tr.getId(), LockModeType.PESSIMISTIC_WRITE);
+			if (tr == null) {
+				throw new IllegalArgumentException(String.format("Transaction with id %s doesn't exist", tr.getId()));
+			}
 			BankBook from = tr.getFrom();
 			BankBook to = tr.getTo();
 			from = em.find(BankBook.class, from.getId(), LockModeType.PESSIMISTIC_WRITE);

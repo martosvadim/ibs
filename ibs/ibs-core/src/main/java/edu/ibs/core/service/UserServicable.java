@@ -3,6 +3,7 @@ package edu.ibs.core.service;
 import edu.ibs.core.entity.Transaction.TransactionType;
 import edu.ibs.core.entity.*;
 import java.util.List;
+import javax.persistence.PersistenceException;
 
 /**
  * @date Oct 22, 2012
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public interface UserServicable extends Servicable {
 
-	public void update(User user);
+	public void update(User user) throws PersistenceException;
 
 	public List<BankBook> getBankBooks(User user);
 
@@ -23,5 +24,5 @@ public interface UserServicable extends Servicable {
 
 	public List<Transaction> getHistory(User user, TransactionType type);
 
-	public void delete(SavedPayment payment);
+	public void delete(SavedPayment payment) throws PersistenceException;
 }

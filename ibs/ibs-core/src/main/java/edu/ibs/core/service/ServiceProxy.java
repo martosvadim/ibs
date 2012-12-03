@@ -3,6 +3,7 @@ package edu.ibs.core.service;
 import edu.ibs.core.entity.User;
 import edu.ibs.core.entity.User.Role;
 import edu.ibs.core.service.logic.ApplicationContextProvider;
+import javax.persistence.PersistenceException;
 
 /**
  * @date Oct 22, 2012
@@ -35,7 +36,7 @@ public final class ServiceProxy {
 		return userLogic.getUser(email, passwd);
 	}
 
-	public static User register(String email, String passwd) {
+	public static User register(String email, String passwd) throws PersistenceException {
 		return adminLogic.create(Role.USER, email, passwd);
 	}
 }

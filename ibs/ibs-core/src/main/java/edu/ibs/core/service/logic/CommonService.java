@@ -1,7 +1,6 @@
 package edu.ibs.core.service.logic;
 
 import edu.ibs.core.controller.SpecifiedJpaController;
-import edu.ibs.core.controller.exceptions.NonexistentEntityException;
 import edu.ibs.core.entity.Transaction.TransactionType;
 import edu.ibs.core.entity.*;
 import edu.ibs.core.service.AdminServicable;
@@ -9,6 +8,7 @@ import edu.ibs.core.service.UserServicable;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
+import javax.persistence.PersistenceException;
 import org.apache.log4j.Logger;
 
 /**
@@ -35,14 +35,8 @@ public final class CommonService implements UserServicable, AdminServicable {
 	}
 
 	@Override
-	public void update(User user) {
-		try {
-			source.update(user);
-		} catch (NonexistentEntityException ex) {
-			log.error(ex);
-		} catch (Exception ex) {
-			log.error(ex);
-		}
+	public void update(User user) throws PersistenceException {
+		source.update(user);
 	}
 
 	@Override
@@ -73,12 +67,8 @@ public final class CommonService implements UserServicable, AdminServicable {
 	}
 
 	@Override
-	public void delete(SavedPayment payment) {
-		try {
-			source.delete(SavedPayment.class, payment.getId());
-		} catch (NonexistentEntityException ex) {
-			log.error(ex);
-		}
+	public void delete(SavedPayment payment) throws PersistenceException {
+		source.delete(SavedPayment.class, payment.getId());
 	}
 
 	@Override
@@ -113,12 +103,8 @@ public final class CommonService implements UserServicable, AdminServicable {
 	}
 
 	@Override
-	public void delete(User user) {
-		try {
-			source.delete(User.class, user.getId());
-		} catch (NonexistentEntityException ex) {
-			log.error(String.format("User with id %s doesn't exist", user.getId()), ex);
-		}
+	public void delete(User user) throws PersistenceException {
+		source.delete(User.class, user.getId());
 	}
 
 	@Override

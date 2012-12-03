@@ -1,14 +1,10 @@
 package edu.ibs.core.controller;
 
-import edu.ibs.core.controller.exceptions.NonexistentEntityException;
 import edu.ibs.core.entity.AbstractEntity;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -21,7 +17,7 @@ import javax.persistence.criteria.Root;
  */
 public class CSUIDJpaController extends CoreJpa implements Serializable {
 
-	public <T extends AbstractEntity> void insert(T entity) {
+	public <T extends AbstractEntity> void insert(T entity) throws PersistenceException {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
@@ -35,7 +31,7 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 		}
 	}
 
-	public <T extends AbstractEntity> void batchUpdate(List<T> entities) {
+	public <T extends AbstractEntity> void batchUpdate(List<T> entities) throws PersistenceException {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
@@ -57,22 +53,22 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 		}
 	}
 
-	public <T extends AbstractEntity> void update(T entity) throws NonexistentEntityException, Exception {
+	public <T extends AbstractEntity> void update(T entity) throws PersistenceException {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
 			em.getTransaction().begin();
 			em.merge(entity);
 			em.getTransaction().commit();
-		} catch (Exception ex) {
-			String msg = ex.getLocalizedMessage();
-			if (msg == null || msg.length() == 0) {
-				long id = entity.getId();
-				if (select(entity.getClass(), id) == null) {
-					throw new NonexistentEntityException("The object with id " + id + " no longer exists.");
-				}
-			}
-			throw ex;
+//		} catch (Exception ex) {
+//			String msg = ex.getLocalizedMessage();
+//			if (msg == null || msg.length() == 0) {
+//				long id = entity.getId();
+//				if (select(entity.getClass(), id) == null) {
+//					throw new NonexistentEntityException("The object with id " + id + " no longer exists.");
+//				}
+//			}
+//			throw ex;
 		} finally {
 			if (em != null) {
 				em.close();
@@ -80,7 +76,7 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 		}
 	}
 
-	public <T extends AbstractEntity> void delete(Class<T> clazz, long id) throws NonexistentEntityException {
+	public <T extends AbstractEntity> void delete(Class<T> clazz, long id) throws PersistenceException {
 		EntityManager em = null;
 		T entity;
 		try {
@@ -90,8 +86,8 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 			entity.getId();
 			em.remove(entity);
 			em.getTransaction().commit();
-		} catch (EntityNotFoundException enfe) {
-			throw new NonexistentEntityException("The request with id " + id + " no longer exists.", enfe);
+//		} catch (EntityNotFoundException enfe) {
+//			throw new NonexistentEntityException("The request with id " + id + " no longer exists.", enfe);
 		} finally {
 			if (em != null) {
 				em.close();
