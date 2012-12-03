@@ -4,7 +4,10 @@ import edu.ibs.core.entity.AbstractEntity;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -58,17 +61,8 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 		try {
 			em = createEntityManager();
 			em.getTransaction().begin();
-			em.merge(entity);
+			em. merge(entity);
 			em.getTransaction().commit();
-//		} catch (Exception ex) {
-//			String msg = ex.getLocalizedMessage();
-//			if (msg == null || msg.length() == 0) {
-//				long id = entity.getId();
-//				if (select(entity.getClass(), id) == null) {
-//					throw new NonexistentEntityException("The object with id " + id + " no longer exists.");
-//				}
-//			}
-//			throw ex;
 		} finally {
 			if (em != null) {
 				em.close();
@@ -83,11 +77,8 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 			em = createEntityManager();
 			em.getTransaction().begin();
 			entity = em.getReference(clazz, id);
-			entity.getId();
 			em.remove(entity);
 			em.getTransaction().commit();
-//		} catch (EntityNotFoundException enfe) {
-//			throw new NonexistentEntityException("The request with id " + id + " no longer exists.", enfe);
 		} finally {
 			if (em != null) {
 				em.close();
