@@ -1,0 +1,19 @@
+<!DOCTYPE module PUBLIC "//gwt-module/"
+        "http://google-web-toolkit.googlecode.com/svn/tags/2.0.0/distro-source/core/src/gwt-module.dtd">
+<module rename-to="myapp">
+    <!--<inherits name="edu.ibs.core.Core"/>-->
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.smartgwt.SmartGwt"/>
+    <inherits name="com.google.gwt.uibinder.UiBinder"/>
+    <!--  Inherit the default GWT style sheet.
+      -->
+    <inherits name="com.google.gwt.user.theme.standard.Standard"/>
+    <inherits name="com.smartgwt.SmartGwtNoTheme"/>
+    <inherits name="com.smartclient.theme.enterpriseblue.EnterpriseBlue"/>
+    <inherits name="com.smartclient.theme.enterpriseblue.EnterpriseBlueResources"/>
+    <!--  Inherit the gwt-multipage module
+      -->
+
+    <entry-point class='edu.ibs.webui.client.MyApp'/>
+
+</module>

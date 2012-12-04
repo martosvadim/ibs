@@ -1,0 +1,209 @@
+/** Add css rules here for your application. */
+
+/** Example rules used by the template application (remove for your app) */
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+    color: #777777;
+    margin: 40px 0px 70px;
+    text-align: center;
+}
+
+.sendButton {
+    display: block;
+    font-size: 16pt;
+}
+
+/** Most GWT widgets already have a style name defined */
+.gwt-DialogBox {
+    width: 400px;
+}
+
+.dialogVPanel {
+    margin: 5px;
+}
+
+.serverResponseLabelError {
+    color: red;
+}
+
+/** Set ids using widget.getElement().setId("idOfElement") */
+#closeButton {
+    margin: 15px 6px 6px;
+}
+
+.crm-ContextArea {
+
+    background-image: url(images/context_area.png);
+
+    background-repeat: repeat-x;
+
+    padding-top: 4px;
+
+    padding-right: 4px;
+
+    padding-bottom: 4px;
+
+    padding-left: 4px;
+
+}
+
+.crm-ApplicationMenu {
+
+    background-image: url(images/application_menu.png);
+
+    background-repeat: repeat-x;
+
+    padding-top: 4px;
+
+    padding-left: 4px;
+
+}
+
+/*
+
+* Application Menu buttons
+
+*/
+
+.menuButton,
+.menuButtonOver,
+.menuButtonDown,
+.menuButtonDisabled,
+.menuButtonSelected,
+.menuButtonSelectedDown,
+.menuButtonSelectedOver,
+.menuButtonSelectedDisabled {
+
+    border: transparent 1px solid;
+
+    background: none;
+
+    color: #28b;
+
+    font-family: Tahoma, Verdana, sans-serif;
+
+    font-size: 11px;
+
+    font-weight: normal;
+
+    padding-left: 4px;
+
+    padding-right: 4px;
+
+}
+
+.menuButtonOver {
+
+    border: #ffdb6c 1px solid;
+
+    background-image: url(images/application_menu_button_over.png);
+
+    background-repeat: repeat-x;
+
+    color: #28b;
+
+    cursor: default;
+
+    font-family: Tahoma, Verdana, sans-serif;
+
+    font-size: 11px;
+
+    font-weight: normal;
+
+    padding-left: 2px;
+
+    padding-right: 2px;
+
+}
+
+.menuButtonDown,
+.menuButtonSelected,
+.menuButtonSelectedDown,
+.menuButtonSelectedOver {
+
+    border: #ffdb6c 1px solid;
+
+    background-image: url(images/application_menu_button_down.png);
+
+    background-repeat: repeat-x;
+
+    color: #28b;
+
+    cursor: default;
+
+    font-family: Tahoma, Verdana, sans-serif;
+
+    font-size: 11px;
+
+    font-weight: normal;
+
+    padding-left: 2px;
+
+    padding-right: 2px;
+
+}
+
+.menu,
+.menuSelected,
+.menuOver,
+.menuSelectedOver,
+.menuDisabled,
+.menuTitleField,
+.menuTitleFieldSelected,
+.menuTitleFieldOver,
+.menuTitleFieldSelectedOver,
+.menuTitleFieldDisabled,
+.menuIconField,
+.menuIconFieldOver,
+.menuIconFieldSelected,
+.menuIconFieldSelectedOver,
+.menuIconFieldDisabled,
+.treeMenuSelected,
+.treeMenuSelectedOver,
+.treeMenuSelectedSelected,
+.treeMenuSelectedSelectedOver {
+
+    color: #28b;
+
+    font-family: Tahoma, Verdana, sans-serif;
+
+    font-size: 11px;
+
+    font-weight: normal;
+
+    padding-top: 2px;
+
+    padding-bottom: 2px;
+
+}
+
+.crm-Masthead {
+  background-image: url(images/masthead.png);
+  background-repeat: repeat-x;
+}
+.crm-Masthead-Logo {
+  padding-top: 4px;
+  padding-left: 8px;
+}
+
+.crm-MastHead-Name {
+  color: #FFFFFF;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  overflow: hidden;
+  padding-top: 12px;
+  padding-left: 2px;
+  text-align: left;
+}
+
+.crm-MastHead-SignedInUser {
+  color: #FFFFFF;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size: 10px;
+  font-weight: normal;
+  overflow: hidden;
+  padding-right: 4px;
+  text-align: right;
+}

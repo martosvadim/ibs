@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee">
+
+    <!-- Servlets -->
+    <servlet>
+        <servlet-name>authServlet</servlet-name>
+        <servlet-class>edu.ibs.webui.server.AuthorizationServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>authServlet</servlet-name>
+        <url-pattern>/myapp/auth</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SimpleCaptcha</servlet-name>
+        <servlet-class>edu.ibs.webui.server.ExtendedCaptchaServlet</servlet-class>
+        <init-param>
+           <param-name>width</param-name>
+           <param-value>120</param-value>
+       </init-param>
+       <init-param>
+           <param-name>height</param-name>
+           <param-value>35</param-value>
+       </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>SimpleCaptcha</servlet-name>
+        <url-pattern>/SimpleCaptcha.jpg</url-pattern>
+    </servlet-mapping>
+
+    <!-- Default page to serve -->
+    <welcome-file-list>
+        <welcome-file>MyApp.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>
