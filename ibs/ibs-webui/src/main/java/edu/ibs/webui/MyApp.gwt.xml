@@ -1,7 +1,6 @@
 <!DOCTYPE module PUBLIC "//gwt-module/"
         "http://google-web-toolkit.googlecode.com/svn/tags/2.0.0/distro-source/core/src/gwt-module.dtd">
 <module rename-to="myapp">
-    <!--<inherits name="edu.ibs.core.Core"/>-->
     <inherits name='com.google.gwt.user.User'/>
     <inherits name="com.smartgwt.SmartGwt"/>
     <inherits name="com.google.gwt.uibinder.UiBinder"/>
@@ -13,6 +12,7 @@
     <inherits name="com.smartclient.theme.enterpriseblue.EnterpriseBlueResources"/>
     <!--  Inherit the gwt-multipage module
       -->
+    <inherits name="edu.ibs.core.Core"/>
 
     <entry-point class='edu.ibs.webui.client.MyApp'/>
 

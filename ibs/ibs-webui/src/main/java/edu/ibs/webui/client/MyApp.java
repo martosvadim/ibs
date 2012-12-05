@@ -1,6 +1,8 @@
 package edu.ibs.webui.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Img;
@@ -15,6 +17,8 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 import com.smartgwt.client.widgets.menu.Menu;
+import edu.ibs.core.dto.UserDTO;
+import edu.ibs.core.interfaces.IAuthServiceAsync;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.Components;
 
@@ -104,6 +108,17 @@ public class MyApp implements EntryPoint {
         loginButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(final ClickEvent clickEvent) {
+                UserDTO user = new UserDTO();
+                IAuthServiceAsync.Util.getInstance().login("", "", new AsyncCallback<String>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                    }
+
+                    @Override
+                    public void onSuccess(String s) {
+                        SC.say("Вы залогинились!");
+                    }
+                });
                 window.hide();
                 bg.addChild(getMainLayout());
 //                loggedIn = true;
