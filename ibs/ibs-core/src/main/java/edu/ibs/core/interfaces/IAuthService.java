@@ -2,6 +2,7 @@ package edu.ibs.core.interfaces;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import edu.ibs.core.dto.UserDTO;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,6 +13,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("auth.rpc")
 public interface IAuthService extends RemoteService {
-    String login(String name, String pass);
-    String register(String name, String password, String passwordConfirm, String captchaText);
+    UserDTO login(String name, String pass);
+    UserDTO register(String name, String password, String passwordConfirm, String captchaText);
 }

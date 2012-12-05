@@ -1,11 +1,57 @@
 package edu.ibs.core.dto;
 
 /**
- * Created with IntelliJ IDEA.
- * User: EgoshinME
- * Date: 05.12.12
- * Time: 5:32
- * To change this template use File | Settings | File Templates.
+ * Пользователь
+ * @author EgoshinME
  */
-public class UserDTO {
+public class UserDTO implements IBaseDTO {
+
+    /**
+     * Имя
+     */
+    private String firstName;
+    /**
+     * Фамилия
+     */
+    private String lastName;
+    /**
+     * Почтовый адрес
+     */
+    private String email;
+    /**
+     * Данные
+     */
+    private String description;
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
