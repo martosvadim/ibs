@@ -39,4 +39,48 @@
             </plugins>
         </pluginManagement>
     </build>
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>http://java.qulix.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+            <id>maven-proxy.ibilio</id>
+            <name>maven-proxy.ibilio</name>
+            <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+            <id>repository.sonatype.org.central.m1</id>
+            <name>repository.sonatype.org.central.m1</name>
+            <url>http://repository.sonatype.org/content/shadows/centralm1/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>ondex.rothamsted.bbsrc.ac.uk</id>
+            <name>ondex.rothamsted.bbsrc.ac.uk</name>
+            <url>http://ondex.rothamsted.bbsrc.ac.uk/nexus/content/groups/public</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
 </project>

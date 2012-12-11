@@ -109,13 +109,13 @@ public class MyApp implements EntryPoint {
             @Override
             public void onClick(final ClickEvent clickEvent) {
                 UserDTO user = new UserDTO();
-                IAuthServiceAsync.Util.getInstance().login("", "", new AsyncCallback<String>() {
+                IAuthServiceAsync.Util.getInstance().login("", "", new AsyncCallback<UserDTO>() {
                     @Override
                     public void onFailure(Throwable throwable) {
                     }
 
                     @Override
-                    public void onSuccess(String s) {
+                    public void onSuccess(UserDTO s) {
                         SC.say("Вы залогинились!");
                     }
                 });
