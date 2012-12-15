@@ -3,12 +3,12 @@ package edu.ibs.core.service.logic;
 import edu.ibs.core.controller.SpecifiedJpaController;
 import edu.ibs.core.entity.Transaction.TransactionType;
 import edu.ibs.core.entity.*;
+import edu.ibs.core.entity.Account.Role;
 import edu.ibs.core.service.AdminServicable;
 import edu.ibs.core.service.UserServicable;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
-import javax.persistence.PersistenceException;
 import org.apache.log4j.Logger;
 
 /**
@@ -24,106 +24,92 @@ public final class CommonService implements UserServicable, AdminServicable {
 	private final Logger log = Logger.getLogger(CommonService.class);
 
 	@Override
-	public User create(User.Role role, String email, String passwd) throws IllegalArgumentException {
-		if (!EMAIL_PATTERN.matcher(email).matches()) {
-			throw new IllegalArgumentException(String.format("Invalid email: '%s'", email));
-		} else {
-			User u = new User(role, email, passwd);
-			source.insert(u);
-			return u;
-		}
-	}
-
-	@Override
-	public void update(User user) throws PersistenceException {
-		source.update(user);
+	public void update(User user) {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public List<BankBook> getBankBooks(User user) {
-		return source.bankBooks(user);
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public Transaction transfer(BankBook from, BankBook to, Money money, TransactionType type) {
-		return source.pay(from, to, money, type);
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public SavedPayment savePayment(Transaction transaction, User owner) {
-		SavedPayment sp = new SavedPayment(transaction, owner);
-		source.insert(sp);
-		return sp;
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public List<SavedPayment> getSavedPayments(User user) {
-		return source.savedPayments(user);
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public List<Transaction> getHistory(User user, TransactionType type) {
-		return source.history(user, type);
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	public void delete(SavedPayment payment) throws PersistenceException {
-		source.delete(SavedPayment.class, payment.getId());
+	public void delete(SavedPayment payment) {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	public User getUser(String email, String passwd) {
-		return source.user(email, passwd);
+	public Account login(String email, String passwd) {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public Currency getCurrency(String name) {
-		return source.currency(name);
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public List<Currency> getCurrencies() {
-		return source.selectAll(Currency.class);
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public Account create(Role role, String email, String passwd) {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public BankBook create(User user, Money money) {
-		BankBook book = new BankBook(money, user, false);
-		source.insert(book);
-		return book;
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public boolean addMoney(BankBook bankBook, Money money) {
-		if (bankBook.isFreezed() || !bankBook.getCurrency().equals(money.currency())) {
-			return false;
-		}
-		source.addMoney(bankBook, money);
-		return true;
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	public void delete(User user) throws PersistenceException {
-		source.delete(User.class, user.getId());
+	public void delete(User user) {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public void update(List<Currency> currencies) {
-		source.batchUpdate(currencies);
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public void rollback(Transaction transaction) {
-		source.rollback(transaction);
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	public List<Request> getAllRequests() {
-		return source.selectAll(Request.class);
+	public List<CardRequest> getAllRequests() {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	public List<Request> getRequests(Date from, Date to) {
-		return source.requests(from, to);
+	public List<CardRequest> getRequests(Date from, Date to) {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 }

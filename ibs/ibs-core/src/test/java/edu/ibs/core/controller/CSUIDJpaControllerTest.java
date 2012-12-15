@@ -1,5 +1,7 @@
 package edu.ibs.core.controller;
 
+import edu.ibs.core.entity.Account;
+import edu.ibs.core.entity.Account.Role;
 import edu.ibs.core.entity.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ import org.junit.*;
 public class CSUIDJpaControllerTest {
 
 	private CSUIDJpaController data = new CSUIDJpaController();
-	private User u1, u2;
+	private Account u1, u2;
 
 	public CSUIDJpaControllerTest() {
 	}
@@ -29,8 +31,8 @@ public class CSUIDJpaControllerTest {
 
 	@Before
 	public void setUp() {
-		u1 = new User(User.Role.USER, "u1@gmail.com", "u1");
-		u2 = new User(User.Role.USER, "u2@gmail.com", "u2");
+		u1 = new Account("u1@gmail.com", "u1", Role.USER);
+		u2 = new Account("u2@gmail.com", "u2", Role.USER);
 	}
 
 	@After
@@ -51,7 +53,7 @@ public class CSUIDJpaControllerTest {
 	@Test(expected = PersistenceException.class)
 	public void testInsert() {
 		data.insert(u1);
-		u2 = data.select(User.class, u1.getId());
+		u2 = data.select(Account.class, u1.getId());
 		assertEquals(u1, u2);
 		data.insert(u2);
 	}
@@ -61,19 +63,19 @@ public class CSUIDJpaControllerTest {
 	 */
 	@Test
 	public void testBatchUpdate() throws PersistenceException {
-		String u1FirstName = "vadim", u2FirstName = "tratata";
+		String q1 = "vadim", q2 = "tratata";
 		data.insert(u1);
 		data.insert(u2);
-		u1.setFirstName(u1FirstName);
-		u2.setFirstName(u2FirstName);
-		List<User> users = new ArrayList<User>(2);
+		u1.setSecurityQuestion(q1);
+		u2.setSecurityQuestion(q2);
+		List<Account> users = new ArrayList<Account>(2);
 		users.add(u1);
 		users.add(u2);
 		data.batchUpdate(users);
-		u1 = data.select(User.class, u1.getId());
-		u2 = data.select(User.class, u2.getId());
-		assertEquals(u1FirstName, u1.getFirstName());
-		assertEquals(u2FirstName, u2.getFirstName());
+		u1 = data.select(Account.class, u1.getId());
+		u2 = data.select(Account.class, u2.getId());
+		assertEquals(q1, u1.getSecurityQuestion());
+		assertEquals(q2, u2.getSecurityQuestion());
 	}
 
 	/**
@@ -82,11 +84,11 @@ public class CSUIDJpaControllerTest {
 	@Test
 	public void testUpdate() throws Exception {
 		data.insert(u1);
-		String name = "vadik";
-		u1.setFirstName(name);
+		String q = "vadik";
+		u1.setSecurityQuestion(q);
 		data.update(u1);
-		u1 = data.select(User.class, u1.getId());
-		assertEquals(name, u1.getFirstName());
+		u1 = data.select(Account.class, u1.getId());
+		assertEquals(q, u1.getSecurityQuestion());
 	}
 
 	/**
@@ -97,7 +99,7 @@ public class CSUIDJpaControllerTest {
 		data.insert(u1);
 		data.delete(User.class, u1.getId());
 		assertNotNull(u1);
-		u1 = data.select(User.class, u1.getId());
+		u1 = data.select(Account.class, u1.getId());
 		assertNull(u1);
 	}
 
@@ -150,7 +152,7 @@ public class CSUIDJpaControllerTest {
 	@Test
 	public void testSelect() {
 		data.insert(u1);
-		u2 = data.select(User.class, u1.getId());
+		u2 = data.select(Account.class, u1.getId());
 		assertEquals(u1, u2);
 	}
 

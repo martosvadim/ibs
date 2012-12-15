@@ -2,7 +2,6 @@ package edu.ibs.core.controller;
 
 import edu.ibs.core.entity.Transaction.TransactionType;
 import edu.ibs.core.entity.*;
-import edu.ibs.core.entity.User.Role;
 import static org.junit.Assert.*;
 import org.junit.*;
 
@@ -15,7 +14,10 @@ public class SpecifiedJpaControllerTest {
 	private static final SpecifiedJpaController controller = SpecifiedJpaController.instance();
 	private User user;
 	private Currency usd, eur;
-	private BankBook from, to;
+	private CardBook from, to;
+	private BankBook fromBB, toBB;
+	private CreditPlan plan;
+	private Credit credit;
 
 	public SpecifiedJpaControllerTest() {
 	}
@@ -31,28 +33,40 @@ public class SpecifiedJpaControllerTest {
 
 	@Before
 	public void setUp() {
-		user = new User(Role.USER, "user", "passwd");
+		user = new User("vadim", "martos", "AB1953782");
 		controller.insert(user);
 		usd = new Currency("usd", 1.5f, Currency.Fraction.TWO);
 		controller.insert(usd);
 		eur = new Currency("eur", 3f, Currency.Fraction.TWO);
 		controller.insert(eur);
 		Money m1 = new Money(10000, usd);
-		from = new BankBook(m1, user, false);
+		fromBB = new BankBook(m1, user, false);
+		controller.insert(fromBB);
+		from = new CardBook(fromBB, 1L, "1234");
 		controller.insert(from);
 		Money m2 = new Money(10000, eur);
-		to = new BankBook(m2, user, false);
+		toBB = new BankBook(m2, user, false);
+		controller.insert(toBB);
+		to = new CardBook(toBB, 2L, "2345");
 		controller.insert(to);
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		try {
-			controller.delete(BankBook.class, from.getId());
+			controller.delete(CardBook.class, from.getId());
 		} catch (Throwable ignore) {
 		}
 		try {
-			controller.delete(BankBook.class, to.getId());
+			controller.delete(CardBook.class, to.getId());
+		} catch (Throwable ignore) {
+		}
+		try {
+			controller.delete(BankBook.class, fromBB.getId());
+		} catch (Throwable ignore) {
+		}
+		try {
+			controller.delete(BankBook.class, toBB.getId());
 		} catch (Throwable ignore) {
 		}
 		try {
@@ -71,7 +85,7 @@ public class SpecifiedJpaControllerTest {
 
 	@Test
 	public void payTest() throws Exception {
-		Money money = new Money(5000, to.getCurrency());
+		Money money = new Money(5000, to.getBankBook().getCurrency());
 		Transaction tr = controller.pay(from, to, money, TransactionType.PAYMENT);
 		assertNotNull(tr);
 		long tid = tr.getId();
@@ -84,17 +98,18 @@ public class SpecifiedJpaControllerTest {
 
 	@Test
 	public void rollbackTest() throws Exception {
-		Money money = new Money(5000, to.getCurrency());
+		Money money = new Money(5000, to.getBankBook().getCurrency());
 		Transaction tr = controller.pay(from, to, money, TransactionType.PAYMENT);
 		Transaction rollback = controller.rollback(tr);
 		assertNotNull(rollback);
 		assertEquals(rollback.getMoney().integer(), 50);
-		assertEquals(rollback.getMoney().currency(), to.getCurrency());
-		from = controller.select(BankBook.class, from.getId());
-		assertEquals(from.getMoney().integer(), 100);
-		to = controller.select(BankBook.class, to.getId());
-		assertEquals(to.getMoney().integer(), 100);
+		assertEquals(rollback.getMoney().currency(), to.getBankBook().getCurrency());
+		from = controller.select(CardBook.class, from.getId());
+		assertEquals(from.getBankBook().getMoney().integer(), 100);
+		to = controller.select(CardBook.class, to.getId());
+		assertEquals(to.getBankBook().getMoney().integer(), 100);
 		controller.delete(Transaction.class, rollback.getId());
 		controller.delete(Transaction.class, tr.getId());
 	}
+	//todo add test cases for credit
 }

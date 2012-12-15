@@ -1,9 +1,9 @@
 package edu.ibs.core.service;
 
 import edu.ibs.core.entity.*;
+import edu.ibs.core.entity.Account.Role;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.PersistenceException;
 
 /**
  * @date Oct 22, 2012
@@ -12,19 +12,19 @@ import javax.persistence.PersistenceException;
  */
 public interface AdminServicable extends Servicable {
 
-	public User create(User.Role role, String email, String passwd) throws PersistenceException, IllegalArgumentException;
+	public Account create(Role role, String email, String passwd);
 
-	public BankBook create(User user, Money money) throws IllegalArgumentException, IllegalArgumentException;
+	public BankBook create(User user, Money money);
 
-	public boolean addMoney(BankBook bankBook, Money money) throws IllegalArgumentException, IllegalArgumentException;
+	public boolean addMoney(BankBook bankBook, Money money);
 
-	public void delete(User user) throws PersistenceException;
+	public void delete(User user);
 
-	public void update(List<Currency> currencies) throws PersistenceException;
+	public void update(List<Currency> currencies);
 
-	public void rollback(Transaction transaction) throws IllegalArgumentException;
+	public void rollback(Transaction transaction);
 
-	public List<Request> getAllRequests() throws PersistenceException;
+	public List<CardRequest> getAllRequests();
 
-	public List<Request> getRequests(Date from, Date to) throws PersistenceException, IllegalArgumentException;
+	public List<CardRequest> getRequests(Date from, Date to);
 }

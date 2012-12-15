@@ -12,17 +12,17 @@ import javax.persistence.PersistenceException;
  */
 public interface UserServicable extends Servicable {
 
-	public void update(User user) throws PersistenceException;
+	public void update(User user);
 
-	public List<BankBook> getBankBooks(User user) throws PersistenceException, IllegalArgumentException;
+	public List<BankBook> getBankBooks(User user);
 
-	public Transaction transfer(BankBook from, BankBook to, Money money, TransactionType type) throws PersistenceException, IllegalArgumentException;
+	public Transaction transfer(BankBook from, BankBook to, Money money, TransactionType type);
 
-	public SavedPayment savePayment(Transaction transaction, User owner) throws PersistenceException, IllegalArgumentException;
+	public SavedPayment savePayment(Transaction transaction, User owner);
 
-	public List<SavedPayment> getSavedPayments(User user) throws PersistenceException, IllegalArgumentException;
+	public List<SavedPayment> getSavedPayments(User user);
 
-	public List<Transaction> getHistory(User user, TransactionType type) throws PersistenceException, IllegalArgumentException;
+	public List<Transaction> getHistory(User user, TransactionType type);
 
-	public void delete(SavedPayment payment) throws PersistenceException;
+	public void delete(SavedPayment payment);
 }

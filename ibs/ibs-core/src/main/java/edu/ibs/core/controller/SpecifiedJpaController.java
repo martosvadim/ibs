@@ -1,7 +1,10 @@
 package edu.ibs.core.controller;
 
+import edu.ibs.core.controller.exception.FreezedException;
+import edu.ibs.core.controller.exception.NotEnoughMoneyException;
 import edu.ibs.core.entity.Transaction.TransactionType;
 import edu.ibs.core.entity.*;
+import edu.ibs.core.entity.CardBook.CardBookType;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -25,23 +28,51 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		return instance;
 	}
 
-	public Transaction pay(BankBook from, BankBook to, Money money, TransactionType type) {
+	private MoneyEntity forTypeOf(CardBook card, EntityManager em) {
+		switch (card.getType()) {
+			case CREDIT: {
+				Credit fromCredit = card.getCredit();
+				return em.find(Credit.class, fromCredit.getId(), LockModeType.PESSIMISTIC_WRITE);
+			}
+			case DEBIT: {
+				BankBook fromBankBook = card.getBankBook();
+				return em.find(BankBook.class, fromBankBook.getId(), LockModeType.PESSIMISTIC_WRITE);
+			}
+			default: {
+				throw new IllegalArgumentException(String.format("Unknown card type: %s", card.getType()));
+			}
+		}
+	}
+
+	public Transaction pay(CardBook from, CardBook to, Money money, TransactionType type) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
 		EntityManager em = null;
 		try {
 			Transaction tr = null;
 			em = createEntityManager();
 			em.getTransaction().begin();
-			/*
-			 * select for update lock
-			 */
-			from = em.find(BankBook.class, from.getId(), LockModeType.PESSIMISTIC_WRITE);
-			to = em.find(BankBook.class, to.getId(), LockModeType.PESSIMISTIC_WRITE);
-			//todo check for converting
-			if (from.ge(money)) {
-				from.subtract(money);
-				to.add(money);
-				tr = new Transaction(money, type, from, to);
-				em.persist(tr);
+			em.refresh(from);
+			em.refresh(to);
+			if (from.isFreezed()) {
+				throw new FreezedException(String.format("CardBook %s is freezed", from));
+			} else if (to.isFreezed()) {
+				throw new FreezedException(String.format("CardBook %s is freezed", to));
+			} else {
+				MoneyEntity fromEntity = forTypeOf(from, em);
+				MoneyEntity toEntity = forTypeOf(to, em);
+				if (fromEntity == null) {
+					throw new IllegalArgumentException(String.format("Bad card book %s: has no payment entity", from));
+				} else if (toEntity == null) {
+					throw new IllegalArgumentException(String.format("Bad card book %s: has no payment entity", to));
+				} else {
+					if (fromEntity.ge(money)) {
+						fromEntity.subtract(money);
+						toEntity.add(money);
+						tr = new Transaction(money, type, from, to);
+						em.persist(tr);
+					} else {
+						throw new NotEnoughMoneyException(String.format("Not enough money at card book %s, should has at least %s", from, money));
+					}
+				}
 			}
 			em.getTransaction().commit();
 			return tr;
@@ -52,16 +83,16 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		}
 	}
 
-	public User user(String email, String passwd) {
+	public Account getUserAccount(String email, String password) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
-			CriteriaQuery<User> criteria = em.getCriteriaBuilder().createQuery(User.class);
+			CriteriaQuery<Account> criteria = em.getCriteriaBuilder().createQuery(Account.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
-			Root<User> user = criteria.from(User.class);
-			Expression<String> emailExpr = user.get("email");
-			Expression<String> passwdExpr = user.get("password");
-			criteria.select(user).where(cb.and(cb.equal(emailExpr, email), cb.equal(passwdExpr, passwd)));
+			Root<Account> acc = criteria.from(Account.class);
+			Expression<String> emailExpr = acc.get("email");
+			Expression<String> passwdExpr = acc.get("password");
+			criteria.select(acc).where(cb.and(cb.equal(emailExpr, email), cb.equal(passwdExpr, password)));
 			return em.createQuery(criteria).getSingleResult();
 		} finally {
 			if (em != null) {
@@ -70,27 +101,16 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		}
 	}
 
-	public Transaction rollback(Transaction tr) throws IllegalArgumentException {
+	public Transaction rollback(Transaction tr) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
 		EntityManager em = null;
 		try {
-			Transaction rollback = null;
 			em = createEntityManager();
 			em.getTransaction().begin();
 			tr = em.find(Transaction.class, tr.getId(), LockModeType.PESSIMISTIC_WRITE);
 			if (tr == null) {
 				throw new IllegalArgumentException(String.format("Transaction with id %s doesn't exist", tr.getId()));
 			}
-			BankBook from = tr.getFrom();
-			BankBook to = tr.getTo();
-			from = em.find(BankBook.class, from.getId(), LockModeType.PESSIMISTIC_WRITE);
-			to = em.find(BankBook.class, to.getId(), LockModeType.PESSIMISTIC_WRITE);
-			// todo check for convertation
-			if (to.ge(tr.getMoney())) {
-				from.add(tr.getMoney());
-				to.subtract(tr.getMoney());
-				rollback = new Transaction(tr.getMoney(), tr.getType(), to, from);
-				em.persist(rollback);
-			}
+			Transaction rollback = pay(tr.getTo(), tr.getFrom(), tr.getMoney(), TransactionType.PAYMENT);
 			em.getTransaction().commit();
 			return rollback;
 		} finally {
@@ -100,14 +120,16 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		}
 	}
 
-	public List<Request> requests(Date from, Date to) {
+	public List<CardRequest> requests(Date from, Date to) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
-			CriteriaQuery<Request> criteria = em.getCriteriaBuilder().createQuery(Request.class);
-			Root<Request> request = criteria.from(Request.class);
-			Expression<Long> date = request.get("date");
-			criteria.select(request).where(em.getCriteriaBuilder().between(date, from.getTime(), to.getTime()));
+			CriteriaQuery<CardRequest> criteria = em.getCriteriaBuilder().createQuery(CardRequest.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			Root<CardRequest> request = criteria.from(CardRequest.class);
+			Expression<Long> date = request.get("dateCreated");
+			Expression<Boolean> approved = request.get("approved");
+			criteria.select(request).where(cb.and(cb.between(date, from.getTime(), to.getTime()), cb.not(approved)));
 			return em.createQuery(criteria).getResultList();
 		} finally {
 			if (em != null) {
@@ -139,8 +161,8 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			CriteriaBuilder builder = em.getCriteriaBuilder();
 			CriteriaQuery<Transaction> criteria = builder.createQuery(Transaction.class);
 			Root<Transaction> transaction = criteria.from(Transaction.class);
-			Path<BankBook> from = transaction.get("from");
-			Path<BankBook> to = transaction.get("to");
+			Path<CardBook> from = transaction.get("from");
+			Path<CardBook> to = transaction.get("to");
 			criteria.multiselect(transaction, to, from).where(
 					builder.and(
 					builder.equal(transaction.get("type"), type),

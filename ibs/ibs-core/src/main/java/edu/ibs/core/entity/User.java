@@ -1,9 +1,10 @@
 package edu.ibs.core.entity;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigInteger;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -30,69 +31,128 @@ public class User implements Serializable, AbstractEntity {
 	@Column(name = "id", unique = true, updatable = false)
 	private long id;
 	@Basic(optional = false)
-	@Column(name = "role")
-	@Enumerated(EnumType.STRING)
-	private Role role;
+	@NotNull
+	@Size(min = 1, max = 255)
 	@Column(name = "firstName")
 	private String firstName;
+	@Basic(optional = false)
+	@NotNull
+	@Size(min = 1, max = 255)
 	@Column(name = "lastName")
 	private String lastName;
 	@Basic(optional = false)
-	@Column(name = "email", unique = true, updatable = false)
-	private String email;
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "passportNumber")
+	private String passportNumber;
+	@Lob
+	@Column(name = "passportScan")
+	private byte[] passportScan;
 	@Basic(optional = false)
-	@Column(name = "password", updatable = true)
-	private String password;
+	@NotNull
+	@Column(name = "freezed")
+	private boolean freezed;
+	@Size(max = 255)
+	@Column(name = "address")
+	private String address;
+	@Column(name = "zipCode")
+	private int zipCode;
+	@Column(name = "phone1")
+	private BigInteger phone1;
+	@Column(name = "phone2")
+	private BigInteger phone2;
+	@Column(name = "phone3")
+	private BigInteger phone3;
 	@Column(name = "description")
 	private String description;
 
 	public User() {
 	}
 
-	public User(Role role, String email, String password) {
-		this.role = role;
-		this.email = email;
-		this.password = password;
+	public User(String firstName, String lastName, String passportNumber) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.passportNumber = passportNumber;
+	}
+
+	public String getAddress() {
+		return address;
 	}
 
 	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public String getFirstName() {
 		return firstName;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getEmail() {
-		return email;
+	public boolean isFreezed() {
+		return freezed;
 	}
 
 	public long getId() {
 		return id;
 	}
 
-	public Role getRole() {
-		return role;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getPassportNumber() {
+		return passportNumber;
+	}
+
+	public byte[] getPassportScan() {
+		return passportScan;
+	}
+
+	public BigInteger getPhone1() {
+		return phone1;
+	}
+
+	public BigInteger getPhone2() {
+		return phone2;
+	}
+
+	public BigInteger getPhone3() {
+		return phone3;
+	}
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public int getZipCode() {
+		return zipCode;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setPassportScan(byte[] passportScan) {
+		this.passportScan = passportScan;
+	}
+
+	public void setPhone1(BigInteger phone1) {
+		this.phone1 = phone1;
+	}
+
+	public void setPhone2(BigInteger phone2) {
+		this.phone2 = phone2;
+	}
+
+	public void setPhone3(BigInteger phone3) {
+		this.phone3 = phone3;
+	}
+
+	public void setZipCode(int zipCode) {
+		this.zipCode = zipCode;
 	}
 
 	@Override
@@ -112,46 +172,13 @@ public class User implements Serializable, AbstractEntity {
 
 	@Override
 	public int hashCode() {
-		int hash = 7;
-		hash = 83 * hash + (int) (this.id ^ (this.id >>> 32));
+		int hash = 5;
+		hash = 61 * hash + (int) (this.id ^ (this.id >>> 32));
 		return hash;
 	}
 
 	@Override
 	public String toString() {
-		return "User{" + "id=" + id + ", role=" + role + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", description=" + description + '}';
-	}
-
-	public static enum Role {
-
-		USER("user"),
-		ADMIN("admin");
-		private String name;
-		private static final Map<String, Role> nameLookUp = new HashMap<String, Role>(Role.values().length);
-		private static final Map<Integer, Role> ordinalLookUp = new HashMap<Integer, Role>(Role.values().length);
-
-		static {
-			for (Role role : Role.values()) {
-				nameLookUp.put(role.toString(), role);
-				ordinalLookUp.put(role.ordinal(), role);
-			}
-		}
-
-		private Role(String name) {
-			this.name = name;
-		}
-
-		public static Role forName(String name) {
-			return nameLookUp.get(name);
-		}
-
-		public static Role forOrdinal(int ordinal) {
-			return ordinalLookUp.get(Integer.valueOf(ordinal));
-		}
-
-		@Override
-		public String toString() {
-			return this.name;
-		}
+		return "User{" + "firstName=" + firstName + ", lastName=" + lastName + '}';
 	}
 }

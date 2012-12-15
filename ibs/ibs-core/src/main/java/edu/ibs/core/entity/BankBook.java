@@ -1,8 +1,14 @@
 package edu.ibs.core.entity;
 
+import edu.ibs.core.entity.CardBook;
+import edu.ibs.core.entity.CardRequest;
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * @date Oct 31, 2012
@@ -17,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 	@NamedQuery(name = "BankBook.findById", query = "SELECT b FROM BankBook b WHERE b.id = :id"),
 	@NamedQuery(name = "BankBook.findByBalance", query = "SELECT b FROM BankBook b WHERE b.balance = :balance"),
 	@NamedQuery(name = "BankBook.findByFreezed", query = "SELECT b FROM BankBook b WHERE b.freezed = :freezed")})
-public class BankBook implements Serializable, AbstractEntity {
+public class BankBook implements Serializable, AbstractEntity, MoneyEntity {
 
 	private static final long serialVersionUID = 7689532939542907L;
 	@Id
@@ -37,10 +43,17 @@ public class BankBook implements Serializable, AbstractEntity {
 	@JoinColumn(name = "ownerID", referencedColumnName = "id", updatable = false, nullable = false)
 	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private User owner;
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "dateExpire")
+	private long dateExpire;
+	@Size(max = 255)
+	@Column(name = "description")
+	private String description;
 	@Transient
 	private volatile Money money;
 
-	protected BankBook() {
+	public BankBook() {
 	}
 
 	public BankBook(Money money, User owner, boolean freezed) {
@@ -57,11 +70,10 @@ public class BankBook implements Serializable, AbstractEntity {
 		}
 	}
 
-	public Money subtract(Money other) {
+	public void subtract(Money other) {
 		validateMoney();
 		this.money = money.subtract(other);
 		this.balance = money.balance();
-		return this.money;
 	}
 
 	public boolean lt(Money other) {
@@ -84,15 +96,13 @@ public class BankBook implements Serializable, AbstractEntity {
 		return money.ge(other);
 	}
 
-	public Money add(Money other) {
+	public void add(Money other) {
 		validateMoney();
 		this.money = money.add(other);
 		this.balance = money.balance();
-		return this.money;
 	}
 
 	public Money getMoney() {
-		validateMoney();
 		return money;
 	}
 
@@ -115,6 +125,22 @@ public class BankBook implements Serializable, AbstractEntity {
 
 	public User getOwner() {
 		return owner;
+	}
+
+	public long getDateExpire() {
+		return dateExpire;
+	}
+
+	public void setDateExpire(long dateExpire) {
+		this.dateExpire = dateExpire;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public void copyFrom(BankBook other) {

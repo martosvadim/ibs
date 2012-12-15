@@ -1,9 +1,8 @@
 package edu.ibs.core.service;
 
-import edu.ibs.core.entity.User;
-import edu.ibs.core.entity.User.Role;
+import edu.ibs.core.entity.Account;
+import edu.ibs.core.entity.Account.Role;
 import edu.ibs.core.service.logic.ApplicationContextProvider;
-import javax.persistence.PersistenceException;
 
 /**
  * @date Oct 22, 2012
@@ -18,25 +17,25 @@ public final class ServiceProxy {
 	private ServiceProxy() {
 	}
 
-	public static UserServicable user(User user) throws NullPointerException, IllegalArgumentException {
-		if (user.getRole().equals(Role.USER)) {
+	public static UserServicable user(Account acc) throws NullPointerException, IllegalArgumentException {
+		if (acc.getRole().equals(Role.USER)) {
 			return userLogic;
 		}
-		throw new IllegalArgumentException(String.format("User %s is not in role %s", user, Role.USER));
+		throw new IllegalArgumentException(String.format("User %s is not in role %s", acc, Role.USER));
 	}
 
-	public static AdminServicable admin(User admin) throws NullPointerException, IllegalArgumentException {
-		if (admin.getRole().equals(Role.ADMIN)) {
+	public static AdminServicable admin(Account acc) throws NullPointerException, IllegalArgumentException {
+		if (acc.getRole().equals(Role.ADMIN)) {
 			return adminLogic;
 		}
-		throw new IllegalArgumentException(String.format("User %s is not in role %s", admin, Role.ADMIN));
+		throw new IllegalArgumentException(String.format("User %s is not in role %s", acc, Role.ADMIN));
 	}
 
-	public static User login(String email, String passwd) {
-		return userLogic.getUser(email, passwd);
+	public static Account login(String email, String passwd) {
+		return userLogic.login(email, passwd);
 	}
 
-	public static User register(String email, String passwd) throws PersistenceException {
+	public static Account registerUser(String email, String passwd) {
 		return adminLogic.create(Role.USER, email, passwd);
 	}
 }
