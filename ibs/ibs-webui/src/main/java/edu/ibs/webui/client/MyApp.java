@@ -58,10 +58,32 @@ public class MyApp implements EntryPoint {
         final Window window = Components.getWindow();
         window.setHeight(270);
 
+        final GenericController login = Components.getTextItem();
+        final GenericController pass = Components.getPasswordItem();
+        final GenericController repPass = Components.getPasswordItem();
+        final GenericController capthcaInputTextItemView = Components.getTextItem();
+
         IButton regButton = new IButton("Зарегистрироваться");
         regButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(final ClickEvent clickEvent) {
+                String name = (String) login.unbind();
+                String password = (String) pass.unbind();
+                String passwordAgain = (String) repPass.unbind();
+                String captchaText = (String) capthcaInputTextItemView.unbind();
+                IAuthServiceAsync.Util.getInstance().register(name, password, passwordAgain, captchaText,
+                        new AsyncCallback<AccountDTO>() {
+
+                            @Override
+                            public void onFailure(Throwable throwable) {
+                                SC.say(throwable.getLocalizedMessage());
+                            }
+
+                            @Override
+                            public void onSuccess(AccountDTO s) {
+                                SC.say("Вы зарегестрировались, " + s.getEmail() + "!");
+                            }
+                        });
                 window.hide();
                 bg.addChild(getMainLayout());
             }
@@ -72,10 +94,6 @@ public class MyApp implements EntryPoint {
         captchaImage.setWidth(120);
         captchaImage.setHeight(35);
 
-        GenericController login = Components.getTextItem();
-        GenericController pass = Components.getPasswordItem();
-        GenericController repPass = Components.getPasswordItem();
-
         VStack layout = new VStack();
         layout.setMembersMargin(5);
         layout.setMargin(5);
@@ -83,7 +101,6 @@ public class MyApp implements EntryPoint {
         layout.addMember(Components.addTitle("Пароль", pass.getView()));
         layout.addMember(Components.addTitle("Подтверждение пароля", repPass.getView()));
 
-        GenericController capthcaInputTextItemView = Components.getTextItem();
         layout.addMember(Components.addTitle("", captchaImage));
         layout.addMember(Components.addTitle("", capthcaInputTextItemView.getView()));
         layout.addMember(regButton);
@@ -104,13 +121,19 @@ public class MyApp implements EntryPoint {
     private Window getLoginCanvas() {
         final Window window = Components.getWindow();
 
+        final GenericController login = Components.getTextItem();
+        final GenericController pass = Components.getPasswordItem();
+
         IButton loginButton = new IButton("Войти");
         loginButton.setWidth(80);
         loginButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(final ClickEvent clickEvent) {
 				AccountDTO account = new AccountDTO();
-                IAuthServiceAsync.Util.getInstance().login("", "", new AsyncCallback<AccountDTO>() {
+                String loginText = (String) login.unbind();
+                String passText = (String) pass.unbind();
+                IAuthServiceAsync.Util.getInstance().login(loginText, passText,
+                        new AsyncCallback<AccountDTO>() {
                     @Override
                     public void onFailure(Throwable throwable) {
                         SC.say(throwable.getLocalizedMessage());
@@ -118,7 +141,7 @@ public class MyApp implements EntryPoint {
 
                     @Override
                     public void onSuccess(AccountDTO s) {
-                        SC.say("Вы залогинились!");
+                        SC.say("Вы залогинились, ", s.getEmail() + "!");
                     }
                 });
                 window.hide();
@@ -128,8 +151,6 @@ public class MyApp implements EntryPoint {
 //                AbstractEntity user;
             }
         });
-        GenericController login = Components.getTextItem();
-        GenericController pass = Components.getPasswordItem();
 
         LinkItem linkItem = new LinkItem("link");
         linkItem.setShowTitle(false);
