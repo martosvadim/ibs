@@ -1,10 +1,10 @@
 package edu.ibs.core.entity;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import edu.ibs.common.dto.TransactionType;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 /**
  * @date Oct 31, 2012
@@ -33,7 +33,7 @@ public class Transaction implements Serializable, AbstractEntity {
 	@Basic(optional = false)
 	@Column(name = "type", updatable = false)
 	@Enumerated(EnumType.STRING)
-	private Transaction.TransactionType type;
+	private TransactionType type;
 	@JoinColumn(name = "currencyID", referencedColumnName = "id", updatable = false)
 	@ManyToOne(optional = false)
 	private Currency currency;
@@ -49,7 +49,7 @@ public class Transaction implements Serializable, AbstractEntity {
 	public Transaction() {
 	}
 
-	public Transaction(Money money, Transaction.TransactionType type, CardBook from, CardBook to) {
+	public Transaction(Money money, TransactionType type, CardBook from, CardBook to) {
 		this.amount = money.balance();
 		this.type = type;
 		this.currency = money.currency();
@@ -82,7 +82,7 @@ public class Transaction implements Serializable, AbstractEntity {
 		return to;
 	}
 
-	public Transaction.TransactionType getType() {
+	public TransactionType getType() {
 		return type;
 	}
 
@@ -113,36 +113,4 @@ public class Transaction implements Serializable, AbstractEntity {
 		return "Transaction{" + "id=" + id + ", amount=" + amount + ", type=" + type + ", currency=" + currency + ", to=" + to + ", from=" + from + ", money=" + money + '}';
 	}
 
-	public static enum TransactionType {
-
-		PAYMENT("payment"),
-		TRANSFER("transfer");
-		private String name;
-		private static final Map<String, Transaction.TransactionType> nameLookUp = new HashMap<String, Transaction.TransactionType>(Transaction.TransactionType.values().length);
-		private static final Map<Integer, Transaction.TransactionType> ordinalLookUp = new HashMap<Integer, Transaction.TransactionType>(Transaction.TransactionType.values().length);
-
-		static {
-			for (Transaction.TransactionType type : Transaction.TransactionType.values()) {
-				nameLookUp.put(type.toString(), type);
-				ordinalLookUp.put(type.ordinal(), type);
-			}
-		}
-
-		private TransactionType(String name) {
-			this.name = name;
-		}
-
-		public static Transaction.TransactionType forName(String name) {
-			return nameLookUp.get(name);
-		}
-
-		public static Transaction.TransactionType forOrdinal(int ordinal) {
-			return ordinalLookUp.get(Integer.valueOf(ordinal));
-		}
-
-		@Override
-		public String toString() {
-			return this.name;
-		}
-	}
 }

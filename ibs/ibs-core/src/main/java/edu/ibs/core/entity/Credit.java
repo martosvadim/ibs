@@ -1,9 +1,9 @@
 package edu.ibs.core.entity;
 
-import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 /**
  *

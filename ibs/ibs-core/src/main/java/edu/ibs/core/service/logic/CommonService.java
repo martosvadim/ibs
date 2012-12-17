@@ -1,15 +1,16 @@
 package edu.ibs.core.service.logic;
 
+import edu.ibs.common.dto.TransactionType;
+import edu.ibs.common.enums.AccountRole;
 import edu.ibs.core.controller.SpecifiedJpaController;
-import edu.ibs.core.entity.Transaction.TransactionType;
 import edu.ibs.core.entity.*;
-import edu.ibs.core.entity.Account.Role;
 import edu.ibs.core.service.AdminServicable;
 import edu.ibs.core.service.UserServicable;
+import org.apache.log4j.Logger;
+
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
-import org.apache.log4j.Logger;
 
 /**
  * @date Oct 22, 2012
@@ -74,7 +75,7 @@ public final class CommonService implements UserServicable, AdminServicable {
 	}
 
 	@Override
-	public Account create(Role role, String email, String passwd) {
+	public Account create(AccountRole role, String email, String passwd) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 

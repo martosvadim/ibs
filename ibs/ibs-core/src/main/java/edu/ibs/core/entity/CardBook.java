@@ -1,12 +1,12 @@
 package edu.ibs.core.entity;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import edu.ibs.common.enums.CardBookType;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 /**
  *
@@ -151,36 +151,4 @@ public class CardBook implements Serializable, AbstractEntity {
 		return "CardBook{" + "id=" + id + ", type=" + type + ", dateExpire=" + dateExpire + ", freezed=" + freezed + ", pin=" + pin + ", bankBook=" + bankBook + ", credit=" + credit + '}';
 	}
 
-	public static enum CardBookType {
-
-		DEBIT("debit"),
-		CREDIT("credit");
-		private String name;
-		private static final Map<String, CardBookType> nameLookUp = new HashMap<String, CardBookType>(CardBookType.values().length);
-		private static final Map<Integer, CardBookType> ordinalLookUp = new HashMap<Integer, CardBookType>(CardBookType.values().length);
-
-		static {
-			for (CardBookType type : CardBookType.values()) {
-				nameLookUp.put(type.toString(), type);
-				ordinalLookUp.put(type.ordinal(), type);
-			}
-		}
-
-		private CardBookType(String name) {
-			this.name = name;
-		}
-
-		public static CardBookType forName(String name) {
-			return nameLookUp.get(name);
-		}
-
-		public static CardBookType forOrdinal(int ordinal) {
-			return ordinalLookUp.get(Integer.valueOf(ordinal));
-		}
-
-		@Override
-		public String toString() {
-			return this.name;
-		}
-	}
 }

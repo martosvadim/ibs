@@ -4,8 +4,10 @@
  */
 package edu.ibs.core.entity;
 
+import edu.ibs.common.enums.Fraction;
 import org.junit.*;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -35,9 +37,9 @@ public class MoneyTest {
 
 	@Before
 	public void setUp() {
-		Currency usdCurr = new Currency("usd", USD_FACTOR, Currency.Fraction.TWO);
+		Currency usdCurr = new Currency("usd", USD_FACTOR, Fraction.TWO);
 		usd = new Money(USD_INTEGER, USD_FRACTION, usdCurr);
-		Currency eurCurr = new Currency("eur", EUR_FACTOR, Currency.Fraction.TWO);
+		Currency eurCurr = new Currency("eur", EUR_FACTOR, Fraction.TWO);
 		eur = new Money(EUR_INTEGER, EUR_FRACTION, eurCurr);
 	}
 

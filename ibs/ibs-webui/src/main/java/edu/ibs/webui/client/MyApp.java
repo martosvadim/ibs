@@ -17,6 +17,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 import com.smartgwt.client.widgets.menu.Menu;
+import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.webui.client.controller.GenericController;
@@ -108,15 +109,15 @@ public class MyApp implements EntryPoint {
         loginButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(final ClickEvent clickEvent) {
-                UserDTO user = new UserDTO();
-                IAuthServiceAsync.Util.getInstance().login("", "", new AsyncCallback<UserDTO>() {
+				AccountDTO account = new AccountDTO();
+                IAuthServiceAsync.Util.getInstance().login("", "", new AsyncCallback<AccountDTO>() {
                     @Override
                     public void onFailure(Throwable throwable) {
                         SC.say(throwable.getLocalizedMessage());
                     }
 
                     @Override
-                    public void onSuccess(UserDTO s) {
+                    public void onSuccess(AccountDTO s) {
                         SC.say("Вы залогинились!");
                     }
                 });

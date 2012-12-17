@@ -1,15 +1,15 @@
 package edu.ibs.core.controller;
 
+import edu.ibs.common.dto.TransactionType;
 import edu.ibs.core.controller.exception.FreezedException;
 import edu.ibs.core.controller.exception.NotEnoughMoneyException;
-import edu.ibs.core.entity.Transaction.TransactionType;
 import edu.ibs.core.entity.*;
-import edu.ibs.core.entity.CardBook.CardBookType;
-import java.util.Date;
-import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.criteria.*;
+import java.util.Date;
+import java.util.List;
 
 /**
  *

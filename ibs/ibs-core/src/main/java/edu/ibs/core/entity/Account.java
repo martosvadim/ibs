@@ -1,12 +1,12 @@
 package edu.ibs.core.entity;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import edu.ibs.common.enums.AccountRole;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 /**
  *
@@ -44,7 +44,7 @@ public class Account implements Serializable, AbstractEntity {
 	@Basic(optional = false)
 	@Column(name = "role")
 	@Enumerated(EnumType.STRING)
-	private Role role;
+	private AccountRole role;
 	@Basic(optional = false)
 	@NotNull
 	@Size(min = 1, max = 255)
@@ -66,7 +66,7 @@ public class Account implements Serializable, AbstractEntity {
 	public Account() {
 	}
 
-	public Account(String email, String password, Role role, String securityQuestion, String securityAnswer, String avatar) {
+	public Account(String email, String password, AccountRole role, String securityQuestion, String securityAnswer, String avatar) {
 		this.email = email;
 		this.role = role;
 		this.password = password;
@@ -75,11 +75,11 @@ public class Account implements Serializable, AbstractEntity {
 		this.avatar = avatar;
 	}
 
-	public Account(String email, String password, Role role, String securityQuestion, String securityAnswer) {
+	public Account(String email, String password, AccountRole role, String securityQuestion, String securityAnswer) {
 		this(email, password, role, securityQuestion, securityAnswer, null);
 	}
 
-	public Account(String email, String password, Role role) {
+	public Account(String email, String password, AccountRole role) {
 		this(email, password, role, null, null, null);
 	}
 
@@ -99,7 +99,7 @@ public class Account implements Serializable, AbstractEntity {
 		return password;
 	}
 
-	public Role getRole() {
+	public AccountRole getRole() {
 		return role;
 	}
 
@@ -158,36 +158,4 @@ public class Account implements Serializable, AbstractEntity {
 		return "Account{" + "id=" + id + ", email=" + email + ", role=" + role + ", password=" + password + ", securityQuestion=" + securityQuestion + ", securityAnswer=" + securityAnswer + ", avatar=" + avatar + ", user=" + user + '}';
 	}
 
-	public static enum Role {
-
-		USER("user"),
-		ADMIN("admin");
-		private String name;
-		private static final Map<String, Role> nameLookUp = new HashMap<String, Role>(Role.values().length);
-		private static final Map<Integer, Role> ordinalLookUp = new HashMap<Integer, Role>(Role.values().length);
-
-		static {
-			for (Role role : Role.values()) {
-				nameLookUp.put(role.toString(), role);
-				ordinalLookUp.put(role.ordinal(), role);
-			}
-		}
-
-		private Role(String name) {
-			this.name = name;
-		}
-
-		public static Role forName(String name) {
-			return nameLookUp.get(name);
-		}
-
-		public static Role forOrdinal(int ordinal) {
-			return ordinalLookUp.get(Integer.valueOf(ordinal));
-		}
-
-		@Override
-		public String toString() {
-			return this.name;
-		}
-	}
 }

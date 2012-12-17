@@ -1,9 +1,9 @@
 package edu.ibs.core.service;
 
-import edu.ibs.core.entity.Transaction.TransactionType;
+import edu.ibs.common.dto.TransactionType;
 import edu.ibs.core.entity.*;
+
 import java.util.List;
-import javax.persistence.PersistenceException;
 
 /**
  * @date Oct 22, 2012

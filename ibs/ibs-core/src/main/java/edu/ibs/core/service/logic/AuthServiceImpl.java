@@ -1,12 +1,16 @@
 package edu.ibs.core.service.logic;
 
+import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.dto.UserDTO;
+import edu.ibs.common.enums.AccountRole;
+import edu.ibs.common.exceptions.IbsServiceException;
+import edu.ibs.common.interfaces.IAuthService;
 import edu.ibs.core.entity.Account;
 import edu.ibs.core.entity.User;
-import edu.ibs.common.interfaces.IAuthService;
+import edu.ibs.core.gwt.EntityTransformer;
 import edu.ibs.core.service.AdminServicable;
 import edu.ibs.core.service.UserServicable;
-import org.springframework.web.servlet.mvc.Controller;
+import edu.ibs.core.utils.ValidationUtils;
 
 import javax.persistence.PersistenceException;
 
@@ -16,33 +20,37 @@ public class AuthServiceImpl implements IAuthService {
 	private AdminServicable adminLogic;
 
 	@Override
-	public UserDTO login(String name, String pass) {
-		return transform(userLogic.login(name, pass));
+	public AccountDTO login(String name, String pass) throws IbsServiceException {
+		if (!ValidationUtils.isEmpty(name) && !ValidationUtils.isEmpty(pass)) {
+			return EntityTransformer.transformAccount(userLogic.login(name, pass));
+		} else {
+			throw new IbsServiceException("Credentials can't be empty.");
+		}
 	}
 
 	@Override
-	public UserDTO register(String name, String password, String passwordConfirm, String captchaText) {
-		//todo validation
-		return transform(register(name, password));
+	public AccountDTO register(String name, String password, String passwordConfirm, String captchaText)
+			throws IbsServiceException {
+
+		if (ValidationUtils.isEmpty(name) || ValidationUtils.isEmpty(password)
+				|| ValidationUtils.isEmpty(passwordConfirm)) {
+			throw new IbsServiceException("Credentials can't be empty.");
+		} else if (ValidationUtils.isEmpty(captchaText)) {
+			//todo check captcha
+//			HttpServletRequest request = getThreadLocalRequest();
+//			HttpSession session = request.getSession();
+//			Captcha captcha = (Captcha) session.getAttribute(Captcha.NAME);
+//			return String.valueOf(captcha.isCorrect(captchaText));
+			throw new IbsServiceException("Incorrect captcha's text.");
+		}
+		return EntityTransformer.transformAccount(register(name, password));
 	}
 
 	private Account register(String email, String passwd) throws PersistenceException {
-		return adminLogic.create(Account.Role.USER, email, passwd);
+		return adminLogic.create(AccountRole.USER, email, passwd);
 	}
 
-	//todo сделать отдельный класс для конвертера?
-	/**
-	 * Конвертация
-	 *
-	 * @param user пользователь
-	 * @return объект для передачи данных
-	 */
-	private UserDTO transform(final Account user) {
-        UserDTO dto = new UserDTO();
-        return dto;
-	}
-
-    public UserServicable getUserLogic() {
+	public UserServicable getUserLogic() {
         return userLogic;
     }
 

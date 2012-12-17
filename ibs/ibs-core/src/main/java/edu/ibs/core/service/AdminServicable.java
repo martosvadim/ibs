@@ -1,7 +1,8 @@
 package edu.ibs.core.service;
 
+import edu.ibs.common.enums.AccountRole;
 import edu.ibs.core.entity.*;
-import edu.ibs.core.entity.Account.Role;
+
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public interface AdminServicable extends Servicable {
 
-	public Account create(Role role, String email, String passwd);
+	public Account create(AccountRole role, String email, String passwd);
 
 	public BankBook create(User user, Money money);
 

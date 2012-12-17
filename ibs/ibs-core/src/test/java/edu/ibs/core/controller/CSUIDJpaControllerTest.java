@@ -1,13 +1,15 @@
 package edu.ibs.core.controller;
 
+import edu.ibs.common.enums.AccountRole;
 import edu.ibs.core.entity.Account;
-import edu.ibs.core.entity.Account.Role;
 import edu.ibs.core.entity.User;
+import org.junit.*;
+
+import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.PersistenceException;
+
 import static org.junit.Assert.*;
-import org.junit.*;
 
 /**
  *
@@ -31,8 +33,8 @@ public class CSUIDJpaControllerTest {
 
 	@Before
 	public void setUp() {
-		u1 = new Account("u1@gmail.com", "u1", Role.USER);
-		u2 = new Account("u2@gmail.com", "u2", Role.USER);
+		u1 = new Account("u1@gmail.com", "u1", AccountRole.USER);
+		u2 = new Account("u2@gmail.com", "u2", AccountRole.USER);
 	}
 
 	@After

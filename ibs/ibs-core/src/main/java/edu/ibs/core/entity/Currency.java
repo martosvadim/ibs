@@ -1,9 +1,11 @@
 package edu.ibs.core.entity;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
+import edu.ibs.common.enums.Fraction;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  *
@@ -93,24 +95,4 @@ public class Currency implements Serializable, AbstractEntity {
 		return hash;
 	}
 
-	/**
-	 * Contains information about how much digits fraction part of currency
-	 * should have.
-	 */
-	public static enum Fraction {
-
-		ZERO(1),
-		ONE(10),
-		TWO(100),
-		THREE(1000);
-		private int digit;
-
-		private Fraction(int digit) {
-			this.digit = digit;
-		}
-
-		public int multiply() {
-			return digit;
-		}
-	}
 }

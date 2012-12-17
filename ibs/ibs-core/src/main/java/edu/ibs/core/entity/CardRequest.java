@@ -1,11 +1,12 @@
 package edu.ibs.core.entity;
 
-import edu.ibs.core.entity.CardBook.CardBookType;
-import java.io.Serializable;
+import edu.ibs.common.enums.CardBookType;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 /**
  *
@@ -42,7 +43,7 @@ public class CardRequest implements Serializable, AbstractEntity {
 	@Basic(optional = false)
 	@Column(name = "type", updatable = false)
 	@Enumerated(EnumType.STRING)
-	private CardBook.CardBookType type;
+	private CardBookType type;
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "dateCreated")

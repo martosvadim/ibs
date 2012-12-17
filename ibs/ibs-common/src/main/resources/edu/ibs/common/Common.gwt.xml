@@ -3,4 +3,6 @@
 <module>
     <source path="dto"/>
     <source path="interfaces"/>
+    <source path="enums"/>
+    <source path="exceptions"/>
 </module>

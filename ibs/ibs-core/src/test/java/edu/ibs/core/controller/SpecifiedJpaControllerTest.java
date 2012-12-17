@@ -1,9 +1,11 @@
 package edu.ibs.core.controller;
 
-import edu.ibs.core.entity.Transaction.TransactionType;
+import edu.ibs.common.dto.TransactionType;
+import edu.ibs.common.enums.Fraction;
 import edu.ibs.core.entity.*;
-import static org.junit.Assert.*;
 import org.junit.*;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -35,9 +37,9 @@ public class SpecifiedJpaControllerTest {
 	public void setUp() {
 		user = new User("vadim", "martos", "AB1953782");
 		controller.insert(user);
-		usd = new Currency("usd", 1.5f, Currency.Fraction.TWO);
+		usd = new Currency("usd", 1.5f, Fraction.TWO);
 		controller.insert(usd);
-		eur = new Currency("eur", 3f, Currency.Fraction.TWO);
+		eur = new Currency("eur", 3f, Fraction.TWO);
 		controller.insert(eur);
 		Money m1 = new Money(10000, usd);
 		fromBB = new BankBook(m1, user, false);
