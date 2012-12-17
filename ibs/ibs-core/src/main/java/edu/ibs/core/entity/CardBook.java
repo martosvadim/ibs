@@ -1,12 +1,9 @@
 package edu.ibs.core.entity;
 
 import edu.ibs.common.enums.CardBookType;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -30,27 +27,22 @@ public class CardBook implements Serializable, AbstractEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
-	@NotNull
-	@Column(name = "id")
+	@Column(name = "id", updatable = false, unique = true)
 	private long id;
 	@Basic(optional = false)
-	@Column(name = "type", updatable = false)
+	@Column(name = "type", updatable = false, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private CardBookType type;
 	@Basic(optional = false)
-	@NotNull
-	@Column(name = "dateExpire", updatable = false)
+	@Column(name = "dateExpire", updatable = false, nullable = false)
 	private long dateExpire;
 	@Basic(optional = false)
-	@NotNull
-	@Column(name = "freezed")
+	@Column(name = "freezed", nullable = false)
 	private boolean freezed;
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "pin", updatable = false)
+	@Column(name = "pin", updatable = false, nullable = false)
 	private String pin;
-	@JoinColumn(name = "bankBookID", referencedColumnName = "id", updatable = false)
+	@JoinColumn(name = "bankBookID", referencedColumnName = "id", updatable = false, nullable = false)
 	@ManyToOne(optional = false)
 	private BankBook bankBook;
 	@JoinColumn(name = "creditID", referencedColumnName = "id", updatable = false)

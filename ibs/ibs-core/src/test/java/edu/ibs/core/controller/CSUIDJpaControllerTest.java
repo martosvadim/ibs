@@ -40,11 +40,11 @@ public class CSUIDJpaControllerTest {
 	@After
 	public void tearDown() {
 		try {
-			data.delete(User.class, u1.getId());
+			data.delete(Account.class, u1.getId());
 		} catch (Throwable ignore) {
 		}
 		try {
-			data.delete(User.class, u2.getId());
+			data.delete(Account.class, u2.getId());
 		} catch (Throwable ignore) {
 		}
 	}
@@ -55,9 +55,9 @@ public class CSUIDJpaControllerTest {
 	@Test(expected = PersistenceException.class)
 	public void testInsert() {
 		data.insert(u1);
-		u2 = data.select(Account.class, u1.getId());
-		assertEquals(u1, u2);
-		data.insert(u2);
+		Account u3 = data.select(Account.class, u1.getId());
+		assertEquals(u1, u3);
+		data.insert(u3);
 	}
 
 	/**
@@ -76,7 +76,9 @@ public class CSUIDJpaControllerTest {
 		data.batchUpdate(users);
 		u1 = data.select(Account.class, u1.getId());
 		u2 = data.select(Account.class, u2.getId());
+		assertNotNull(u1);
 		assertEquals(q1, u1.getSecurityQuestion());
+		assertNotNull(u2);
 		assertEquals(q2, u2.getSecurityQuestion());
 	}
 
@@ -99,7 +101,7 @@ public class CSUIDJpaControllerTest {
 	@Test
 	public void testDelete() throws Exception {
 		data.insert(u1);
-		data.delete(User.class, u1.getId());
+		data.delete(Account.class, u1.getId());
 		assertNotNull(u1);
 		u1 = data.select(Account.class, u1.getId());
 		assertNull(u1);
@@ -111,9 +113,9 @@ public class CSUIDJpaControllerTest {
 	@Test
 	public void testExist() {
 		data.insert(u1);
-		boolean exist = data.exist(User.class, u1.getId());
+		boolean exist = data.exist(Account.class, u1.getId());
 		assertTrue(exist);
-		exist = data.exist(User.class, -2L);
+		exist = data.exist(Account.class, -2L);
 		assertFalse(exist);
 	}
 
@@ -124,7 +126,7 @@ public class CSUIDJpaControllerTest {
 	public void testSelectAll_Class() {
 		data.insert(u1);
 		data.insert(u2);
-		List<User> users = data.selectAll(User.class);
+		List<Account> users = data.selectAll(Account.class);
 		assertNotNull(users);
 		assertEquals(2, users.size());
 		assertArrayEquals(users.toArray(), new Object[]{u1, u2});
@@ -137,13 +139,13 @@ public class CSUIDJpaControllerTest {
 	public void testSelectAll_3args() {
 		data.insert(u1);
 		data.insert(u2);
-		List<User> users = data.selectAll(User.class, 1, 0);
+		List<Account> users = data.selectAll(Account.class, 1, 0);
 		assertNotNull(users);
 		assertArrayEquals(users.toArray(), new Object[]{u1});
-		users = data.selectAll(User.class, 1, 1);
+		users = data.selectAll(Account.class, 1, 1);
 		assertNotNull(users);
 		assertArrayEquals(users.toArray(), new Object[]{u2});
-		users = data.selectAll(User.class, 1, 2);
+		users = data.selectAll(Account.class, 1, 2);
 		assertNotNull(users);
 		assertArrayEquals(users.toArray(), new Object[]{});
 	}
@@ -163,12 +165,12 @@ public class CSUIDJpaControllerTest {
 	 */
 	@Test
 	public void testCount() throws PersistenceException {
-		assertEquals(0, data.count(User.class));
+		assertEquals(0, data.count(Account.class));
 		data.insert(u1);
-		assertEquals(1, data.count(User.class));
+		assertEquals(1, data.count(Account.class));
 		data.insert(u2);
-		assertEquals(2, data.count(User.class));
-		data.delete(User.class, u1.getId());
-		assertEquals(1, data.count(User.class));
+		assertEquals(2, data.count(Account.class));
+		data.delete(Account.class, u1.getId());
+		assertEquals(1, data.count(Account.class));
 	}
 }

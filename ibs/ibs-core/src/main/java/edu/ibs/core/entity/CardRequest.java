@@ -3,8 +3,6 @@ package edu.ibs.core.entity;
 import edu.ibs.common.enums.CardBookType;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
@@ -31,30 +29,26 @@ public class CardRequest implements Serializable, AbstractEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
-	@NotNull
-	@Column(name = "id")
+	@Column(name = "id", nullable = false, updatable = false, unique = true)
 	private long id;
-	@JoinColumn(name = "userID", referencedColumnName = "id", updatable = false)
-	@OneToOne(optional = false)
+	@JoinColumn(name = "userID", referencedColumnName = "id", updatable = false, nullable = false)
+	@ManyToOne(optional = false)
 	private User user;
-	@JoinColumn(name = "bankBookID", referencedColumnName = "id", updatable = false)
+	@JoinColumn(name = "bankBookID", referencedColumnName = "id", updatable = false, nullable = false)
 	@OneToOne(optional = true)
 	private BankBook bankBook;
 	@Basic(optional = false)
-	@Column(name = "type", updatable = false)
+	@Column(name = "type", updatable = false, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private CardBookType type;
 	@Basic(optional = false)
-	@NotNull
-	@Column(name = "dateCreated")
+	@Column(name = "dateCreated", updatable = false, nullable = false)
 	private long dateCreated;
 	@Column(name = "dateWatched")
 	private long dateWatched;
 	@Basic(optional = false)
-	@NotNull
-	@Column(name = "approved")
+	@Column(name = "approved", nullable = true)
 	private boolean approved;
-	@Size(max = 255)
 	@Column(name = "reason")
 	private String reason;
 	@JoinColumn(name = "creditPlanID", referencedColumnName = "id", updatable = false)

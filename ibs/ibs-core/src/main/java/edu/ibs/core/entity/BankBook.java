@@ -1,8 +1,6 @@
 package edu.ibs.core.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
@@ -28,10 +26,10 @@ public class BankBook implements Serializable, AbstractEntity, MoneyEntity {
 	@Column(name = "id", updatable = false, unique = true)
 	private long id;
 	@Basic(optional = false)
-	@Column(name = "balance")
+	@Column(name = "balance", nullable = false)
 	private long balance;
 	@Basic(optional = false)
-	@Column(name = "freezed")
+	@Column(name = "freezed", nullable = false)
 	private boolean freezed;
 	@JoinColumn(name = "currencyID", referencedColumnName = "id", updatable = false, nullable = false)
 	@ManyToOne(optional = false, fetch = FetchType.EAGER)
@@ -40,10 +38,8 @@ public class BankBook implements Serializable, AbstractEntity, MoneyEntity {
 	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private User owner;
 	@Basic(optional = false)
-	@NotNull
 	@Column(name = "dateExpire")
 	private long dateExpire;
-	@Size(max = 255)
 	@Column(name = "description")
 	private String description;
 	@Transient
@@ -58,6 +54,10 @@ public class BankBook implements Serializable, AbstractEntity, MoneyEntity {
 		this.freezed = freezed;
 		this.currency = money.currency();
 		this.owner = owner;
+	}
+
+	public BankBook(User owner, Money money) {
+		this(money, owner, false);
 	}
 
 	private void validateMoney() {
@@ -99,6 +99,7 @@ public class BankBook implements Serializable, AbstractEntity, MoneyEntity {
 	}
 
 	public Money getMoney() {
+		validateMoney();
 		return money;
 	}
 

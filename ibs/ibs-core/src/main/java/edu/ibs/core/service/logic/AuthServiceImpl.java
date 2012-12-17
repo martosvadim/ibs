@@ -1,17 +1,14 @@
 package edu.ibs.core.service.logic;
 
 import edu.ibs.common.dto.AccountDTO;
-import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.exceptions.IbsServiceException;
 import edu.ibs.common.interfaces.IAuthService;
 import edu.ibs.core.entity.Account;
-import edu.ibs.core.entity.User;
 import edu.ibs.core.gwt.EntityTransformer;
 import edu.ibs.core.service.AdminServicable;
 import edu.ibs.core.service.UserServicable;
 import edu.ibs.core.utils.ValidationUtils;
-
 import javax.persistence.PersistenceException;
 
 public class AuthServiceImpl implements IAuthService {

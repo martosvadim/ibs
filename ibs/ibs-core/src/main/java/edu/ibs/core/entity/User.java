@@ -1,8 +1,6 @@
 package edu.ibs.core.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -14,14 +12,14 @@ import java.math.BigInteger;
 @Entity
 @Table(name = "User")
 @XmlRootElement
-@NamedQueries({
-	@NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
-	@NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
-	@NamedQuery(name = "User.findByRole", query = "SELECT u FROM User u WHERE u.role = :role"),
-	@NamedQuery(name = "User.findByFirstName", query = "SELECT u FROM User u WHERE u.firstName = :firstName"),
-	@NamedQuery(name = "User.findByLastName", query = "SELECT u FROM User u WHERE u.lastName = :lastName"),
-	@NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
-	@NamedQuery(name = "User.findByDescription", query = "SELECT u FROM User u WHERE u.description = :description")})
+//@NamedQueries({
+//	@NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
+//	@NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
+//	@NamedQuery(name = "User.findByRole", query = "SELECT u FROM User u WHERE u.role = :role"),
+//	@NamedQuery(name = "User.findByFirstName", query = "SELECT u FROM User u WHERE u.firstName = :firstName"),
+//	@NamedQuery(name = "User.findByLastName", query = "SELECT u FROM User u WHERE u.lastName = :lastName"),
+//	@NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
+//	@NamedQuery(name = "User.findByDescription", query = "SELECT u FROM User u WHERE u.description = :description")})
 public class User implements Serializable, AbstractEntity {
 
 	private static final long serialVersionUID = 432949376663998234L;
@@ -31,28 +29,20 @@ public class User implements Serializable, AbstractEntity {
 	@Column(name = "id", unique = true, updatable = false)
 	private long id;
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 255)
 	@Column(name = "firstName")
 	private String firstName;
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 255)
 	@Column(name = "lastName")
 	private String lastName;
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 255)
 	@Column(name = "passportNumber")
 	private String passportNumber;
 	@Lob
 	@Column(name = "passportScan")
 	private byte[] passportScan;
 	@Basic(optional = false)
-	@NotNull
 	@Column(name = "freezed")
 	private boolean freezed;
-	@Size(max = 255)
 	@Column(name = "address")
 	private String address;
 	@Column(name = "zipCode")

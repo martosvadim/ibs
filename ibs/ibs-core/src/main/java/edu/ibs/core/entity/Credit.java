@@ -1,7 +1,6 @@
 package edu.ibs.core.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
@@ -25,18 +24,15 @@ public class Credit implements Serializable, AbstractEntity, MoneyEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
-	@NotNull
 	@Column(name = "id")
 	private long id;
 	@Basic(optional = false)
-	@NotNull
 	@Column(name = "amount")
 	private long amount;
 	@Basic(optional = false)
-	@NotNull
 	@Column(name = "nextPayDate")
 	private long nextPayDate;
-	@JoinColumn(name = "creditPlanID", referencedColumnName = "id")
+	@JoinColumn(name = "creditPlanID", referencedColumnName = "id", nullable = false, updatable = false)
 	@ManyToOne(optional = false)
 	private CreditPlan creditPlan;
 	@Transient

@@ -4,12 +4,12 @@ import edu.ibs.common.dto.TransactionType;
 import edu.ibs.core.controller.exception.FreezedException;
 import edu.ibs.core.controller.exception.NotEnoughMoneyException;
 import edu.ibs.core.entity.*;
-
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-import javax.persistence.criteria.*;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import javax.persistence.PersistenceException;
+import javax.persistence.criteria.*;
 
 /**
  *
@@ -50,18 +50,22 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			Transaction tr = null;
 			em = createEntityManager();
 			em.getTransaction().begin();
-			em.refresh(from);
-			em.refresh(to);
+			from = em.find(from.getClass(), from.getId());
+			to = em.find(to.getClass(), to.getId());
 			if (from.isFreezed()) {
+				em.getTransaction().rollback();
 				throw new FreezedException(String.format("CardBook %s is freezed", from));
 			} else if (to.isFreezed()) {
+				em.getTransaction().rollback();
 				throw new FreezedException(String.format("CardBook %s is freezed", to));
 			} else {
 				MoneyEntity fromEntity = forTypeOf(from, em);
 				MoneyEntity toEntity = forTypeOf(to, em);
 				if (fromEntity == null) {
+					em.getTransaction().rollback();
 					throw new IllegalArgumentException(String.format("Bad card book %s: has no payment entity", from));
 				} else if (toEntity == null) {
+					em.getTransaction().rollback();
 					throw new IllegalArgumentException(String.format("Bad card book %s: has no payment entity", to));
 				} else {
 					if (fromEntity.ge(money)) {
@@ -70,12 +74,43 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 						tr = new Transaction(money, type, from, to);
 						em.persist(tr);
 					} else {
+						em.getTransaction().rollback();
 						throw new NotEnoughMoneyException(String.format("Not enough money at card book %s, should has at least %s", from, money));
 					}
 				}
 			}
 			em.getTransaction().commit();
 			return tr;
+		} catch (PersistenceException e) {
+			if (em != null) {
+				em.getTransaction().rollback();
+			}
+			throw e;
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
+	public Transaction rollback(Transaction tr) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			em.getTransaction().begin();
+			tr = em.find(Transaction.class, tr.getId(), LockModeType.PESSIMISTIC_WRITE);
+			if (tr == null) {
+				em.getTransaction().rollback();
+				throw new IllegalArgumentException(String.format("Transaction with id %s doesn't exist", tr.getId()));
+			}
+			Transaction rollback = pay(tr.getTo(), tr.getFrom(), tr.getMoney(), TransactionType.PAYMENT);
+			em.getTransaction().commit();
+			return rollback;
+		} catch (PersistenceException e) {
+			if (em != null) {
+				em.getTransaction().rollback();
+			}
+			throw e;
 		} finally {
 			if (em != null) {
 				em.close();
@@ -94,25 +129,6 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			Expression<String> passwdExpr = acc.get("password");
 			criteria.select(acc).where(cb.and(cb.equal(emailExpr, email), cb.equal(passwdExpr, password)));
 			return em.createQuery(criteria).getSingleResult();
-		} finally {
-			if (em != null) {
-				em.close();
-			}
-		}
-	}
-
-	public Transaction rollback(Transaction tr) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
-		EntityManager em = null;
-		try {
-			em = createEntityManager();
-			em.getTransaction().begin();
-			tr = em.find(Transaction.class, tr.getId(), LockModeType.PESSIMISTIC_WRITE);
-			if (tr == null) {
-				throw new IllegalArgumentException(String.format("Transaction with id %s doesn't exist", tr.getId()));
-			}
-			Transaction rollback = pay(tr.getTo(), tr.getFrom(), tr.getMoney(), TransactionType.PAYMENT);
-			em.getTransaction().commit();
-			return rollback;
 		} finally {
 			if (em != null) {
 				em.close();
@@ -154,27 +170,46 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		}
 	}
 
-	public List<Transaction> history(User owner, TransactionType type) {
+	private List<Transaction> history(User owner, TransactionType type, boolean from, boolean to, Date start, Date end) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
 			CriteriaBuilder builder = em.getCriteriaBuilder();
 			CriteriaQuery<Transaction> criteria = builder.createQuery(Transaction.class);
 			Root<Transaction> transaction = criteria.from(Transaction.class);
-			Path<CardBook> from = transaction.get("from");
-			Path<CardBook> to = transaction.get("to");
-			criteria.multiselect(transaction, to, from).where(
-					builder.and(
+			Path<CardBook> fromCB = transaction.get("from");
+			Path<CardBook> toCB = transaction.get("to");
+			Path<Date> date = transaction.get("date");
+			Predicate fake = builder.equal(builder.literal(Boolean.TRUE), Boolean.TRUE);
+			//god mode -> on
+			Predicate where = builder.and(
 					builder.equal(transaction.get("type"), type),
 					builder.or(
-					builder.equal(to.get("owner"), owner),
-					builder.equal(from.get("owner"), owner))));
+					to ? builder.equal(toCB.get("owner"), owner) : fake,
+					from ? builder.equal(fromCB.get("owner"), owner) : fake),
+					start != null && end != null ? builder.between(date, start, end)
+					: start == null && end != null ? builder.lessThanOrEqualTo(date, end)
+					: start != null && end == null ? builder.greaterThanOrEqualTo(date, start) : fake);
+			//god mode -> off
+			criteria.multiselect(transaction, toCB, fromCB).where(where);
 			return em.createQuery(criteria).getResultList();
 		} finally {
 			if (em != null) {
 				em.close();
 			}
 		}
+	}
+
+	public List<Transaction> historyOutcome(User owner, TransactionType type, Date from, Date to) {
+		return history(owner, type, true, false, from, to);
+	}
+
+	public List<Transaction> historyIncome(User owner, TransactionType type, Date from, Date to) {
+		return history(owner, type, false, true, from, to);
+	}
+
+	public List<Transaction> historyAll(User owner, TransactionType type, Date from, Date to) {
+		return history(owner, type, true, true, from, to);
 	}
 
 	public List<BankBook> bankBooks(User owner) {

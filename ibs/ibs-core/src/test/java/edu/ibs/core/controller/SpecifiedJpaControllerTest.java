@@ -2,10 +2,10 @@ package edu.ibs.core.controller;
 
 import edu.ibs.common.dto.TransactionType;
 import edu.ibs.common.enums.Fraction;
+import edu.ibs.core.controller.exception.NotEnoughMoneyException;
 import edu.ibs.core.entity.*;
-import org.junit.*;
-
 import static org.junit.Assert.*;
+import org.junit.*;
 
 /**
  *
@@ -85,17 +85,19 @@ public class SpecifiedJpaControllerTest {
 		}
 	}
 
-	@Test
+	@Test(expected = NotEnoughMoneyException.class)
 	public void payTest() throws Exception {
 		Money money = new Money(5000, to.getBankBook().getCurrency());
 		Transaction tr = controller.pay(from, to, money, TransactionType.PAYMENT);
 		assertNotNull(tr);
 		long tid = tr.getId();
-		assertEquals(controller.select(BankBook.class, from.getId()).getMoney().integer(), 0);
-		assertEquals(controller.select(BankBook.class, to.getId()).getMoney().integer(), 150);
-		tr = controller.pay(from, to, money, TransactionType.PAYMENT);
-		assertNull(tr);
+		assertNotNull(from.getBankBook());
+		assertNotNull(to.getBankBook());
+		assertEquals(controller.select(BankBook.class, from.getBankBook().getId()).getMoney().integer(), 0);
+		assertEquals(controller.select(BankBook.class, to.getBankBook().getId()).getMoney().integer(), 150);
 		controller.delete(Transaction.class, tid);
+		tr = controller.pay(from, to, money, TransactionType.PAYMENT);
+//		assertNull(tr);
 	}
 
 	@Test

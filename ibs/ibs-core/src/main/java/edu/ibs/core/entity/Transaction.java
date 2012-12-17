@@ -34,6 +34,9 @@ public class Transaction implements Serializable, AbstractEntity {
 	@Column(name = "type", updatable = false)
 	@Enumerated(EnumType.STRING)
 	private TransactionType type;
+	@Basic(optional = false)
+	@Column(name = "date", updatable = false)
+	private long date;
 	@JoinColumn(name = "currencyID", referencedColumnName = "id", updatable = false)
 	@ManyToOne(optional = false)
 	private Currency currency;
@@ -56,6 +59,7 @@ public class Transaction implements Serializable, AbstractEntity {
 		this.to = to;
 		this.from = from;
 		this.money = money;
+		this.date = System.currentTimeMillis();
 	}
 
 	private void validateMoney() {
@@ -86,6 +90,10 @@ public class Transaction implements Serializable, AbstractEntity {
 		return type;
 	}
 
+	public long getDate() {
+		return date;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -112,5 +120,4 @@ public class Transaction implements Serializable, AbstractEntity {
 	public String toString() {
 		return "Transaction{" + "id=" + id + ", amount=" + amount + ", type=" + type + ", currency=" + currency + ", to=" + to + ", from=" + from + ", money=" + money + '}';
 	}
-
 }

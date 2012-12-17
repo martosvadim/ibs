@@ -3,8 +3,6 @@ package edu.ibs.core.entity;
 import edu.ibs.common.enums.AccountRole;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
@@ -32,35 +30,27 @@ public class Account implements Serializable, AbstractEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
-	@NotNull
-	@Column(name = "id")
+	@Column(name = "id", updatable = false, nullable=false, unique=true)
 	private long id;
 	// @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "email")
+	@Column(name = "email", nullable=false, updatable=false, unique=true)
 	private String email;
 	@Basic(optional = false)
-	@Column(name = "role")
+	@Column(name = "role", nullable=false, updatable=false)
 	@Enumerated(EnumType.STRING)
 	private AccountRole role;
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "password")
+	@Column(name = "password", nullable=false, updatable=false)
 	private String password;
-	@Size(max = 255)
 	@Column(name = "securityQuestion")
 	private String securityQuestion;
-	@Size(max = 255)
 	@Column(name = "securityAnswer")
 	private String securityAnswer;
-	@Size(max = 255)
 	@Column(name = "avatar")
 	private String avatar;
 	@JoinColumn(name = "userID", referencedColumnName = "id")
-	@OneToOne(optional = false)
+	@OneToOne(optional = true)
 	private User user;
 
 	public Account() {

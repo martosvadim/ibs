@@ -65,6 +65,7 @@ insert into BankBook(id, ownerID, currencyID, balance) values(1, 1, 1, 100000000
 create table CreditPlan
 (
 	id bigint primary key auto_increment,
+	name varchar(255) not null,
 	currencyID bigint not null,
 	percent int not null default 0,
 	period enum('DAY', 'WEEK', 'MONTH', 'YEAR') not null default 'month',

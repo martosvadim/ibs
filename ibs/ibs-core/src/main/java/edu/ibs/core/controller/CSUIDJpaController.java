@@ -43,10 +43,14 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 			for (Iterator<T> it = entities.iterator(); it.hasNext(); ++i) {
 				T t = it.next();
 				em.merge(t);
-				if (i % BATCH_SIZE == 0) {
+				if (++i % BATCH_SIZE == 0) {
 					em.flush();
 					em.clear();
 				}
+			}
+			if (i % BATCH_SIZE != 0) {
+				em.flush();
+				em.clear();
 			}
 			em.getTransaction().commit();
 		} finally {
@@ -61,7 +65,7 @@ public class CSUIDJpaController extends CoreJpa implements Serializable {
 		try {
 			em = createEntityManager();
 			em.getTransaction().begin();
-			em. merge(entity);
+			em.merge(entity);
 			em.getTransaction().commit();
 		} finally {
 			if (em != null) {
