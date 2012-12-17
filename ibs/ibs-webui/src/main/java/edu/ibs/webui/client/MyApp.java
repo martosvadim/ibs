@@ -17,8 +17,8 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 import com.smartgwt.client.widgets.menu.Menu;
-import edu.ibs.core.dto.UserDTO;
-import edu.ibs.core.interfaces.IAuthServiceAsync;
+import edu.ibs.common.dto.UserDTO;
+import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.Components;
 
@@ -112,6 +112,7 @@ public class MyApp implements EntryPoint {
                 IAuthServiceAsync.Util.getInstance().login("", "", new AsyncCallback<UserDTO>() {
                     @Override
                     public void onFailure(Throwable throwable) {
+                        SC.say(throwable.getLocalizedMessage());
                     }
 
                     @Override

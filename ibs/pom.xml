@@ -8,7 +8,7 @@
     <name>ibs</name>
     <modules>
         <module>ibs-core</module>
-        <module>ibs-api</module>
+        <module>ibs-common</module>
         <module>ibs-webui</module>
     </modules>
     <dependencies>

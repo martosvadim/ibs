@@ -1,4 +1,4 @@
-package edu.ibs.api;
+package edu.ibs.common;
 
 /**
  * Hello world!

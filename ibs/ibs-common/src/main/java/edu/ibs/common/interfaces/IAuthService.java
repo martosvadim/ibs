@@ -1,8 +1,8 @@
-package edu.ibs.core.interfaces;
+package edu.ibs.common.interfaces;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import edu.ibs.core.dto.UserDTO;
+import edu.ibs.common.dto.UserDTO;
 
 /**
  * Created with IntelliJ IDEA.

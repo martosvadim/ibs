@@ -1,18 +1,19 @@
 package edu.ibs.core.service.logic;
 
-import edu.ibs.core.dto.UserDTO;
+import edu.ibs.common.dto.UserDTO;
 import edu.ibs.core.entity.Account;
 import edu.ibs.core.entity.User;
-import edu.ibs.core.interfaces.IAuthService;
+import edu.ibs.common.interfaces.IAuthService;
 import edu.ibs.core.service.AdminServicable;
 import edu.ibs.core.service.UserServicable;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.persistence.PersistenceException;
 
 public class AuthServiceImpl implements IAuthService {
 
-	private static final UserServicable userLogic = (UserServicable) ApplicationContextProvider.provide().getBean("userLogic");
-	private static final AdminServicable adminLogic = (AdminServicable) ApplicationContextProvider.provide().getBean("adminLogic");
+	private UserServicable userLogic;
+	private AdminServicable adminLogic;
 
 	@Override
 	public UserDTO login(String name, String pass) {
@@ -22,13 +23,11 @@ public class AuthServiceImpl implements IAuthService {
 	@Override
 	public UserDTO register(String name, String password, String passwordConfirm, String captchaText) {
 		//todo validation
-//		return transform(register(name, password));
-		return null;
+		return transform(register(name, password));
 	}
 
-	private User register(String email, String passwd) throws PersistenceException {
-//		return adminLogic.create(User.Role.USER, email, passwd);
-		return null;
+	private Account register(String email, String passwd) throws PersistenceException {
+		return adminLogic.create(Account.Role.USER, email, passwd);
 	}
 
 	//todo сделать отдельный класс для конвертера?
@@ -39,12 +38,23 @@ public class AuthServiceImpl implements IAuthService {
 	 * @return объект для передачи данных
 	 */
 	private UserDTO transform(final Account user) {
-//        UserDTO dto = new UserDTO();
-//        dto.setFirstName(user.getFirstName());
-//        dto.setLastName(user.getLastName());
-//        dto.setEmail(user.getEmail());
-//        dto.setDescription(user.getDescription());
-//        return dto;
-		return null;
+        UserDTO dto = new UserDTO();
+        return dto;
 	}
+
+    public UserServicable getUserLogic() {
+        return userLogic;
+    }
+
+    public void setUserLogic(UserServicable userLogic) {
+        this.userLogic = userLogic;
+    }
+
+    public AdminServicable getAdminLogic() {
+        return adminLogic;
+    }
+
+    public void setAdminLogic(AdminServicable adminLogic) {
+        this.adminLogic = adminLogic;
+    }
 }

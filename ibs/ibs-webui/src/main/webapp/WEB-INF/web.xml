@@ -5,28 +5,40 @@
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
 
-    <!-- Servlets -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:beans.xml</param-value>
+    </context-param>
+
     <servlet>
-        <servlet-name>authServlet</servlet-name>
-        <servlet-class>edu.ibs.webui.server.AuthorizationServiceImpl</servlet-class>
+        <servlet-name>rpc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:beans.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>authServlet</servlet-name>
-        <url-pattern>/myapp/auth</url-pattern>
+        <servlet-name>rpc</servlet-name>
+        <url-pattern>*.rpc</url-pattern>
     </servlet-mapping>
 
     <servlet>
         <servlet-name>SimpleCaptcha</servlet-name>
         <servlet-class>edu.ibs.webui.server.ExtendedCaptchaServlet</servlet-class>
         <init-param>
-           <param-name>width</param-name>
-           <param-value>120</param-value>
-       </init-param>
-       <init-param>
-           <param-name>height</param-name>
-           <param-value>35</param-value>
-       </init-param>
+            <param-name>width</param-name>
+            <param-value>120</param-value>
+        </init-param>
+        <init-param>
+            <param-name>height</param-name>
+            <param-value>35</param-value>
+        </init-param>
     </servlet>
 
     <servlet-mapping>

@@ -1,4 +1,4 @@
-package edu.ibs.core.dto;
+package edu.ibs.common.dto;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
