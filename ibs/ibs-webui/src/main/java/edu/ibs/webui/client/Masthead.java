@@ -5,15 +5,15 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.layout.HLayout;
+import edu.ibs.webui.client.utils.JS;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Максим
  * Date: 29.10.12
  * Time: 23:18
- * To change this template use File | Settings | File Templates.
  */
 public class Masthead extends HLayout {
+
     private static final int MASTHEAD_HEIGHT = 58;
 
     public Masthead() {
@@ -36,7 +36,7 @@ public class Masthead extends HLayout {
 
         Label signedInUser = new Label();
         signedInUser.setStyleName("crm-MastHead-SignedInUser");
-        signedInUser.setContents("<b>Unknown</b><br />upTick");
+        signedInUser.setContents(JS.getCookie("ibs.login"));
 
         HLayout eastLayout = new HLayout();
         eastLayout.setAlign(Alignment.RIGHT);

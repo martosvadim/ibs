@@ -18,19 +18,20 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 import com.smartgwt.client.widgets.menu.Menu;
 import edu.ibs.common.dto.AccountDTO;
-import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.Components;
+import edu.ibs.webui.client.utils.JS;
 
 public class MyApp implements EntryPoint {
 
     private static final int HEADER_HEIGHT = 85;
     private static final int DEFAULT_MENU_WIDTH = 70;
+	private static final String LOGIN_COOKIE_NAME = "ibs.login";
 
-    private VLayout mainLayout;
-
-    private boolean loggedIn = false;
+	private VLayout mainLayout;
+	private Window loginWindow;
+	private Window registerWindow;
 
     /**
      * Основное окно
@@ -45,151 +46,187 @@ public class MyApp implements EntryPoint {
         bg.setWidth100();
         bg.setHeight100();
 
-        if (!loggedIn) {
-            getLoginCanvas().draw();
-        } else {
-            bg.addChild(getMainLayout());
-        }
-
         bg.draw();
+		loadUser();
     }
 
-    private Window getRegisterCanvas() {
-        final Window window = Components.getWindow();
-        window.setHeight(270);
+	private void loadUser() {
+		String login = JS.getCookie(LOGIN_COOKIE_NAME);
+		if (login == null || login.length() == 0) {
+			login();
+		} else {
+			//todo call service and then enter application or forward to login form
+			IAuthServiceAsync.Util.getInstance().login(login, "", new AsyncCallback<AccountDTO>() {
+				@Override
+				public void onFailure(final Throwable throwable) {
+					login();
+				}
 
-        final GenericController login = Components.getTextItem();
-        final GenericController pass = Components.getPasswordItem();
-        final GenericController repPass = Components.getPasswordItem();
-        final GenericController capthcaInputTextItemView = Components.getTextItem();
+				@Override
+				public void onSuccess(final AccountDTO dto) {
+					if (dto == null) {
+						login();
+					} else {
+						bg.addChild(getMainLayout());
+					}
+				}
+			});
+		}
+	}
 
-        IButton regButton = new IButton("Зарегистрироваться");
-        regButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent clickEvent) {
-                String name = (String) login.unbind();
-                String password = (String) pass.unbind();
-                String passwordAgain = (String) repPass.unbind();
-                String captchaText = (String) capthcaInputTextItemView.unbind();
-                IAuthServiceAsync.Util.getInstance().register(name, password, passwordAgain, captchaText,
-                        new AsyncCallback<AccountDTO>() {
+	private void login() {
+		getLoginWindow().draw();
+	}
 
-                            @Override
-                            public void onFailure(Throwable throwable) {
-                                SC.say(throwable.getLocalizedMessage());
-                            }
+	private Window getRegisterCanvas() {
+		if (registerWindow == null) {
+			registerWindow = Components.getWindow();
+			registerWindow.setHeight(270);
 
-                            @Override
-                            public void onSuccess(AccountDTO s) {
-                                SC.say("Вы зарегестрировались, " + s.getEmail() + "!");
-                            }
-                        });
-                window.hide();
-                bg.addChild(getMainLayout());
-            }
-        });
-        regButton.setWidth(150);
+			final GenericController login = Components.getTextItem();
+			final GenericController pass = Components.getPasswordItem();
+			final GenericController repPass = Components.getPasswordItem();
+			final GenericController capthcaInputTextItemView = Components.getTextItem();
 
-        final Img captchaImage = new Img("/SimpleCaptcha.jpg");
-        captchaImage.setWidth(120);
-        captchaImage.setHeight(35);
+			IButton regButton = new IButton("Зарегистрироваться");
+			regButton.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(final ClickEvent clickEvent) {
+					String name = (String) login.unbind();
+					String password = (String) pass.unbind();
+					String passwordAgain = (String) repPass.unbind();
+					String captchaText = (String) capthcaInputTextItemView.unbind();
+					IAuthServiceAsync.Util.getInstance().register(name, password, passwordAgain, captchaText,
+							new AsyncCallback<AccountDTO>() {
 
-        VStack layout = new VStack();
-        layout.setMembersMargin(5);
-        layout.setMargin(5);
-        layout.addMember(Components.addTitle("Логин", login.getView()));
-        layout.addMember(Components.addTitle("Пароль", pass.getView()));
-        layout.addMember(Components.addTitle("Подтверждение пароля", repPass.getView()));
+								@Override
+								public void onFailure(Throwable throwable) {
+									SC.say(throwable.getLocalizedMessage());
+								}
 
-        layout.addMember(Components.addTitle("", captchaImage));
-        layout.addMember(Components.addTitle("", capthcaInputTextItemView.getView()));
-        layout.addMember(regButton);
-        layout.setShowResizeBar(false);
+								@Override
+								public void onSuccess(AccountDTO s) {
+									SC.say("Вы зарегестрировались, " + s.getEmail() + "!");
+								}
+							});
+					registerWindow.hide();
+					bg.addChild(getMainLayout());
+				}
+			});
+			regButton.setWidth(150);
 
-        window.addItem(layout);
-        window.addCloseClickHandler(new CloseClickHandler() {
-            @Override
-            public void onCloseClick(final CloseClickEvent closeClickEvent) {
-                window.hide();
-                bg.addChild(getMainLayout());
-            }
-        });
+			final Img captchaImage = new Img("/SimpleCaptcha.jpg");
+			captchaImage.setWidth(120);
+			captchaImage.setHeight(35);
 
-        return window;
+			VStack layout = new VStack();
+			layout.setMembersMargin(5);
+			layout.setMargin(5);
+			layout.addMember(Components.addTitle("Логин", login.getView()));
+			layout.addMember(Components.addTitle("Пароль", pass.getView()));
+			layout.addMember(Components.addTitle("Подтверждение пароля", repPass.getView()));
+
+			layout.addMember(Components.addTitle("", captchaImage));
+			layout.addMember(Components.addTitle("", capthcaInputTextItemView.getView()));
+			layout.addMember(regButton);
+			layout.setShowResizeBar(false);
+
+			registerWindow.addItem(layout);
+			registerWindow.addCloseClickHandler(new CloseClickHandler() {
+				@Override
+				public void onCloseClick(final CloseClickEvent closeClickEvent) {
+					registerWindow.hide();
+					bg.addChild(getMainLayout());
+				}
+			});
+
+		}
+
+        return registerWindow;
     }
 
-    private Window getLoginCanvas() {
-        final Window window = Components.getWindow();
+    private Window getLoginWindow() {
+		if (loginWindow == null) {
+			loginWindow = Components.getWindow();
+			final GenericController login = Components.getTextItem();
+			final GenericController pass = Components.getPasswordItem();
 
-        final GenericController login = Components.getTextItem();
-        final GenericController pass = Components.getPasswordItem();
+			IButton loginButton = new IButton("Войти");
+			loginButton.setWidth(80);
+			loginButton.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(final ClickEvent clickEvent) {
+					AccountDTO account = new AccountDTO();
+					final String loginText = ((String) login.unbind()).trim();
+					String passText = ((String) pass.unbind()).trim();
+					if (loginText == null || "".equals(loginText) || loginText.length() == 0) {
+						SC.warn("Логин не заполнен. Введите допустимый логин.");
+					} else if (passText == null || "".equals(passText) || passText.length() == 0) {
+						SC.warn("Пароль пуст. Введите допустимый пароль.");
+					} else {
+						IAuthServiceAsync.Util.getInstance().login(loginText, passText,
+								new AsyncCallback<AccountDTO>() {
+									@Override
+									public void onFailure(final Throwable throwable) {
+										SC.say(throwable.getLocalizedMessage());
+									}
 
-        IButton loginButton = new IButton("Войти");
-        loginButton.setWidth(80);
-        loginButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent clickEvent) {
-				AccountDTO account = new AccountDTO();
-                String loginText = (String) login.unbind();
-                String passText = (String) pass.unbind();
-                IAuthServiceAsync.Util.getInstance().login(loginText, passText,
-                        new AsyncCallback<AccountDTO>() {
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        SC.say(throwable.getLocalizedMessage());
-                    }
+									@Override
+									public void onSuccess(final AccountDTO s) {
+										if (s != null) {
+											JS.setCookie(LOGIN_COOKIE_NAME, loginText);
+											SC.say("Вы залогинились, ", s.getEmail() + "!");
+											loginWindow.hide();
+											bg.addChild(getMainLayout());
+											//todo может залогиниться админ
+										} else {
+											SC.warn("Доступ запрещён. Попробуйте ещё раз.");
+										}
+									}
+								});
+					}
+				}
+			});
 
-                    @Override
-                    public void onSuccess(AccountDTO s) {
-                        SC.say("Вы залогинились, ", s.getEmail() + "!");
-                    }
-                });
-                window.hide();
-                bg.addChild(getMainLayout());
-//                loggedIn = true;
-//                User user = ServiceProxy.login("", "");
-//                AbstractEntity user;
-            }
-        });
+			LinkItem linkItem = new LinkItem("link");
+			linkItem.setShowTitle(false);
+			linkItem.setLinkTitle("Регистрация");
+			linkItem.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+				@Override
+				public void onClick(final com.smartgwt.client.widgets.form.fields.events.ClickEvent clickEvent) {
+					loginWindow.hide();
+					getRegisterCanvas().draw();
+				}
+			});
+			DynamicForm regForm = new DynamicForm();
+			regForm.setItems(linkItem);
+			regForm.setColWidths("0,*");
 
-        LinkItem linkItem = new LinkItem("link");
-        linkItem.setShowTitle(false);
-        linkItem.setLinkTitle("Регистрация");
-        linkItem.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-            @Override
-            public void onClick(final com.smartgwt.client.widgets.form.fields.events.ClickEvent clickEvent) {
-                window.hide();
-                getRegisterCanvas().draw();
-            }
-        });
-        DynamicForm regForm = new DynamicForm();
-        regForm.setItems(linkItem);
-        regForm.setColWidths("0,*");
+			VStack layout = new VStack();
+			layout.setMembersMargin(5);
+			layout.setMargin(5);
+			layout.addMember(Components.addTitle("Логин", login.getView()));
+			layout.addMember(Components.addTitle("Пароль", pass.getView()));
 
-        VStack layout = new VStack();
-        layout.setMembersMargin(5);
-        layout.setMargin(5);
-        layout.addMember(Components.addTitle("Логин", login.getView()));
-        layout.addMember(Components.addTitle("Пароль", pass.getView()));
+			HLayout buttons = new HLayout();
+			buttons.setMembersMargin(5);
+			buttons.addMember(loginButton);
+			buttons.addMember(regForm);
 
-        HLayout buttons = new HLayout();
-        buttons.setMembersMargin(5);
-        buttons.addMember(loginButton);
-        buttons.addMember(regForm);
+			layout.addMember(buttons);
+			layout.setShowResizeBar(false);
 
-        layout.addMember(buttons);
-        layout.setShowResizeBar(false);
+			loginWindow.addItem(layout);
+			loginWindow.addCloseClickHandler(new CloseClickHandler() {
+				@Override
+				public void onCloseClick(CloseClickEvent closeClickEvent) {
+					//
+				}
+			});
 
-        window.addItem(layout);
-        window.addCloseClickHandler(new CloseClickHandler() {
-            @Override
-            public void onCloseClick(CloseClickEvent closeClickEvent) {
-                window.hide();
-                bg.addChild(getMainLayout());
-            }
-        });
+		}
 
-        return window;
+		return loginWindow;
     }
 
     private Canvas getMainLayout() {

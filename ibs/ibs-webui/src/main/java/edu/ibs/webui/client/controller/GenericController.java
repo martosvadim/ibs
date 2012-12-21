@@ -6,11 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: EgoshinME
  * Date: 03.12.12
  * Time: 12:08
- * To change this template use File | Settings | File Templates.
  */
 public class GenericController {
     /**

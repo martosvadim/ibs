@@ -8,20 +8,38 @@ import edu.ibs.core.entity.Account;
 import edu.ibs.core.gwt.EntityTransformer;
 import edu.ibs.core.service.AdminServicable;
 import edu.ibs.core.service.UserServicable;
+import edu.ibs.core.utils.ServerConstants;
+import edu.ibs.core.utils.ServletUtils;
 import edu.ibs.core.utils.ValidationUtils;
+
 import javax.persistence.PersistenceException;
 
 public class AuthServiceImpl implements IAuthService {
+
+	private static final String EMPTY_CREDENTIALS_MSG = "Логин/Пароль не могут быть пустыми.";
+	private static final String INCORRECT_CAPTCHA_TXT = "Вы ввели неверные символы с картинки.";
 
 	private UserServicable userLogic;
 	private AdminServicable adminLogic;
 
 	@Override
 	public AccountDTO login(String name, String pass) throws IbsServiceException {
-		if (!ValidationUtils.isEmpty(name) && !ValidationUtils.isEmpty(pass)) {
-			return EntityTransformer.transformAccount(userLogic.login(name, pass));
+
+		AccountDTO dto = new AccountDTO();
+		dto.setEmail(name);
+
+		// Если есть куки
+		if (name.equals(ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_LOGIN))) {
+			//todo заполнить инфой из базы
+			return dto;
+		} else  if (!ValidationUtils.isEmpty(name) && !ValidationUtils.isEmpty(pass)) {
+//			return EntityTransformer.transformAccount(userLogic.login(name, pass));
+			//todo временно логиним любого введённого пользователя
+			dto.setPassword(pass);
+			ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, name);
+			return dto;
 		} else {
-			throw new IbsServiceException("Credentials can't be empty.");
+			throw new IbsServiceException(EMPTY_CREDENTIALS_MSG);
 		}
 	}
 
@@ -31,14 +49,14 @@ public class AuthServiceImpl implements IAuthService {
 
 		if (ValidationUtils.isEmpty(name) || ValidationUtils.isEmpty(password)
 				|| ValidationUtils.isEmpty(passwordConfirm)) {
-			throw new IbsServiceException("Credentials can't be empty.");
+			throw new IbsServiceException(EMPTY_CREDENTIALS_MSG);
 		} else if (ValidationUtils.isEmpty(captchaText)) {
 			//todo check captcha
 //			HttpServletRequest request = getThreadLocalRequest();
 //			HttpSession session = request.getSession();
 //			Captcha captcha = (Captcha) session.getAttribute(Captcha.NAME);
 //			return String.valueOf(captcha.isCorrect(captchaText));
-			throw new IbsServiceException("Incorrect captcha's text.");
+			throw new IbsServiceException(INCORRECT_CAPTCHA_TXT);
 		}
 		return EntityTransformer.transformAccount(register(name, password));
 	}

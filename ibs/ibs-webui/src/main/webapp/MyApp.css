@@ -199,10 +199,10 @@ h1 {
 }
 
 .crm-MastHead-SignedInUser {
-  color: #FFFFFF;
+  color: #ffe597;
   font-family: Tahoma, Verdana, sans-serif;
-  font-size: 10px;
-  font-weight: normal;
+  font-size: 14px;
+  font-weight: bold;
   overflow: hidden;
   padding-right: 4px;
   text-align: right;
