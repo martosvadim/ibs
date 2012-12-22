@@ -11,6 +11,7 @@ import edu.ibs.core.service.UserServicable;
 import edu.ibs.core.utils.ServerConstants;
 import edu.ibs.core.utils.ServletUtils;
 import edu.ibs.core.utils.ValidationUtils;
+import nl.captcha.Captcha;
 
 import javax.persistence.PersistenceException;
 
@@ -18,6 +19,7 @@ public class AuthServiceImpl implements IAuthService {
 
 	private static final String EMPTY_CREDENTIALS_MSG = "Логин/Пароль не могут быть пустыми.";
 	private static final String INCORRECT_CAPTCHA_TXT = "Вы ввели неверные символы с картинки.";
+	private static final String PASSWORD_NOT_EQUAL_MSG = "Пароль не соответствует введённому.";
 
 	private UserServicable userLogic;
 	private AdminServicable adminLogic;
@@ -48,17 +50,20 @@ public class AuthServiceImpl implements IAuthService {
 			throws IbsServiceException {
 
 		if (ValidationUtils.isEmpty(name) || ValidationUtils.isEmpty(password)
-				|| ValidationUtils.isEmpty(passwordConfirm)) {
+				|| ValidationUtils.isEmpty(passwordConfirm) || ValidationUtils.isEmpty(captchaText)) {
 			throw new IbsServiceException(EMPTY_CREDENTIALS_MSG);
-		} else if (ValidationUtils.isEmpty(captchaText)) {
-			//todo check captcha
-//			HttpServletRequest request = getThreadLocalRequest();
-//			HttpSession session = request.getSession();
-//			Captcha captcha = (Captcha) session.getAttribute(Captcha.NAME);
-//			return String.valueOf(captcha.isCorrect(captchaText));
-			throw new IbsServiceException(INCORRECT_CAPTCHA_TXT);
+		} else if (!password.equals(passwordConfirm)) {
+			throw new IbsServiceException(PASSWORD_NOT_EQUAL_MSG);
+		} else {
+			// Верификация текста капчи
+
+			Captcha captcha = (Captcha) ServletUtils.getRequest().getSession().getAttribute(Captcha.NAME);
+			if (captcha != null && captcha.isCorrect(captchaText)) {
+				return EntityTransformer.transformAccount(register(name, password));
+			} else {
+				throw new IbsServiceException(INCORRECT_CAPTCHA_TXT);
+			}
 		}
-		return EntityTransformer.transformAccount(register(name, password));
 	}
 
 	private Account register(String email, String passwd) throws PersistenceException {

@@ -1,4 +1,4 @@
-package edu.ibs.webui.server;
+package edu.ibs.core.gwt.servlet;
 
 import nl.captcha.Captcha;
 import nl.captcha.backgrounds.GradiatedBackgroundProducer;

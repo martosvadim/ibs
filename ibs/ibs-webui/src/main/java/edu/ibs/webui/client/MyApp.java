@@ -55,7 +55,6 @@ public class MyApp implements EntryPoint {
 		if (login == null || login.length() == 0) {
 			login();
 		} else {
-			//todo call service and then enter application or forward to login form
 			IAuthServiceAsync.Util.getInstance().login(login, "", new AsyncCallback<AccountDTO>() {
 				@Override
 				public void onFailure(final Throwable throwable) {
@@ -96,21 +95,31 @@ public class MyApp implements EntryPoint {
 					String password = (String) pass.unbind();
 					String passwordAgain = (String) repPass.unbind();
 					String captchaText = (String) capthcaInputTextItemView.unbind();
-					IAuthServiceAsync.Util.getInstance().register(name, password, passwordAgain, captchaText,
-							new AsyncCallback<AccountDTO>() {
+					if (name == null || "".equals(name) || name.length() == 0) {
+						SC.warn("Почтовый адрес не заполнен.");
+					} else if (password == null || "".equals(password) || password.length() == 0) {
+						SC.warn("Пароль не заполнен.");
+					} else if (passwordAgain == null || "".equals(passwordAgain) || passwordAgain.length() == 0) {
+						SC.warn("Поле подтверждения пароля не заполнено.");
+					} else if (captchaText == null || "".equals(captchaText) || captchaText.length() == 0) {
+						SC.warn("Введите текст с картинки.");
+					} else {
+						IAuthServiceAsync.Util.getInstance().register(name, password, passwordAgain, captchaText,
+								new AsyncCallback<AccountDTO>() {
 
-								@Override
-								public void onFailure(Throwable throwable) {
-									SC.say(throwable.getLocalizedMessage());
-								}
+									@Override
+									public void onFailure(Throwable throwable) {
+										SC.say(throwable.getLocalizedMessage());
+									}
 
-								@Override
-								public void onSuccess(AccountDTO s) {
-									SC.say("Вы зарегестрировались, " + s.getEmail() + "!");
-								}
-							});
-					registerWindow.hide();
-					bg.addChild(getMainLayout());
+									@Override
+									public void onSuccess(AccountDTO s) {
+										SC.say("Вы зарегестрировались, " + s.getEmail() + "!");
+										registerWindow.hide();
+										bg.addChild(getMainLayout());
+									}
+								});
+					}
 				}
 			});
 			regButton.setWidth(150);
@@ -122,7 +131,7 @@ public class MyApp implements EntryPoint {
 			VStack layout = new VStack();
 			layout.setMembersMargin(5);
 			layout.setMargin(5);
-			layout.addMember(Components.addTitle("Логин", login.getView()));
+			layout.addMember(Components.addTitle("E-mail", login.getView()));
 			layout.addMember(Components.addTitle("Пароль", pass.getView()));
 			layout.addMember(Components.addTitle("Подтверждение пароля", repPass.getView()));
 
@@ -136,7 +145,7 @@ public class MyApp implements EntryPoint {
 				@Override
 				public void onCloseClick(final CloseClickEvent closeClickEvent) {
 					registerWindow.hide();
-					bg.addChild(getMainLayout());
+					getLoginWindow().show();
 				}
 			});
 
@@ -205,7 +214,7 @@ public class MyApp implements EntryPoint {
 			VStack layout = new VStack();
 			layout.setMembersMargin(5);
 			layout.setMargin(5);
-			layout.addMember(Components.addTitle("Логин", login.getView()));
+			layout.addMember(Components.addTitle("E-mail", login.getView()));
 			layout.addMember(Components.addTitle("Пароль", pass.getView()));
 
 			HLayout buttons = new HLayout();

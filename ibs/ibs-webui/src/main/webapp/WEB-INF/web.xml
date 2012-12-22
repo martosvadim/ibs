@@ -39,7 +39,7 @@
 
     <servlet>
         <servlet-name>SimpleCaptcha</servlet-name>
-        <servlet-class>edu.ibs.webui.server.ExtendedCaptchaServlet</servlet-class>
+        <servlet-class>edu.ibs.core.gwt.servlet.ExtendedCaptchaServlet</servlet-class>
         <init-param>
             <param-name>width</param-name>
             <param-value>120</param-value>

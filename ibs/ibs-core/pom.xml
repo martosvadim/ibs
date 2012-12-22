@@ -70,18 +70,11 @@
 			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
-<!--		<dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.context</artifactId>
-			<version>${spring.version}</version>
-			<type>jar</type>
+			<version>3.1.2.RELEASE</version>
 		</dependency>
-		<dependency>
-			<groupId>edu.ibs</groupId>
-			<artifactId>ibs-common</artifactId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.web</artifactId>
@@ -122,6 +115,13 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>nl.captcha</groupId>
+            <artifactId>simplecaptcha</artifactId>
+            <version>1.2.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/simplecaptcha-1.2.1.jar</systemPath>
         </dependency>
 	</dependencies>
 </project>
