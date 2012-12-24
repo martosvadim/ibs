@@ -2,14 +2,11 @@ package edu.ibs.core.controller;
 
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.core.entity.Account;
-import edu.ibs.core.entity.User;
-import org.junit.*;
-
-import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.persistence.PersistenceException;
 import static org.junit.Assert.*;
+import org.junit.*;
 
 /**
  *
@@ -17,7 +14,7 @@ import static org.junit.Assert.*;
  */
 public class CSUIDJpaControllerTest {
 
-	private CSUIDJpaController data = new CSUIDJpaController();
+	private CSUIDJpaController data = SpecifiedJpaController.instance();
 	private Account u1, u2;
 
 	public CSUIDJpaControllerTest() {
@@ -164,7 +161,7 @@ public class CSUIDJpaControllerTest {
 	 * Test of count method, of class CSUIDJpaController.
 	 */
 	@Test
-	public void testCount() throws PersistenceException {
+	public void testCount() {
 		assertEquals(0, data.count(Account.class));
 		data.insert(u1);
 		assertEquals(1, data.count(Account.class));

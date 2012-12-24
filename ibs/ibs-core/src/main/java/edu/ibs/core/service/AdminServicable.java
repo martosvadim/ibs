@@ -1,6 +1,8 @@
 package edu.ibs.core.service;
 
 import edu.ibs.common.enums.AccountRole;
+import edu.ibs.core.controller.exception.FreezedException;
+import edu.ibs.core.controller.exception.NotEnoughMoneyException;
 import edu.ibs.core.entity.*;
 
 import java.util.Date;
@@ -23,7 +25,7 @@ public interface AdminServicable extends Servicable {
 
 	public void update(List<Currency> currencies);
 
-	public void rollback(Transaction transaction);
+	public void rollback(Transaction transaction) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException;
 
 	public List<CardRequest> getAllRequests();
 
