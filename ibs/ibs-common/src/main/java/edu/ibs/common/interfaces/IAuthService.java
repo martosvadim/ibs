@@ -14,5 +14,6 @@ import edu.ibs.common.exceptions.IbsServiceException;
 @RemoteServiceRelativePath("auth.rpc")
 public interface IAuthService extends RemoteService {
 	AccountDTO login(String name, String pass) throws IbsServiceException;
+	void logout(String login) throws IbsServiceException;
 	AccountDTO register(String name, String password, String passwordConfirm, String captchaText) throws IbsServiceException;
 }

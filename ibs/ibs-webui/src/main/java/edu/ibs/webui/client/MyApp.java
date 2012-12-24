@@ -27,7 +27,7 @@ public class MyApp implements EntryPoint {
 
     private static final int HEADER_HEIGHT = 85;
     private static final int DEFAULT_MENU_WIDTH = 70;
-	private static final String LOGIN_COOKIE_NAME = "ibs.login";
+	public static final String LOGIN_COOKIE_NAME = "ibs.login";
 
 	private VLayout mainLayout;
 	private Window loginWindow;

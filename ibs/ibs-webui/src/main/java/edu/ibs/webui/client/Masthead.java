@@ -1,10 +1,16 @@
 package edu.ibs.webui.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Img;
+import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
+import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.webui.client.utils.JS;
 
 /**
@@ -30,19 +36,51 @@ public class Masthead extends HLayout {
 
         HLayout westLayout = new HLayout();
         westLayout.setHeight(MASTHEAD_HEIGHT);
-        westLayout.setWidth("50%");
+        westLayout.setWidth100();
         westLayout.addMember(logo);
         westLayout.addMember(name);
 
+		final String login = JS.getCookie(MyApp.LOGIN_COOKIE_NAME);
+
         Label signedInUser = new Label();
         signedInUser.setStyleName("crm-MastHead-SignedInUser");
-        signedInUser.setContents(JS.getCookie("ibs.login"));
+        signedInUser.setContents(login);
+
+		ImgButton imgButton = new ImgButton();
+		imgButton.setSize(32);
+		imgButton.setShowFocused(false);
+		imgButton.setShowRollOver(false);
+		imgButton.setShowDown(false);
+		imgButton.setTooltip("Выйти");
+		imgButton.setSrc("statusbar/resultsetnext.png");
+		imgButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				IAuthServiceAsync.Util.getInstance().logout(login, new AsyncCallback<Void>() {
+					@Override
+					public void onFailure(Throwable throwable) {
+						SC.warn(throwable.getMessage());
+					}
+
+					@Override
+					public void onSuccess(Void aVoid) {
+
+					}
+				});
+				JS.goToLoginPage();
+			}
+		});
+
+		HLayout l1 = new HLayout();
+		l1.setPadding(10);
+		l1.addMember(imgButton);
 
         HLayout eastLayout = new HLayout();
         eastLayout.setAlign(Alignment.RIGHT);
         eastLayout.setHeight(MASTHEAD_HEIGHT);
-        eastLayout.setWidth("50%");
+		eastLayout.setMembersMargin(5);
         eastLayout.addMember(signedInUser);
+		eastLayout.addMember(l1);
 
         this.addMember(westLayout);
         this.addMember(eastLayout);

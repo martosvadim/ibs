@@ -3,6 +3,7 @@ package edu.ibs.webui.client.utils;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.smartgwt.client.widgets.Canvas;
+import edu.ibs.webui.client.MyApp;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -443,8 +444,7 @@ public final class JS {
      * Переход к окну авторизации
      */
     public static void goToLoginPage() {
-        JS.setGWTCookie(JS.COOKEY_LOGIN, "");
-        JS.setGWTCookie(JS.COOKEY_MODULE, "");
+        JS.setCookie(MyApp.LOGIN_COOKIE_NAME, "");
         Window.open(JS.getURL(""), "_self", "");
     }
 

@@ -12,6 +12,7 @@ import edu.ibs.core.utils.ServerConstants;
 import edu.ibs.core.utils.ServletUtils;
 import edu.ibs.core.utils.ValidationUtils;
 import nl.captcha.Captcha;
+import org.apache.log4j.Logger;
 
 import javax.persistence.PersistenceException;
 
@@ -43,6 +44,12 @@ public class AuthServiceImpl implements IAuthService {
 		} else {
 			throw new IbsServiceException(EMPTY_CREDENTIALS_MSG);
 		}
+	}
+
+	@Override
+	public void logout(final String login) throws IbsServiceException{
+		ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, "");
+		Logger.getLogger(this.getClass()).debug(String.format("Выполнен выход пользователем %s", login));
 	}
 
 	@Override
