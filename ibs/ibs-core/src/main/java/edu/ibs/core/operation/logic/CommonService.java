@@ -12,7 +12,6 @@ import edu.ibs.core.operation.AdminOperations;
 import edu.ibs.core.operation.UserOperations;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
@@ -104,7 +103,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 			throw new IllegalArgumentException(String.format("Invalid email %s", toUserWithEmail));
 		} else if (!dataSource.exist(cardBook.getClass(), cardBook.getId())) {
 			throw new IllegalArgumentException(String.format("Card book %s does not exist", cardBook));
-		} else if (!checkReassignmentAvailability(toUserWithEmail)) {
+		} else if (!reassignmentIsAvailable(toUserWithEmail)) {
 			throw new IllegalArgumentException(String.format("No active user with account's email %s found", toUserWithEmail));
 		} else {
 			User u = dataSource.getUserByEmail(toUserWithEmail);
@@ -114,7 +113,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 	}
 
 	@Override
-	public boolean checkReassignmentAvailability(String toUserWithEmail) {
+	public boolean reassignmentIsAvailable(String toUserWithEmail) {
 		return dataSource.userExists(toUserWithEmail);
 	}
 
@@ -313,5 +312,15 @@ public final class CommonService implements UserOperations, AdminOperations {
 	@Override
 	public CreditPlan getCreditPlan(String name) {
 		return dataSource.getCreditPlan(name);
+	}
+
+	@Override
+	public boolean bankBookExists(long id) {
+		return dataSource.exist(BankBook.class, id);
+	}
+
+	@Override
+	public boolean cardBookExists(long id) {
+		return dataSource.exist(CardBook.class, id);
 	}
 }

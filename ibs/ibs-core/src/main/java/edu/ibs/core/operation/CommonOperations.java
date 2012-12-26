@@ -25,4 +25,8 @@ public interface CommonOperations {
 	public List<CreditPlan> getCreditPlans();
 
 	public CreditPlan getCreditPlan(String name);
+
+	public boolean bankBookExists(long id);
+
+	public boolean cardBookExists(long id);
 }
