@@ -48,6 +48,9 @@ public class CardBook implements Serializable, AbstractEntity {
 	@JoinColumn(name = "creditID", referencedColumnName = "id", updatable = false)
 	@OneToOne(optional = true)
 	private Credit credit;
+	@JoinColumn(name = "ownerID", referencedColumnName = "id", updatable = true)
+	@OneToOne(optional = false)
+	private User owner;
 
 	public CardBook() {
 	}
@@ -59,6 +62,7 @@ public class CardBook implements Serializable, AbstractEntity {
 		this.pin = pin;
 		this.bankBook = bankBook;
 		this.credit = credit;
+		this.owner = bankBook.getOwner();
 	}
 
 	public CardBook(BankBook bankBook, long dateExpire, String pin) {
@@ -96,6 +100,14 @@ public class CardBook implements Serializable, AbstractEntity {
 
 	public CardBookType getType() {
 		return type;
+	}
+
+	public User getOwner() {
+		return owner;
+	}
+
+	public void setOwner(User user) {
+		this.owner = user;
 	}
 
 	public void setFreezed(boolean freezed) {
@@ -142,5 +154,4 @@ public class CardBook implements Serializable, AbstractEntity {
 	public String toString() {
 		return "CardBook{" + "id=" + id + ", type=" + type + ", dateExpire=" + dateExpire + ", freezed=" + freezed + ", pin=" + pin + ", bankBook=" + bankBook + ", credit=" + credit + '}';
 	}
-
 }

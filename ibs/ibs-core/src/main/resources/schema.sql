@@ -65,7 +65,7 @@ insert into BankBook(id, ownerID, currencyID, balance) values(1, 1, 1, 100000000
 create table CreditPlan
 (
 	id bigint primary key auto_increment,
-	name varchar(255) not null,
+	name varchar(255) unique not null,
 	currencyID bigint not null,
 	percent int not null default 0,
 	period enum('DAY', 'WEEK', 'MONTH', 'YEAR') not null default 'month',
@@ -90,6 +90,7 @@ create table CardBook
 (
 	id bigint primary key auto_increment,
 	bankBookID bigint not null,
+	ownerID bifint not null,
 	type enum('DEBIT', 'CREDIT') not null default 'DEBIT',
 	dateExpire bigint not null default 0,
 	freezed boolean not null default 0,
@@ -97,7 +98,9 @@ create table CardBook
 	creditID bigint,
 	INDEX creditIndex (creditID),
 	INDEX bankBookIndex (bankBookID),
+	INDEX ownerIndex (ownerID),
 	FOREIGN KEY (creditID) REFERENCES Credit(id) on delete restrict on update cascade,
+	FOREIGN KEY (ownerID) REFERENCES User(id) on delete restrict on update cascade,
 	FOREIGN KEY (bankBookID) REFERENCES BankBook(id) on delete restrict on update cascade
 )engine InnoDB;
 

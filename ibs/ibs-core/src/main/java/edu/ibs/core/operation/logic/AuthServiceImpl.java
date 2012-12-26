@@ -1,4 +1,4 @@
-package edu.ibs.core.service.logic;
+package edu.ibs.core.operation.logic;
 
 import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.enums.AccountRole;
@@ -6,8 +6,8 @@ import edu.ibs.common.exceptions.IbsServiceException;
 import edu.ibs.common.interfaces.IAuthService;
 import edu.ibs.core.entity.Account;
 import edu.ibs.core.gwt.EntityTransformer;
-import edu.ibs.core.service.AdminServicable;
-import edu.ibs.core.service.UserServicable;
+import edu.ibs.core.operation.AdminOperations;
+import edu.ibs.core.operation.UserOperations;
 import edu.ibs.core.utils.ServerConstants;
 import edu.ibs.core.utils.ServletUtils;
 import edu.ibs.core.utils.ValidationUtils;
@@ -22,8 +22,8 @@ public class AuthServiceImpl implements IAuthService {
 	private static final String INCORRECT_CAPTCHA_TXT = "Вы ввели неверные символы с картинки.";
 	private static final String PASSWORD_NOT_EQUAL_MSG = "Пароль не соответствует введённому.";
 
-	private UserServicable userLogic;
-	private AdminServicable adminLogic;
+	private UserOperations userLogic;
+	private AdminOperations adminLogic;
 
 	@Override
 	public AccountDTO login(String name, String pass) throws IbsServiceException {
@@ -77,19 +77,19 @@ public class AuthServiceImpl implements IAuthService {
 		return adminLogic.create(AccountRole.USER, email, passwd);
 	}
 
-	public UserServicable getUserLogic() {
+	public UserOperations getUserLogic() {
         return userLogic;
     }
 
-    public void setUserLogic(UserServicable userLogic) {
+    public void setUserLogic(UserOperations userLogic) {
         this.userLogic = userLogic;
     }
 
-    public AdminServicable getAdminLogic() {
+    public AdminOperations getAdminLogic() {
         return adminLogic;
     }
 
-    public void setAdminLogic(AdminServicable adminLogic) {
+    public void setAdminLogic(AdminOperations adminLogic) {
         this.adminLogic = adminLogic;
     }
 }

@@ -1,6 +1,7 @@
-package edu.ibs.core.service;
+package edu.ibs.core.operation;
 
 import edu.ibs.common.enums.AccountRole;
+import edu.ibs.common.enums.Period;
 import edu.ibs.core.controller.exception.FreezedException;
 import edu.ibs.core.controller.exception.NotEnoughMoneyException;
 import edu.ibs.core.entity.*;
@@ -13,13 +14,19 @@ import java.util.List;
  *
  * @author Vadim Martos
  */
-public interface AdminServicable extends Servicable {
+public interface AdminOperations extends CommonOperations {
 
 	public Account create(AccountRole role, String email, String passwd);
 
 	public BankBook create(User user, Money money);
 
-	public boolean addMoney(BankBook bankBook, Money money);
+	public CardBook create(User user, BankBook bankBook);
+
+	public CardBook create(User user, BankBook bankBook, Credit credit);
+
+	public boolean addMoney(BankBook bankBook, Money money) throws IllegalArgumentException, FreezedException;
+
+	public CreditPlan create(String name, Money limit, Period period, int periodMultiply, int percent);
 
 	public void delete(User user);
 
