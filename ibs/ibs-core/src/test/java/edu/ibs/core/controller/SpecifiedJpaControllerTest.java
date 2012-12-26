@@ -44,12 +44,12 @@ public class SpecifiedJpaControllerTest {
 		Money m1 = new Money(10000, usd);
 		fromBB = new BankBook(m1, user, false);
 		controller.insert(fromBB);
-		from = new CardBook(fromBB, 1L, "1234");
+		from = new CardBook(fromBB);
 		controller.insert(from);
 		Money m2 = new Money(10000, eur);
 		toBB = new BankBook(m2, user, false);
 		controller.insert(toBB);
-		to = new CardBook(toBB, 2L, "2345");
+		to = new CardBook(toBB);
 		controller.insert(to);
 	}
 

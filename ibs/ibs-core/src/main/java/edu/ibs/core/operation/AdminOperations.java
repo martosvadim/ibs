@@ -22,7 +22,7 @@ public interface AdminOperations extends CommonOperations {
 
 	public CardBook create(User user, BankBook bankBook);
 
-	public CardBook create(User user, BankBook bankBook, Credit credit);
+	public CardBook create(User user, BankBook bankBook, CreditPlan credit);
 
 	public boolean addMoney(BankBook bankBook, Money money) throws IllegalArgumentException, FreezedException;
 

@@ -250,22 +250,20 @@ public final class CommonService implements UserOperations, AdminOperations {
 		} else if (!dataSource.exist(bankBook.getClass(), bankBook.getId())) {
 			throw new IllegalArgumentException("Bank book does not exist");
 		} else {
-			//todo fix
-			CardBook cb = new CardBook(bankBook, 1, "");
+			CardBook cb = new CardBook(bankBook);
 			dataSource.insert(cb);
 			return cb;
 		}
 	}
 
 	@Override
-	public CardBook create(User user, BankBook bankBook, Credit credit) {
+	public CardBook create(User user, BankBook bankBook, CreditPlan credit) {
 		if (!dataSource.exist(user.getClass(), user.getId())) {
 			throw new IllegalArgumentException("User does not exist");
 		} else if (!dataSource.exist(bankBook.getClass(), bankBook.getId())) {
 			throw new IllegalArgumentException("Bank book does not exist");
 		} else {
-			//todo fix
-			CardBook cb = new CardBook(bankBook, credit, 1, "");
+			CardBook cb = new CardBook(bankBook, new Credit(credit));
 			dataSource.insert(cb);
 			return cb;
 		}

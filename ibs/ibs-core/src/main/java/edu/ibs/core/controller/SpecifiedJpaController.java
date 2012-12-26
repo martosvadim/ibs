@@ -53,7 +53,9 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			em.getTransaction().begin();
 			from = em.find(from.getClass(), from.getId());
 			to = em.find(to.getClass(), to.getId());
-			if (to.getType().equals(CardBookType.CREDIT)) {
+			if (from == null || to == null) {
+				throw new IllegalArgumentException("Card book doesn't exist");
+			} else if (to.getType().equals(CardBookType.CREDIT)) {
 				em.getTransaction().rollback();
 				throw new IllegalArgumentException("Can't transfer money to credit card book");
 			} else if (from.isFreezed()) {
@@ -105,7 +107,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			tr = em.find(Transaction.class, tr.getId(), LockModeType.PESSIMISTIC_WRITE);
 			if (tr == null) {
 				em.getTransaction().rollback();
-				throw new IllegalArgumentException(String.format("Transaction with id %s doesn't exist", tr.getId()));
+				throw new IllegalArgumentException("Transaction doesn't exist");
 			}
 			Transaction rollback = pay(tr.getTo(), tr.getFrom(), tr.getMoney(), TransactionType.PAYMENT);
 			em.getTransaction().commit();

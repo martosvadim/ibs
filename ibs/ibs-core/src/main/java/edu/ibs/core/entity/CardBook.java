@@ -2,6 +2,7 @@ package edu.ibs.core.entity;
 
 import edu.ibs.common.enums.CardBookType;
 import java.io.Serializable;
+import java.util.Random;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -41,7 +42,7 @@ public class CardBook implements Serializable, AbstractEntity {
 	private boolean freezed;
 	@Basic(optional = false)
 	@Column(name = "pin", updatable = false, nullable = false)
-	private String pin;
+	private int pin;
 	@JoinColumn(name = "bankBookID", referencedColumnName = "id", updatable = false, nullable = false)
 	@ManyToOne(optional = false)
 	private BankBook bankBook;
@@ -55,22 +56,22 @@ public class CardBook implements Serializable, AbstractEntity {
 	public CardBook() {
 	}
 
-	private CardBook(CardBookType type, long dateExpire, boolean freezed, String pin, BankBook bankBook, Credit credit) {
+	private CardBook(CardBookType type, BankBook bankBook, Credit credit) {
 		this.type = type;
-		this.dateExpire = dateExpire;
-		this.freezed = freezed;
-		this.pin = pin;
+		this.dateExpire = generateExpireDate();
+		this.freezed = false;
+		this.pin = generatePin();
 		this.bankBook = bankBook;
 		this.credit = credit;
 		this.owner = bankBook.getOwner();
 	}
 
-	public CardBook(BankBook bankBook, long dateExpire, String pin) {
-		this(CardBookType.DEBIT, dateExpire, false, pin, bankBook, null);
+	public CardBook(BankBook bankBook) {
+		this(CardBookType.DEBIT, bankBook, null);
 	}
 
-	public CardBook(BankBook bankBook, Credit credit, long dateExpire, String pin) {
-		this(CardBookType.CREDIT, dateExpire, false, pin, bankBook, credit);
+	public CardBook(BankBook bankBook, Credit credit) {
+		this(CardBookType.CREDIT, bankBook, credit);
 	}
 
 	@Override
@@ -94,7 +95,7 @@ public class CardBook implements Serializable, AbstractEntity {
 		return freezed;
 	}
 
-	public String getPin() {
+	public int getPin() {
 		return pin;
 	}
 
@@ -153,5 +154,13 @@ public class CardBook implements Serializable, AbstractEntity {
 	@Override
 	public String toString() {
 		return "CardBook{" + "id=" + id + ", type=" + type + ", dateExpire=" + dateExpire + ", freezed=" + freezed + ", pin=" + pin + ", bankBook=" + bankBook + ", credit=" + credit + '}';
+	}
+
+	public static int generatePin() {
+		return (new Random().nextInt(10000) + 1000) % 10000;
+	}
+
+	public static long generateExpireDate() {
+		return System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 365; //a year
 	}
 }
