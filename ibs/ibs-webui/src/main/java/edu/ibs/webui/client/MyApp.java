@@ -166,8 +166,8 @@ public class MyApp implements EntryPoint {
 				@Override
 				public void onClick(final ClickEvent clickEvent) {
 					AccountDTO account = new AccountDTO();
-					final String loginText = ((String) login.unbind()).trim();
-					String passText = ((String) pass.unbind()).trim();
+					final String loginText = ((String) login.unbind());
+					String passText = ((String) pass.unbind());
 					if (loginText == null || "".equals(loginText) || loginText.length() == 0) {
 						SC.warn("Логин не заполнен. Введите допустимый логин.");
 					} else if (passText == null || "".equals(passText) || passText.length() == 0) {

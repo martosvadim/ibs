@@ -11,10 +11,10 @@
         </property>
     </bean>
  
-	<bean id ="adminLogic" class="edu.ibs.core.service.logic.CommonService"/>
-	<bean id ="userLogic" class="edu.ibs.core.service.logic.CommonService"/>
+	<bean id ="adminLogic" class="edu.ibs.core.operation.logic.CommonService"/>
+	<bean id ="userLogic" class="edu.ibs.core.operation.logic.CommonService"/>
 
-    <bean id="authService" class="edu.ibs.core.service.logic.AuthServiceImpl">
+    <bean id="authService" class="edu.ibs.core.operation.logic.AuthServiceImpl">
         <property name="adminLogic" ref="adminLogic"/>
         <property name="userLogic" ref="userLogic" />
     </bean>

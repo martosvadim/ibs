@@ -47,12 +47,12 @@ public class Masthead extends HLayout {
         signedInUser.setContents(login);
 
 		ImgButton imgButton = new ImgButton();
-		imgButton.setSize(32);
+		imgButton.setSize(16);
 		imgButton.setShowFocused(false);
 		imgButton.setShowRollOver(false);
 		imgButton.setShowDown(false);
 		imgButton.setTooltip("Выйти");
-		imgButton.setSrc("statusbar/resultsetnext.png");
+		imgButton.setSrc("toolbar/delete.png");
 		imgButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
@@ -72,7 +72,7 @@ public class Masthead extends HLayout {
 		});
 
 		HLayout l1 = new HLayout();
-		l1.setPadding(10);
+		l1.setPadding(20);
 		l1.addMember(imgButton);
 
         HLayout eastLayout = new HLayout();
