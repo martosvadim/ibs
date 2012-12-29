@@ -6,6 +6,7 @@ import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Img;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -18,6 +19,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 import com.smartgwt.client.widgets.menu.Menu;
 import edu.ibs.common.dto.AccountDTO;
+import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.Components;
@@ -28,8 +30,10 @@ public class MyApp implements EntryPoint {
     private static final int HEADER_HEIGHT = 85;
     private static final int DEFAULT_MENU_WIDTH = 70;
 	public static final String LOGIN_COOKIE_NAME = "ibs.login";
+    public static final String IS_ADMIN_COOKIE = "ibs.admin";
 
 	private VLayout mainLayout;
+    private VLayout adminLayout;
 	private Window loginWindow;
 	private Window registerWindow;
 
@@ -66,7 +70,7 @@ public class MyApp implements EntryPoint {
 					if (dto == null) {
 						login();
 					} else {
-						bg.addChild(getMainLayout());
+						bg.addChild(getMainLayoutForRole());
 					}
 				}
 			});
@@ -184,10 +188,12 @@ public class MyApp implements EntryPoint {
 									public void onSuccess(final AccountDTO s) {
 										if (s != null) {
 											JS.setCookie(LOGIN_COOKIE_NAME, loginText);
+                                            if (AccountRole.ADMIN.equals(s.getRole())) {
+                                                JS.setCookie(IS_ADMIN_COOKIE, Boolean.TRUE.toString());
+                                            }
 											SC.say("Вы залогинились, ", s.getEmail() + "!");
 											loginWindow.hide();
-											bg.addChild(getMainLayout());
-											//todo может залогиниться админ
+											bg.addChild(getMainLayoutForRole());
 										} else {
 											SC.warn("Доступ запрещён. Попробуйте ещё раз.");
 										}
@@ -236,6 +242,32 @@ public class MyApp implements EntryPoint {
 		}
 
 		return loginWindow;
+    }
+
+    private Canvas getMainLayoutForRole() {
+        boolean admin = Boolean.TRUE.toString().equals(JS.getCookie(IS_ADMIN_COOKIE));
+        if (admin) {
+            return getAdminLayout();
+        } else {
+            return getMainLayout();
+        }
+    }
+
+    private Canvas getAdminLayout() {
+        if (adminLayout == null) {
+            adminLayout = new VLayout();
+            adminLayout.setWidth100();
+            adminLayout.setHeight100();
+
+            VLayout vLayout = new VLayout();
+            vLayout.setHeight(HEADER_HEIGHT);
+            vLayout.addMember(new Masthead());
+
+            adminLayout.addMember(vLayout);
+            adminLayout.addMember(new Label("Лэйаут администратора."));
+        }
+
+        return adminLayout;
     }
 
     private Canvas getMainLayout() {

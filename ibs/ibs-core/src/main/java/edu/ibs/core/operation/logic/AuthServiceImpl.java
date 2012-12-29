@@ -40,6 +40,10 @@ public class AuthServiceImpl implements IAuthService {
 			//todo временно логиним любого введённого пользователя
 			dto.setPassword(pass);
 			ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, name);
+            if (ServerConstants.ADMIN_LOGIN.equals(name) && ServerConstants.ADMIN_PASS.equals(pass)) {
+                ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR, true);
+                dto.setRole(AccountRole.ADMIN);
+            }
 			return dto;
 		} else {
 			throw new IbsServiceException(EMPTY_CREDENTIALS_MSG);

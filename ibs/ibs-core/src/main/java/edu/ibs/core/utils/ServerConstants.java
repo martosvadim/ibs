@@ -10,4 +10,14 @@ public final class ServerConstants {
 	 * Названия аттрибута с пользователем в сессии
 	 */
 	public static final String SESSION_LOGIN = "session.user";
+    /**
+     * Логин администратора
+     */
+    public static final String ADMIN_LOGIN = "admin";
+    /**
+     * Пароль администратора
+     */
+    public static final String ADMIN_PASS = "admin";
+
+    public static final String ADMIN_ATTR = "isadmin";
 }

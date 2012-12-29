@@ -93,7 +93,7 @@
                     <hostedWebapp>target/www</hostedWebapp>
                     <compileReport>false</compileReport>
                     <port>8080</port>
-                    <!--<noserver>true</noserver>-->
+                    <noserver>true</noserver>
                 </configuration>
             </plugin>
 
