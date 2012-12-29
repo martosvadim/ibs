@@ -69,27 +69,6 @@ public final class GWTServiceWrapper extends GWTRPCServiceExporter {
             } else {
                 serviceEception = new IbsServiceException(e);
             }
-            /**
-             * Сохраняем стектрейс
-             */
-            if (serviceEception.getStackTrace() != null && serviceEception.getStackTrace().length > 0) {
-                StringWriter stringWriter = new StringWriter();
-                serviceEception.printStackTrace(new PrintWriter(stringWriter) {
-                    @Override
-                    public void println(final String x) {
-                        String aspectsPackage = "dp.server.utils.aspect";
-                        if ((x.indexOf("com.qulix") != -1 || x.indexOf("$Proxy") != -1)
-                                && x.indexOf(aspectsPackage) == -1) {
-                            super.println(x);
-                        }
-                    }
-                });
-                stringWriter.close();
-                String html = stringWriter.getBuffer().toString();
-                html = html.replaceAll("\\.", ". ");
-                html = html.replaceAll("\n", "<br/>");
-                serviceEception.setHtmlStackTrace(html);
-            }
             return RPC.encodeResponseForFailure(targetMethod, serviceEception);
         }
         return RPC.encodeResponseForSuccess(rpcRequest.getMethod(), result, rpcRequest.getSerializationPolicy());

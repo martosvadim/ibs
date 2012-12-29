@@ -14,6 +14,7 @@ import edu.ibs.core.utils.ValidationUtils;
 import nl.captcha.Captcha;
 import org.apache.log4j.Logger;
 
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
 public class AuthServiceImpl implements IAuthService {
@@ -28,23 +29,23 @@ public class AuthServiceImpl implements IAuthService {
 	@Override
 	public AccountDTO login(String name, String pass) throws IbsServiceException {
 
-		AccountDTO dto = new AccountDTO();
-		dto.setEmail(name);
-
 		// Если есть куки
 		if (name.equals(ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_LOGIN))) {
 			//todo заполнить инфой из базы
+            AccountDTO dto = EntityTransformer.transformAccount(userLogic.login(name, pass));
 			return dto;
 		} else  if (!ValidationUtils.isEmpty(name) && !ValidationUtils.isEmpty(pass)) {
-//			return EntityTransformer.transformAccount(userLogic.login(name, pass));
-			//todo временно логиним любого введённого пользователя
-			dto.setPassword(pass);
-			ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, name);
-            if (ServerConstants.ADMIN_LOGIN.equals(name) && ServerConstants.ADMIN_PASS.equals(pass)) {
-                ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR, true);
-                dto.setRole(AccountRole.ADMIN);
+            try {
+                AccountDTO dto = EntityTransformer.transformAccount(userLogic.login(name, pass));
+                ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, name);
+                if (ServerConstants.ADMIN_LOGIN.equals(name) && ServerConstants.ADMIN_PASS.equals(pass)) {
+                    ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR, true);
+                    dto.setRole(AccountRole.ADMIN);
+                }
+                return dto;
+            } catch (NoResultException e) {
+                throw new IbsServiceException("Неверный логин или пароль.");
             }
-			return dto;
 		} else {
 			throw new IbsServiceException(EMPTY_CREDENTIALS_MSG);
 		}
@@ -53,6 +54,7 @@ public class AuthServiceImpl implements IAuthService {
 	@Override
 	public void logout(final String login) throws IbsServiceException{
 		ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, "");
+        ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR, false);
 		Logger.getLogger(this.getClass()).debug(String.format("Выполнен выход пользователем %s", login));
 	}
 
@@ -67,7 +69,6 @@ public class AuthServiceImpl implements IAuthService {
 			throw new IbsServiceException(PASSWORD_NOT_EQUAL_MSG);
 		} else {
 			// Верификация текста капчи
-
 			Captcha captcha = (Captcha) ServletUtils.getRequest().getSession().getAttribute(Captcha.NAME);
 			if (captcha != null && captcha.isCorrect(captchaText)) {
 				return EntityTransformer.transformAccount(register(name, password));
