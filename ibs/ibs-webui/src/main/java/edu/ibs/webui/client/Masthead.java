@@ -40,7 +40,7 @@ public class Masthead extends HLayout {
         westLayout.addMember(logo);
         westLayout.addMember(name);
 
-		final String login = JS.getCookie(MyApp.LOGIN_COOKIE_NAME);
+		final String login = ApplicationManager.getInstance().getAccount().getEmail();
 
         Label signedInUser = new Label();
         signedInUser.setStyleName("crm-MastHead-SignedInUser");

@@ -192,6 +192,7 @@ public class MyApp implements EntryPoint {
                                                 JS.setCookie(IS_ADMIN_COOKIE, Boolean.TRUE.toString());
                                             }
 											SC.say("Вы залогинились, ", s.getEmail() + "!");
+                                            ApplicationManager.getInstance().setAccount(s);
 											loginWindow.hide();
 											bg.addChild(getMainLayoutForRole());
 										} else {
