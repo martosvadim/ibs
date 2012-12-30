@@ -1,5 +1,7 @@
 package edu.ibs.core.entity;
 
+import edu.ibs.common.dto.UserDTO;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -64,6 +66,17 @@ public class User implements Serializable, AbstractEntity {
 		this.lastName = lastName;
 		this.passportNumber = passportNumber;
 	}
+
+    public User(UserDTO dto) {
+        this(dto.getFirstName(), dto.getLastName(), dto.getPassportNumber());
+        setAddress(dto.getAddress());
+        setDescription(dto.getDescription());
+        setPhone1(dto.getPhone1());
+        setPhone2(dto.getPhone2());
+        setPhone3(dto.getPhone3());
+        setPassportScan(dto.getPassportScan());
+        setZipCode(dto.getZipCode());
+    }
 
 	public String getAddress() {
 		return address;

@@ -12,7 +12,7 @@ public class CardBookDTO implements IBaseDTO {
 	private CardBookType type;
 	private long dateExpire;
 	private boolean freezed;
-	private String pin;
+	private int pin;
 	private BankBookDTO bankBook;
 	private CreditDTO credit;
 
@@ -48,11 +48,11 @@ public class CardBookDTO implements IBaseDTO {
 		this.freezed = freezed;
 	}
 
-	public String getPin() {
+	public int getPin() {
 		return pin;
 	}
 
-	public void setPin(String pin) {
+	public void setPin(int pin) {
 		this.pin = pin;
 	}
 

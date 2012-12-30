@@ -1,5 +1,6 @@
 package edu.ibs.core.entity;
 
+import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.enums.AccountRole;
 
 import javax.persistence.*;
@@ -72,6 +73,12 @@ public class Account implements Serializable, AbstractEntity {
 	public Account(String email, String password, AccountRole role) {
 		this(email, password, role, null, null, null);
 	}
+
+    public Account(AccountDTO dto) {
+        this(dto.getEmail(), dto.getPassword(), dto.getRole(), dto.getSecurityQuestion(), dto.getSecurityAnswer(), dto.getAvatar());
+        this.id = dto.getId();
+        setUser(new User(dto.getUser()));
+    }
 
 	public String getAvatar() {
 		return avatar;
