@@ -1,4 +1,4 @@
-package edu.ibs.webui.client;
+package edu.ibs.webui.client.cards;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -9,6 +9,8 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import edu.ibs.common.dto.CardBookDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
+import edu.ibs.webui.client.AccountData;
+import edu.ibs.webui.client.ApplicationManager;
 
 import java.util.List;
 
@@ -40,23 +42,7 @@ public class ContextAreaListGrid extends ListGrid {
         this.setFields(new ListGridField[]{iconField, cardTypeField, cardNumberField, currencyField,
                 balanceField, infoField, emptyField});
         this.setData(AccountData.getRecords());
-    }
-
-    private void getCardBooks() {
-        IPaymentServiceAsync.Util.getInstance().getCardBooks(ApplicationManager.getInstance().getAccount().getUser(),
-                new AsyncCallback<List<CardBookDTO>>() {
-            @Override
-            public void onFailure(final Throwable throwable) {
-                SC.warn(throwable.getMessage());
-            }
-
-            @Override
-            public void onSuccess(final List<CardBookDTO> cardBookDTOs) {
-                if (cardBookDTOs != null && cardBookDTOs.size() > 0) {
-                    //todo добавить в таблицу
-                }
-            }
-        });
+//		this.setDataSource(new CardsDataSource());
     }
 
 }

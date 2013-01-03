@@ -2,6 +2,7 @@ package edu.ibs.webui.client;
 
 import com.google.gwt.core.client.GWT;
 import com.smartgwt.client.widgets.layout.VLayout;
+import edu.ibs.webui.client.cards.ContextAreaListGrid;
 
 /**
  * Created by IntelliJ IDEA.
