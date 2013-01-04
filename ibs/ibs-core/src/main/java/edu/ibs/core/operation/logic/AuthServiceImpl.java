@@ -92,7 +92,7 @@ public class AuthServiceImpl implements IAuthService {
 	}
 
 	private Account register(String email, String passwd) throws PersistenceException {
-		return adminLogic.create(AccountRole.USER, email, passwd);
+		return userLogic.register(email, passwd);
 	}
 
 	public UserOperations getUserLogic() {
