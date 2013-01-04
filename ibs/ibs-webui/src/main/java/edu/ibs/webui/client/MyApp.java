@@ -180,7 +180,9 @@ public class MyApp implements EntryPoint {
 											JS.setCookie(LOGIN_COOKIE_NAME, loginText);
                                             if (AccountRole.ADMIN.equals(s.getRole())) {
                                                 JS.setCookie(IS_ADMIN_COOKIE, Boolean.TRUE.toString());
-                                            }
+                                            } else {
+												JS.setCookie(IS_ADMIN_COOKIE, Boolean.FALSE.toString());
+											}
 											SC.say("Вы залогинились, ", s.getEmail() + "!");
                                             ApplicationManager.getInstance().setAccount(s);
 											loginWindow.hide();

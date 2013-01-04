@@ -38,13 +38,16 @@ public class AuthServiceImpl implements IAuthService {
 			return dto;
 		} else  if (!ValidationUtils.isEmpty(name) && !ValidationUtils.isEmpty(pass)) {
             try {
-                AccountDTO dto = EntityTransformer.transformAccount(userLogic.login(name, pass));
-                ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, name);
-                if (ServerConstants.ADMIN_LOGIN.equals(name) && ServerConstants.ADMIN_PASS.equals(pass)) {
-                    ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR, true);
-                    dto.setRole(AccountRole.ADMIN);
-                }
-                return dto;
+				Account account = userLogic.login(name, pass);
+				if (account != null) {
+					AccountDTO dto = EntityTransformer.transformAccount(account);
+					ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, name);
+					ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR,
+							AccountRole.ADMIN.equals(dto.getRole()));
+					return dto;
+				} else {
+					throw new IbsServiceException(CANNOT_LOGIN_MSG);
+				}
             } catch (NoResultException e) {
                 throw new IbsServiceException(CANNOT_LOGIN_MSG);
             }
