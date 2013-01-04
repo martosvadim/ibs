@@ -135,7 +135,8 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			Expression<String> emailExpr = acc.get("email");
 			Expression<String> passwdExpr = acc.get("password");
 			criteria.select(acc).where(cb.and(cb.equal(emailExpr, email), cb.equal(passwdExpr, password)));
-			return em.createQuery(criteria).getSingleResult();
+			Iterator<Account> it = em.createQuery(criteria).setMaxResults(1).getResultList().iterator();
+			return it.hasNext() ? it.next() : null;
 		} finally {
 			if (em != null) {
 				em.close();
@@ -152,7 +153,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			Root<Account> acc = criteria.from(Account.class);
 			Expression<String> emailExpr = acc.get("email");
 			criteria.select(acc).where(cb.equal(emailExpr, email));
-			Iterator<Account> it = em.createQuery(criteria).getResultList().iterator();
+			Iterator<Account> it = em.createQuery(criteria).setMaxResults(1).getResultList().iterator();
 			return it.hasNext() ? it.next() : null;
 		} finally {
 			if (em != null) {
@@ -366,7 +367,8 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			CriteriaQuery<CreditPlan> criteria = builder.createQuery(CreditPlan.class);
 			Root<CreditPlan> plan = criteria.from(CreditPlan.class);
 			criteria.select(plan).where(builder.equal(plan.get("name"), name));
-			return em.createQuery(criteria).getSingleResult();
+			Iterator<CreditPlan> it = em.createQuery(criteria).setMaxResults(1).getResultList().iterator();
+			return it.hasNext() ? it.next() : null;
 		} finally {
 			if (em != null) {
 				em.close();
