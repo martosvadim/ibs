@@ -195,7 +195,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 	@Override
 	public boolean isFree(String email) {
 		if (emailIsValid(email)) {
-			return dataSource.accountExists(email);
+			return !dataSource.accountExists(email);
 		} else {
 			return false;
 		}

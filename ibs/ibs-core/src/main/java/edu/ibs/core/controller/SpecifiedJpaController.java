@@ -6,6 +6,7 @@ import edu.ibs.core.controller.exception.FreezedException;
 import edu.ibs.core.controller.exception.NotEnoughMoneyException;
 import edu.ibs.core.entity.*;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -151,8 +152,8 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			Root<Account> acc = criteria.from(Account.class);
 			Expression<String> emailExpr = acc.get("email");
 			criteria.select(acc).where(cb.equal(emailExpr, email));
-			Account a = em.createQuery(criteria).getSingleResult();
-			return a;
+			Iterator<Account> it = em.createQuery(criteria).getResultList().iterator();
+			return it.hasNext() ? it.next() : null;
 		} finally {
 			if (em != null) {
 				em.close();
