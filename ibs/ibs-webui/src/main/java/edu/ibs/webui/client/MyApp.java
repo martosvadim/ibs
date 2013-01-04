@@ -20,6 +20,7 @@ import com.smartgwt.client.widgets.layout.VStack;
 import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
+import edu.ibs.webui.client.admin.CreateNewUserController;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
@@ -261,7 +262,8 @@ public class MyApp implements EntryPoint {
 			final ClickHandler clickHandler = new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent clickEvent) {
-					SC.say(clickEvent.getSource().toString());
+					CreateNewUserController controller = new CreateNewUserController();
+					controller.getWindow().draw();
 				}
 			};
 			Label addUser = new Label("Добавить пользователя");

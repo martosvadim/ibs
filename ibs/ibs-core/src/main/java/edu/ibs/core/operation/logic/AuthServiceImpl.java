@@ -23,24 +23,13 @@ public class AuthServiceImpl implements IAuthService {
 	private static final String INCORRECT_CAPTCHA_TXT = "Вы ввели неверные символы с картинки.";
 	private static final String PASSWORD_NOT_EQUAL_MSG = "Пароль не соответствует введённому.";
 	private static final String CANNOT_LOGIN_MSG = "Неверный логин или пароль.";
+	private static final String NO_PERMISSION_MSG = "У вас нет прав для выполнения данной операции.";
 
 	private UserOperations userLogic;
 	private AdminOperations adminLogic;
 
 	@Override
 	public AccountDTO login(String name, String pass) throws IbsServiceException {
-
-		if (ServerConstants.ADMIN_LOGIN.equals(name) && ServerConstants.ADMIN_PASS.equals(pass)) {
-			AccountDTO dto = new AccountDTO();
-			dto.setEmail(name);
-			dto.setRole(AccountRole.ADMIN);
-			return dto;
-		} else if ("1".equals(name)) {
-			AccountDTO dto = new AccountDTO();
-			dto.setEmail(name);
-			dto.setRole(AccountRole.USER);
-			return dto;
-		}
 
 		// Если есть куки
 		if (name.equals(ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_LOGIN))) {
@@ -88,6 +77,18 @@ public class AuthServiceImpl implements IAuthService {
 			} else {
 				throw new IbsServiceException(INCORRECT_CAPTCHA_TXT);
 			}
+		}
+	}
+
+	@Override
+	public AccountDTO create(AccountRole role, String email, String password) throws IbsServiceException {
+		if (ValidationUtils.isEmpty(email) || ValidationUtils.isEmpty(password)) {
+			throw new IbsServiceException(EMPTY_CREDENTIALS_MSG);
+		} else if (!Boolean.TRUE.equals(
+				ServletUtils.getRequest().getSession().getAttribute(ServerConstants.ADMIN_ATTR))) {
+			throw new IbsServiceException(NO_PERMISSION_MSG);
+		} else {
+			return EntityTransformer.transformAccount(adminLogic.create(role, email, password));
 		}
 	}
 
