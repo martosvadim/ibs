@@ -80,7 +80,7 @@ public class MyApp implements EntryPoint {
 	}
 
 	private void login() {
-		getLoginWindow().draw();
+		getLoginWindow().show();
 	}
 
 	private Window getRegisterCanvas() {
@@ -116,7 +116,7 @@ public class MyApp implements EntryPoint {
 									public void onSuccess(AccountDTO s) {
 										SC.say("Вы зарегестрировались, " + s.getEmail() + "!");
 										registerWindow.hide();
-										bg.addChild(getMainLayout());
+										bg.addChild(getMainLayoutForRole());
 									}
 								});
 					}
@@ -165,7 +165,6 @@ public class MyApp implements EntryPoint {
 			loginButton.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(final ClickEvent clickEvent) {
-					AccountDTO account = new AccountDTO();
 					final String loginText = ((String) login.unbind());
 					String passText = ((String) pass.unbind());
 					if (loginText == null || "".equals(loginText) || loginText.length() == 0) {
@@ -204,7 +203,7 @@ public class MyApp implements EntryPoint {
 				@Override
 				public void onClick(final com.smartgwt.client.widgets.form.fields.events.ClickEvent clickEvent) {
 					loginWindow.hide();
-					getRegisterCanvas().draw();
+					getRegisterCanvas().show();
 				}
 			});
 			DynamicForm regForm = new DynamicForm();
