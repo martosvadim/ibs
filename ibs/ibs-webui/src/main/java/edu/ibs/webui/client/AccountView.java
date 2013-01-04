@@ -5,11 +5,9 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import edu.ibs.webui.client.cards.ContextAreaListGrid;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Максим
  * Date: 29.10.12
  * Time: 23:01
- * To change this template use File | Settings | File Templates.
  */
 public class AccountView extends VLayout {
     public AccountView() {

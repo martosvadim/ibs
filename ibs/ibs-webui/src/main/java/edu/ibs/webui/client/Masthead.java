@@ -1,9 +1,7 @@
 package edu.ibs.webui.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
@@ -11,6 +9,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
+import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.JS;
 
 /**
@@ -56,12 +55,7 @@ public class Masthead extends HLayout {
 		imgButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
-				IAuthServiceAsync.Util.getInstance().logout(login, new AsyncCallback<Void>() {
-					@Override
-					public void onFailure(Throwable throwable) {
-						SC.warn(throwable.getMessage());
-					}
-
+				IAuthServiceAsync.Util.getInstance().logout(login, new AppCallback<Void>() {
 					@Override
 					public void onSuccess(Void aVoid) {
 

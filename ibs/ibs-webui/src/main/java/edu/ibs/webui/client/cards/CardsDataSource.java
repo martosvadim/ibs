@@ -3,10 +3,10 @@ package edu.ibs.webui.client.cards;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import edu.ibs.common.dto.CardBookDTO;
 import edu.ibs.webui.client.ds.GwtRpcDataSource;
+import edu.ibs.webui.client.utils.AppCallback;
 
 import java.util.List;
 
@@ -19,12 +19,7 @@ public class CardsDataSource extends GwtRpcDataSource {
 
 	@Override
 	public void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
-		AsyncCallback<List<CardBookDTO>> callback = new AsyncCallback<List<CardBookDTO>>() {
-			@Override
-			public void onFailure(Throwable throwable) {
-				SC.warn(throwable.getMessage());
-			}
-
+		AsyncCallback<List<CardBookDTO>> callback = new AppCallback<List<CardBookDTO>>() {
 			@Override
 			public void onSuccess(List<CardBookDTO> list) {
 				int size = 0;

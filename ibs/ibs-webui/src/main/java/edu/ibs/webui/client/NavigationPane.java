@@ -7,7 +7,6 @@ package edu.ibs.webui.client;
  */
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
@@ -21,6 +20,7 @@ import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.*;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.controller.GenericController;
+import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 
 
@@ -112,12 +112,7 @@ public class NavigationPane extends SectionStack {
 						} else {
 							//todo Передать соотв. параметры в метод
 							IPaymentServiceAsync.Util.getInstance().pay(null, Long.parseLong(amountTxt), null,
-									new AsyncCallback<Void>() {
-								@Override
-								public void onFailure(Throwable throwable) {
-									SC.warn(throwable.getMessage());
-								}
-
+									new AppCallback<Void>() {
 								@Override
 								public void onSuccess(Void aVoid) {
 									//todo Платёж успешно проведён

@@ -1,18 +1,10 @@
 package edu.ibs.webui.client.cards;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridFieldType;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
-import edu.ibs.common.dto.CardBookDTO;
-import edu.ibs.common.interfaces.IPaymentServiceAsync;
-import edu.ibs.webui.client.AccountData;
-import edu.ibs.webui.client.ApplicationManager;
-
-import java.util.List;
 
 /**
  * User: Максим
@@ -41,8 +33,7 @@ public class ContextAreaListGrid extends ListGrid {
         ListGridField emptyField = new ListGridField("emptyField", " ");
         this.setFields(new ListGridField[]{iconField, cardTypeField, cardNumberField, currencyField,
                 balanceField, infoField, emptyField});
-        this.setData(AccountData.getRecords());
-//		this.setDataSource(new CardsDataSource());
+		this.setDataSource(new CardsDataSource());
     }
 
 }
