@@ -76,6 +76,7 @@ public class User implements Serializable, AbstractEntity {
         setPhone3(dto.getPhone3());
         setPassportScan(dto.getPassportScan());
         setZipCode(dto.getZipCode());
+		this.id = dto.getId();
     }
 
 	public String getAddress() {

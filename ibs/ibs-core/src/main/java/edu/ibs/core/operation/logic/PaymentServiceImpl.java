@@ -1,12 +1,12 @@
 package edu.ibs.core.operation.logic;
 
+import edu.ibs.common.dto.BankBookDTO;
 import edu.ibs.common.dto.CardBookDTO;
 import edu.ibs.common.dto.MoneyDTO;
 import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.exceptions.IbsServiceException;
 import edu.ibs.common.interfaces.IPaymentService;
-import edu.ibs.core.entity.CardBook;
-import edu.ibs.core.entity.User;
+import edu.ibs.core.entity.*;
 import edu.ibs.core.gwt.EntityTransformer;
 import edu.ibs.core.operation.AdminOperations;
 import edu.ibs.core.operation.UserOperations;
@@ -23,6 +23,24 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private UserOperations userLogic;
 	private AdminOperations adminLogic;
+
+	@Override
+	public BankBookDTO createBankBook(String userId) throws IbsServiceException {
+		BankBookDTO dto = null;
+		try {
+			//todo Разобраться, откуда брать валюту и пользователя
+			UserDTO userDTO = new UserDTO();
+			userDTO.setId(Long.parseLong(userId));
+			User user = new User(userDTO);
+			Currency currency = adminLogic.getCurrencies().get(0);
+			Money money = new Money(0, currency);
+			BankBook bankBook = adminLogic.create(user, money);
+			dto = EntityTransformer.transformBankBook(bankBook);
+		} catch (Throwable t) {
+			throw new IbsServiceException("Не удалось создать банковский счёт.");
+		}
+		return dto;
+	}
 
 	@Override
 	public void pay(CardBookDTO from, long to, MoneyDTO money) throws IbsServiceException {

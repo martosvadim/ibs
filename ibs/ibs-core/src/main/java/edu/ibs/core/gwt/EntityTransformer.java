@@ -119,7 +119,7 @@ public final class EntityTransformer {
         return dto;
     }
 
-    private static BankBookDTO transformBankBook(final BankBook bankBook) {
+    public static BankBookDTO transformBankBook(final BankBook bankBook) {
         BankBookDTO dto = new BankBookDTO();
 		if (bankBook != null) {
 			dto.setId(bankBook.getId());

@@ -20,6 +20,7 @@ import com.smartgwt.client.widgets.layout.VStack;
 import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
+import edu.ibs.webui.client.admin.CreateBankBookController;
 import edu.ibs.webui.client.admin.CreateNewUserController;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.AppCallback;
@@ -261,24 +262,35 @@ public class MyApp implements EntryPoint {
 			links.setWidth100();
 			links.setAlign(Alignment.CENTER);
 			final String adminLinkStyleName = "label-link-admin";
-			final ClickHandler clickHandler = new ClickHandler() {
+
+			Label addUser = new Label("Добавить пользователя");
+			addUser.setStyleName(adminLinkStyleName);
+			final ClickHandler addUserClickHandler = new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent clickEvent) {
 					CreateNewUserController controller = new CreateNewUserController();
 					controller.getWindow().draw();
 				}
 			};
-			Label addUser = new Label("Добавить пользователя");
-			addUser.setStyleName(adminLinkStyleName);
-			addUser.addClickHandler(clickHandler);
+			addUser.addClickHandler(addUserClickHandler);
 			links.addMember(addUser);
+
 			Label deleteUser = new Label("Удалить пользователя");
 			deleteUser.setStyleName(adminLinkStyleName);
-			addUser.addClickHandler(clickHandler);
 			links.addMember(deleteUser);
-			Label createBankBook = new Label("Создать счёт");
+
+			Label createBankBook = new Label("Создать банковский счёт");
 			createBankBook.setStyleName(adminLinkStyleName);
+			final ClickHandler createBankBookClickHandler = new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent clickEvent) {
+					CreateBankBookController controller = new CreateBankBookController();
+					controller.getWindow().draw();
+				}
+			};
+			createBankBook.addClickHandler(createBankBookClickHandler);
 			links.addMember(createBankBook);
+
 			Label createCardBook = new Label("Создать карт-счёт");
 			createCardBook.setStyleName(adminLinkStyleName);
 			links.addMember(createCardBook);
