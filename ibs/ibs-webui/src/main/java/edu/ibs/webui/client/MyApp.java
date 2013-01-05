@@ -258,9 +258,9 @@ public class MyApp implements EntryPoint {
             vLayout.addMember(new Masthead());
 
 			VLayout links = new VLayout();
-			links.setMembersMargin(2);
+//			links.setMembersMargin(2);
 			links.setWidth100();
-			links.setAlign(Alignment.CENTER);
+//			links.setAlign(Alignment.CENTER);
 			final String adminLinkStyleName = "label-link-admin";
 
 			Label addUser = new Label("Добавить пользователя");

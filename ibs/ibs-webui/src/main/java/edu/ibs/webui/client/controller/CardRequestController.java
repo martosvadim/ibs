@@ -7,12 +7,9 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import edu.ibs.common.dto.CurrencyDTO;
-import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.dto.VocDTO;
 import edu.ibs.common.enums.CardBookType;
-import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
-import edu.ibs.webui.client.ApplicationManager;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 

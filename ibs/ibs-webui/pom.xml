@@ -94,6 +94,7 @@
                     <compileReport>false</compileReport>
                     <port>8080</port>
                     <noserver>true</noserver>
+                    <debugSuspend>false</debugSuspend>
                 </configuration>
             </plugin>
 
