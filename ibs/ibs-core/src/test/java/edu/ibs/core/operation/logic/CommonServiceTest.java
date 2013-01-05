@@ -104,7 +104,7 @@ public class CommonServiceTest {
 			u = acc1.getUser();
 			String addr = "addr";
 			u.setAddress(addr);
-			service.update(acc);
+			service.update(acc1);
 			acc = service.login(email, pass);
 			Assert.assertNotNull(acc.getUser());
 			Assert.assertNotNull(acc.getUser().getAddress());
