@@ -13,13 +13,16 @@ import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
-import com.smartgwt.client.widgets.events.CloseClickEvent;
-import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.LinkItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
-import com.smartgwt.client.widgets.layout.*;
+import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.HStack;
+import com.smartgwt.client.widgets.layout.SectionStack;
+import com.smartgwt.client.widgets.layout.SectionStackSection;
+import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.layout.VStack;
 import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
@@ -28,7 +31,6 @@ import edu.ibs.webui.client.controller.FillUserInfoController;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
-import edu.ibs.webui.client.utils.JS;
 
 
 public class NavigationPane extends SectionStack {
@@ -68,7 +70,7 @@ public class NavigationPane extends SectionStack {
 		UserDTO user = null;
 		if (account != null) {
 			user = account.getUser();
-			if (user != null && user.getId() != 0l && user.getEmail() != null) {
+			if (user != null && user.getId() != 0l && user.getFirstName() != null) {
 				isUserFilled = true;
 			}
 		}
@@ -102,12 +104,6 @@ public class NavigationPane extends SectionStack {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				FillUserInfoController controller = new FillUserInfoController();
-				controller.getWindow().addCloseClickHandler(new CloseClickHandler() {
-					@Override
-					public void onCloseClick(CloseClickEvent closeClickEvent) {
-						JS.refreshPage();
-					}
-				});
 				controller.getWindow().draw();
 			}
 		});

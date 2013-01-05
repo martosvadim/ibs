@@ -11,6 +11,7 @@ import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.webui.client.ApplicationManager;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
+import edu.ibs.webui.client.utils.JS;
 
 /**
  * User: EgoshinME
@@ -45,6 +46,7 @@ public class FillUserInfoController extends GenericWindowController {
 						public void onSuccess(UserDTO userDTO) {
 							if (userDTO != null && userDTO.getFirstName() != null) {
 								ApplicationManager.getInstance().getAccount().setUser(userDTO);
+                                JS.refreshPage();
 							}
 						}
 					});

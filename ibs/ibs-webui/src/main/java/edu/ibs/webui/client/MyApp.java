@@ -121,9 +121,18 @@ public class MyApp implements EntryPoint {
 								new AppCallback<AccountDTO>() {
 									@Override
 									public void onSuccess(AccountDTO s) {
-										SC.say("Вы зарегестрировались, " + s.getEmail() + "!");
-										registerWindow.hide();
-										bg.addChild(getMainLayoutForRole());
+                                        if (s != null) {
+                                            JS.setCookie(LOGIN_COOKIE_NAME, s.getEmail());
+                                            if (AccountRole.ADMIN.equals(s.getRole())) {
+                                                JS.setCookie(IS_ADMIN_COOKIE, Boolean.TRUE.toString());
+                                            } else {
+                                                JS.setCookie(IS_ADMIN_COOKIE, Boolean.FALSE.toString());
+                                            }
+                                            ApplicationManager.getInstance().setAccount(s);
+                                            SC.say("Вы зарегестрировались, " + s.getEmail() + "!");
+                                            registerWindow.hide();
+                                            bg.addChild(getMainLayoutForRole());
+                                        }
 									}
 								});
 					}
