@@ -36,7 +36,7 @@ public class AuthServiceImpl implements IAuthService {
 		// Если есть куки
 		if (name.equals(ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_LOGIN))) {
 			//todo заполнить инфой из базы
-            AccountDTO dto = EntityTransformer.transformAccount(userLogic.login(name, pass));
+            AccountDTO dto = (AccountDTO) ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_ACC);
 			return dto;
 		} else  if (!ValidationUtils.isEmpty(name) && !ValidationUtils.isEmpty(pass)) {
             try {
@@ -44,6 +44,7 @@ public class AuthServiceImpl implements IAuthService {
 				if (account != null) {
 					AccountDTO dto = EntityTransformer.transformAccount(account);
 					ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, name);
+                    ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_ACC, dto);
 					ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR,
 							AccountRole.ADMIN.equals(dto.getRole()));
 					return dto;
