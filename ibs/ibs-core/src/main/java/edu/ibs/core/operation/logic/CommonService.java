@@ -30,6 +30,9 @@ public final class CommonService implements UserOperations, AdminOperations {
 	@Override
 	public void update(Account acc) {
 		if (dataSource.exist(Account.class, acc.getId())) {
+			if (acc.getUser() != null && acc.getUser().getId() == 0) {
+				dataSource.insert(acc.getUser());
+			}
 			dataSource.update(acc);
 		} else {
 			throw new IllegalArgumentException("Account does not exists");
@@ -99,7 +102,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public void reassign(CardBook cardBook, String toUserWithEmail) {
-		if (!emailIsValid(toUserWithEmail)) {
+		if (!isValid(toUserWithEmail)) {
 			throw new IllegalArgumentException(String.format("Invalid email %s", toUserWithEmail));
 		} else if (!dataSource.exist(cardBook.getClass(), cardBook.getId())) {
 			throw new IllegalArgumentException(String.format("Card book %s does not exist", cardBook));
@@ -178,7 +181,8 @@ public final class CommonService implements UserOperations, AdminOperations {
 		dataSource.delete(payment.getClass(), payment.getId());
 	}
 
-	private boolean emailIsValid(String email) {
+	@Override
+	public boolean isValid(String email) {
 		return EMAIL_PATTERN.matcher(email).matches();
 	}
 
@@ -194,7 +198,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public boolean isFree(String email) {
-		if (emailIsValid(email)) {
+		if (isValid(email)) {
 			return !dataSource.accountExists(email);
 		} else {
 			return false;
@@ -218,7 +222,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public Account create(AccountRole role, String email, String passwd) {
-		if (emailIsValid(email)) {
+		if (isValid(email)) {
 			if (isFree(email)) {
 				Account acc = new Account(email, passwd, role);
 				dataSource.insert(acc);
@@ -322,5 +326,30 @@ public final class CommonService implements UserOperations, AdminOperations {
 	@Override
 	public boolean cardBookExists(long id) {
 		return dataSource.exist(CardBook.class, id);
+	}
+
+	@Override
+	public CardRequest requestDebitCard(User user, BankBook bankBook) throws IllegalArgumentException {
+		return dataSource.requestCard(user, bankBook, null);
+	}
+
+	@Override
+	public CardRequest requestCreditCard(User user, BankBook bankBook, CreditPlan plan) throws IllegalArgumentException {
+		return dataSource.requestCard(user, bankBook, plan);
+	}
+
+	@Override
+	public List<CardRequest> getAllRequestsOf(User user) {
+		return dataSource.getAllCardRequestsOf(user);
+	}
+
+	@Override
+	public CardBook approve(CardRequest request) {
+		return dataSource.process(request, true, null);
+	}
+
+	@Override
+	public void decline(CardRequest request, String reason) {
+		dataSource.process(request, false, reason);
 	}
 }

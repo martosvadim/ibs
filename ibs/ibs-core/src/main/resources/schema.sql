@@ -32,8 +32,10 @@ create table Account
 	securityAnswer varchar(255),
 	avatar varchar(255),
 	INDEX userIndex (userID),
-	FOREIGN KEY (userID) REFERENCES User(id) on delete restrict on update cascade
+	FOREIGN KEY (userID) REFERENCES User(id) on delete set null on update cascade
 )engine InnoDB;
+
+insert into Account(id, email, role, password) values (1, 'root@noreply.edu', 'ADMIN', 'root');
 
 create table Currency
 (

@@ -18,6 +18,8 @@ public interface CommonOperations {
 
 	public boolean isFree(String email);
 
+	public boolean isValid(String email);
+
 	public Currency getCurrency(String name);
 
 	public List<Currency> getCurrencies();

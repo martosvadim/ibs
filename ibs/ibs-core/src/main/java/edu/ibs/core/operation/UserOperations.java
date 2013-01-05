@@ -58,4 +58,10 @@ public interface UserOperations extends CommonOperations {
 	public List<Transaction> getHistoryOutcome(User user, TransactionType type, Date from, Date to);
 
 	public void delete(SavedPayment payment);
+
+	public CardRequest requestDebitCard(User user, BankBook bankBook);
+
+	public CardRequest requestCreditCard(User user, BankBook bankBook, CreditPlan plan);
+
+	public List<CardRequest> getAllRequestsOf(User user);
 }

@@ -31,18 +31,18 @@ public class Account implements Serializable, AbstractEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
-	@Column(name = "id", updatable = false, nullable=false, unique=true)
+	@Column(name = "id", updatable = false, nullable = false, unique = true)
 	private long id;
 	// @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
 	@Basic(optional = false)
-	@Column(name = "email", nullable=false, updatable=false, unique=true)
+	@Column(name = "email", nullable = false, updatable = false, unique = true)
 	private String email;
 	@Basic(optional = false)
-	@Column(name = "role", nullable=false, updatable=false)
+	@Column(name = "role", nullable = false, updatable = false)
 	@Enumerated(EnumType.STRING)
 	private AccountRole role;
 	@Basic(optional = false)
-	@Column(name = "password", nullable=false, updatable=false)
+	@Column(name = "password", nullable = false, updatable = false)
 	private String password;
 	@Column(name = "securityQuestion")
 	private String securityQuestion;
@@ -74,11 +74,11 @@ public class Account implements Serializable, AbstractEntity {
 		this(email, password, role, null, null, null);
 	}
 
-    public Account(AccountDTO dto) {
-        this(dto.getEmail(), dto.getPassword(), dto.getRole(), dto.getSecurityQuestion(), dto.getSecurityAnswer(), dto.getAvatar());
-        this.id = dto.getId();
-        setUser(new User(dto.getUser()));
-    }
+	public Account(AccountDTO dto) {
+		this(dto.getEmail(), dto.getPassword(), dto.getRole(), dto.getSecurityQuestion(), dto.getSecurityAnswer(), dto.getAvatar());
+		this.id = dto.getId();
+		setUser(new User(dto.getUser()));
+	}
 
 	public String getAvatar() {
 		return avatar;
@@ -154,5 +154,4 @@ public class Account implements Serializable, AbstractEntity {
 	public String toString() {
 		return "Account{" + "id=" + id + ", email=" + email + ", role=" + role + ", password=" + password + ", securityQuestion=" + securityQuestion + ", securityAnswer=" + securityAnswer + ", avatar=" + avatar + ", user=" + user + '}';
 	}
-
 }

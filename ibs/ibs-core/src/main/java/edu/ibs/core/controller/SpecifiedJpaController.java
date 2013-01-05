@@ -375,4 +375,87 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 			}
 		}
 	}
+
+	public List<CardRequest> getAllCardRequestsOf(User user) {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			CriteriaBuilder builder = em.getCriteriaBuilder();
+			CriteriaQuery<CardRequest> criteria = builder.createQuery(CardRequest.class);
+			Root<CardRequest> cardRequest = criteria.from(CardRequest.class);
+			criteria.select(cardRequest).where(builder.equal(cardRequest.get("user"), user));
+			return em.createQuery(criteria).getResultList();
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
+	public CardRequest requestCard(User user, BankBook bankBook, CreditPlan plan) throws IllegalArgumentException {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			bankBook = em.find(bankBook.getClass(), bankBook.getId());
+			user = em.find(user.getClass(), user.getId());
+			if (bankBook == null) {
+				throw new IllegalArgumentException("Bank book was not found");
+			} else if (user == null) {
+				throw new IllegalArgumentException("User was not found");
+			} else if (!bankBook.getOwner().equals(user)) {
+				throw new IllegalArgumentException(String.format("User %s doesn't own bank book %s", user, bankBook));
+			} else {
+				CardRequest request;
+				if (plan == null) {
+					request = new CardRequest(user, bankBook);
+				} else {
+					request = new CardRequest(user, bankBook, plan);
+				}
+				em.persist(request);
+				return request;
+			}
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
+	public CardBook process(CardRequest request, boolean approved, String reason) {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			em.getTransaction().begin();
+			request = em.find(request.getClass(), request.getId());
+			CardBook cardBook = null;
+			if (approved) {
+				switch (request.getType()) {
+					case CREDIT: {
+						Credit credit = new Credit(request.getPlan());
+						cardBook = new CardBook(request.getBankBook(), credit);
+						break;
+					}
+					case DEBIT: {
+						cardBook = new CardBook(request.getBankBook());
+						break;
+					}
+					default: {
+						em.getTransaction().rollback();
+						throw new IllegalArgumentException(String.format("Unknown card book type %s", request.getType()));
+					}
+				}
+				request.approve(cardBook);
+				em.persist(cardBook);
+			} else {
+				request.decline(reason);;
+			}
+			em.merge(request);
+			em.getTransaction().commit();
+			return cardBook;
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
 }

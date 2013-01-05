@@ -37,4 +37,8 @@ public interface AdminOperations extends CommonOperations {
 	public List<CardRequest> getAllRequests();
 
 	public List<CardRequest> getRequests(Date from, Date to);
+
+	public CardBook approve(CardRequest request);
+
+	public void decline(CardRequest request, String reason);
 }
