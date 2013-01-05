@@ -1,10 +1,12 @@
 package edu.ibs.core.operation.logic;
 
 import edu.ibs.common.dto.AccountDTO;
+import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.exceptions.IbsServiceException;
 import edu.ibs.common.interfaces.IAuthService;
 import edu.ibs.core.entity.Account;
+import edu.ibs.core.entity.User;
 import edu.ibs.core.gwt.EntityTransformer;
 import edu.ibs.core.operation.AdminOperations;
 import edu.ibs.core.operation.UserOperations;
@@ -23,24 +25,13 @@ public class AuthServiceImpl implements IAuthService {
 	private static final String INCORRECT_CAPTCHA_TXT = "Вы ввели неверные символы с картинки.";
 	private static final String PASSWORD_NOT_EQUAL_MSG = "Пароль не соответствует введённому.";
 	private static final String CANNOT_LOGIN_MSG = "Неверный логин или пароль.";
+	private static final String NO_PERMISSION_MSG = "У вас нет прав для выполнения данной операции.";
 
 	private UserOperations userLogic;
 	private AdminOperations adminLogic;
 
 	@Override
 	public AccountDTO login(String name, String pass) throws IbsServiceException {
-
-		if (ServerConstants.ADMIN_LOGIN.equals(name) && ServerConstants.ADMIN_PASS.equals(pass)) {
-			AccountDTO dto = new AccountDTO();
-			dto.setEmail(name);
-			dto.setRole(AccountRole.ADMIN);
-			return dto;
-		} else if ("1".equals(name)) {
-			AccountDTO dto = new AccountDTO();
-			dto.setEmail(name);
-			dto.setRole(AccountRole.USER);
-			return dto;
-		}
 
 		// Если есть куки
 		if (name.equals(ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_LOGIN))) {
@@ -49,13 +40,16 @@ public class AuthServiceImpl implements IAuthService {
 			return dto;
 		} else  if (!ValidationUtils.isEmpty(name) && !ValidationUtils.isEmpty(pass)) {
             try {
-                AccountDTO dto = EntityTransformer.transformAccount(userLogic.login(name, pass));
-                ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, name);
-                if (ServerConstants.ADMIN_LOGIN.equals(name) && ServerConstants.ADMIN_PASS.equals(pass)) {
-                    ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR, true);
-                    dto.setRole(AccountRole.ADMIN);
-                }
-                return dto;
+				Account account = userLogic.login(name, pass);
+				if (account != null) {
+					AccountDTO dto = EntityTransformer.transformAccount(account);
+					ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, name);
+					ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR,
+							AccountRole.ADMIN.equals(dto.getRole()));
+					return dto;
+				} else {
+					throw new IbsServiceException(CANNOT_LOGIN_MSG);
+				}
             } catch (NoResultException e) {
                 throw new IbsServiceException(CANNOT_LOGIN_MSG);
             }
@@ -91,8 +85,39 @@ public class AuthServiceImpl implements IAuthService {
 		}
 	}
 
+	@Override
+	public AccountDTO create(AccountRole role, String email, String password) throws IbsServiceException {
+		if (ValidationUtils.isEmpty(email) || ValidationUtils.isEmpty(password)) {
+			throw new IbsServiceException(EMPTY_CREDENTIALS_MSG);
+		} else if (!Boolean.TRUE.equals(
+				ServletUtils.getRequest().getSession().getAttribute(ServerConstants.ADMIN_ATTR))) {
+			throw new IbsServiceException(NO_PERMISSION_MSG);
+		} else {
+			return EntityTransformer.transformAccount(adminLogic.create(role, email, password));
+		}
+	}
+
+	@Override
+	public UserDTO setUser(AccountDTO accountDTO, String firstName, String lastName, String passportNumber)
+			throws IbsServiceException {
+
+		UserDTO userDTO = null;
+		if (firstName != null && firstName.length() > 0 && lastName != null && lastName.length() > 0
+				&& passportNumber != null && passportNumber.length() > 0) {
+			try {
+				Account acc = new Account(accountDTO);
+				acc.setUser(new User(firstName, lastName, passportNumber));
+				userLogic.update(acc);
+				userDTO = EntityTransformer.transformUser(acc.getUser());
+			} catch (Throwable e) {
+				throw new IbsServiceException("Не удалось обновить информацию о пользователе.");
+			}
+		}
+		return userDTO;
+	}
+
 	private Account register(String email, String passwd) throws PersistenceException {
-		return adminLogic.create(AccountRole.USER, email, passwd);
+		return userLogic.register(email, passwd);
 	}
 
 	public UserOperations getUserLogic() {

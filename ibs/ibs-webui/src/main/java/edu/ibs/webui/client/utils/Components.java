@@ -6,13 +6,19 @@ import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.PasswordItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
+import edu.ibs.common.dto.VocDTO;
 import edu.ibs.webui.client.controller.GenericController;
+import edu.ibs.webui.client.controller.SelectController;
+
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author EgoshinME
@@ -227,6 +233,57 @@ public class Components {
 
         return label;
     }
+
+	/**
+	 * Заполняем комбобокс значениями
+	 *
+	 * @param values значения
+	 * @param combo комбобокс
+	 */
+	public static void fillComboBox(final List values, final ComboBoxItem combo) {
+		if (values.size() >= 1) {
+			fillComboBox(values, combo, true);
+		}
+	}
+
+	/**
+	 * Заполняем комбобокс значениями
+	 *
+	 * @param values значения
+	 * @param combo комбобокс
+	 * @param setDefaultFirst устонавливать ли первое значение по умолчанию
+	 */
+	public static void fillComboBox(final List values, final ComboBoxItem combo, final boolean setDefaultFirst) {
+		LinkedHashMap<String, String> svalues = new LinkedHashMap<String, String>();
+		if (values != null) {
+
+			for (Object o : values) {
+				if (o instanceof VocDTO) {
+					svalues.put("" + ((VocDTO) o).getId(), "" + ((VocDTO) o).getValue());
+				} else {
+					svalues.put("" + o, "" + o);
+				}
+			}
+			if (setDefaultFirst && values.size() > 0) {
+				Object o = values.get(0);
+				if (o instanceof VocDTO) {
+					combo.setValue("" + ((VocDTO) o).getValue());
+				} else {
+					combo.setValue("" + o);
+				}
+			}
+		}
+		combo.setValueMap(svalues);
+	}
+
+	/**
+	 * Создаём контрол для выбора элемента из списка
+	 *
+	 * @return контролл
+	 */
+	public static SelectController getComboBoxControll() {
+		return new SelectController();
+	}
 
     public static Canvas addTitle(final String title, final Canvas control) {
 

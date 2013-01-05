@@ -20,6 +20,8 @@ import com.smartgwt.client.widgets.layout.VStack;
 import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
+import edu.ibs.webui.client.admin.CreateBankBookController;
+import edu.ibs.webui.client.admin.CreateNewUserController;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
@@ -179,7 +181,9 @@ public class MyApp implements EntryPoint {
 											JS.setCookie(LOGIN_COOKIE_NAME, loginText);
                                             if (AccountRole.ADMIN.equals(s.getRole())) {
                                                 JS.setCookie(IS_ADMIN_COOKIE, Boolean.TRUE.toString());
-                                            }
+                                            } else {
+												JS.setCookie(IS_ADMIN_COOKIE, Boolean.FALSE.toString());
+											}
 											SC.say("Вы залогинились, ", s.getEmail() + "!");
                                             ApplicationManager.getInstance().setAccount(s);
 											loginWindow.hide();
@@ -254,27 +258,39 @@ public class MyApp implements EntryPoint {
             vLayout.addMember(new Masthead());
 
 			VLayout links = new VLayout();
-			links.setMembersMargin(2);
+//			links.setMembersMargin(2);
 			links.setWidth100();
-			links.setAlign(Alignment.CENTER);
+//			links.setAlign(Alignment.CENTER);
 			final String adminLinkStyleName = "label-link-admin";
-			final ClickHandler clickHandler = new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent clickEvent) {
-					SC.say(clickEvent.getSource().toString());
-				}
-			};
+
 			Label addUser = new Label("Добавить пользователя");
 			addUser.setStyleName(adminLinkStyleName);
-			addUser.addClickHandler(clickHandler);
+			final ClickHandler addUserClickHandler = new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent clickEvent) {
+					CreateNewUserController controller = new CreateNewUserController();
+					controller.getWindow().draw();
+				}
+			};
+			addUser.addClickHandler(addUserClickHandler);
 			links.addMember(addUser);
+
 			Label deleteUser = new Label("Удалить пользователя");
 			deleteUser.setStyleName(adminLinkStyleName);
-			addUser.addClickHandler(clickHandler);
 			links.addMember(deleteUser);
-			Label createBankBook = new Label("Создать счёт");
+
+			Label createBankBook = new Label("Создать банковский счёт");
 			createBankBook.setStyleName(adminLinkStyleName);
+			final ClickHandler createBankBookClickHandler = new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent clickEvent) {
+					CreateBankBookController controller = new CreateBankBookController();
+					controller.getWindow().draw();
+				}
+			};
+			createBankBook.addClickHandler(createBankBookClickHandler);
 			links.addMember(createBankBook);
+
 			Label createCardBook = new Label("Создать карт-счёт");
 			createCardBook.setStyleName(adminLinkStyleName);
 			links.addMember(createCardBook);
