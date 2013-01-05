@@ -72,6 +72,13 @@ public class MyApp implements EntryPoint {
 					if (dto == null) {
 						login();
 					} else {
+                        JS.setCookie(LOGIN_COOKIE_NAME, dto.getEmail());
+                        if (AccountRole.ADMIN.equals(dto.getRole())) {
+                            JS.setCookie(IS_ADMIN_COOKIE, Boolean.TRUE.toString());
+                        } else {
+                            JS.setCookie(IS_ADMIN_COOKIE, Boolean.FALSE.toString());
+                        }
+                        ApplicationManager.getInstance().setAccount(dto);
 						bg.addChild(getMainLayoutForRole());
 					}
 				}
