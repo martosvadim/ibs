@@ -61,7 +61,6 @@ public class NavigationPane extends SectionStack {
         SectionStackSection section3 = new SectionStackSection("Настройки");
         section3.setExpanded(true);
 		VStack stack3 = new VStack();
-		//todo Добавить нужные ссылки в раздел
 
 		boolean isUserFilled = false;
 		AccountDTO account = ApplicationManager.getInstance().getAccount();
