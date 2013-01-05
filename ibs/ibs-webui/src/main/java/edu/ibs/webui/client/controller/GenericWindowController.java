@@ -10,6 +10,8 @@ import edu.ibs.webui.client.utils.Components;
  */
 public class GenericWindowController extends GenericController {
 
+	protected static final Integer MARGIN = 5;
+
 	private Window window = Components.getWindow();
 
 	public Window getWindow() {

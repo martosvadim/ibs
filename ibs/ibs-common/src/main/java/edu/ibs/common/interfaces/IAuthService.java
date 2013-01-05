@@ -18,4 +18,5 @@ public interface IAuthService extends RemoteService {
 	void logout(String login) throws IbsServiceException;
 	AccountDTO register(String name, String password, String passwordConfirm, String captchaText) throws IbsServiceException;
 	AccountDTO create(AccountRole role, String email, String password) throws IbsServiceException;
+	UserDTO setUser(AccountDTO account, String firstName, String lastName, String passportNumber) throws IbsServiceException;
 }

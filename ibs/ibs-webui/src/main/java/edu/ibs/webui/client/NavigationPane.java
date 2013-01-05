@@ -13,15 +13,21 @@ import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
+import com.smartgwt.client.widgets.events.CloseClickEvent;
+import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.LinkItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.*;
+import edu.ibs.common.dto.AccountDTO;
+import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
+import edu.ibs.webui.client.controller.FillUserInfoController;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
+import edu.ibs.webui.client.utils.JS;
 
 
 public class NavigationPane extends SectionStack {
@@ -56,12 +62,56 @@ public class NavigationPane extends SectionStack {
         section3.setExpanded(true);
 		VStack stack3 = new VStack();
 		//todo Добавить нужные ссылки в раздел
+
+		boolean isUserFilled = false;
+		AccountDTO account = ApplicationManager.getInstance().getAccount();
+		UserDTO user = null;
+		if (account != null) {
+			user = account.getUser();
+			if (user != null && user.getId() != 0l && user.getEmail() != null) {
+				isUserFilled = true;
+			}
+		}
+
+		if (!isUserFilled) {
+			// Если UserDTO пустой, предлагаем заполнить информацию о пользователе
+			stack3.addMember(getFillUserLink());
+		} else {
+			//Иначе выводим заполненную информацию о пользователе
+
+			Label firstNameLbl = new Label(user.getFirstName());
+			stack3.addMember(Components.addTitle("Имя", firstNameLbl));
+
+			Label lastNameLbl = new Label(user.getLastName());
+			stack3.addMember(Components.addTitle("Фамилия", lastNameLbl));
+
+			Label passportNumberLbl = new Label(user.getPassportNumber());
+			stack3.addMember(Components.addTitle("№ пасспорта", passportNumberLbl));
+
+		}
+
 		section3.setItems(stack3);
 
         this.addSection(section1);
         this.addSection(section2);
         this.addSection(section3);
     }
+
+	private Canvas getFillUserLink() {
+		return getLink("Заполнить информацию о пользователе", new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				FillUserInfoController controller = new FillUserInfoController();
+				controller.getWindow().addCloseClickHandler(new CloseClickHandler() {
+					@Override
+					public void onCloseClick(CloseClickEvent closeClickEvent) {
+						JS.refreshPage();
+					}
+				});
+				controller.getWindow().draw();
+			}
+		});
+	}
 
 	private Canvas getAddCardLink() {
 		return getLink("Заявка на карту", new ClickHandler() {

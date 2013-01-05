@@ -21,8 +21,6 @@ import edu.ibs.webui.client.utils.Components;
  */
 public class CreateNewUserController extends GenericWindowController {
 
-	private static final Integer MARGIN = 5;
-
 	public CreateNewUserController() {
 		getWindow().setTitle("Создание пользователя");
 		final GenericController email = Components.getTextItem();

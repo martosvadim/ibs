@@ -1,10 +1,12 @@
 package edu.ibs.core.operation.logic;
 
 import edu.ibs.common.dto.AccountDTO;
+import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.exceptions.IbsServiceException;
 import edu.ibs.common.interfaces.IAuthService;
 import edu.ibs.core.entity.Account;
+import edu.ibs.core.entity.User;
 import edu.ibs.core.gwt.EntityTransformer;
 import edu.ibs.core.operation.AdminOperations;
 import edu.ibs.core.operation.UserOperations;
@@ -93,6 +95,25 @@ public class AuthServiceImpl implements IAuthService {
 		} else {
 			return EntityTransformer.transformAccount(adminLogic.create(role, email, password));
 		}
+	}
+
+	@Override
+	public UserDTO setUser(AccountDTO accountDTO, String firstName, String lastName, String passportNumber)
+			throws IbsServiceException {
+
+		UserDTO userDTO = null;
+		if (firstName != null && firstName.length() > 0 && lastName != null && lastName.length() > 0
+				&& passportNumber != null && passportNumber.length() > 0) {
+			try {
+				Account acc = new Account(accountDTO);
+				acc.setUser(new User(firstName, lastName, passportNumber));
+				userLogic.update(acc);
+				userDTO = EntityTransformer.transformUser(acc.getUser());
+			} catch (Throwable e) {
+				throw new IbsServiceException("Не удалось обновить информацию о пользователе.");
+			}
+		}
+		return userDTO;
 	}
 
 	private Account register(String email, String passwd) throws PersistenceException {
