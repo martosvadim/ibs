@@ -73,7 +73,7 @@ public final class EntityTransformer {
         return dto;
     }
 
-    private static CreditDTO transformCredit(final Credit credit) {
+	public static CreditDTO transformCredit(final Credit credit) {
         CreditDTO dto = new CreditDTO();
 		if (credit != null) {
 			dto.setId(credit.getId());
@@ -84,7 +84,7 @@ public final class EntityTransformer {
         return dto;
     }
 
-    private static CreditPlanDTO transformCreditPlan(CreditPlan creditPlan) {
+	public static CreditPlanDTO transformCreditPlan(CreditPlan creditPlan) {
         CreditPlanDTO dto = new CreditPlanDTO();
 		if (creditPlan != null) {
 			dto.setId(creditPlan.getId());
@@ -99,7 +99,7 @@ public final class EntityTransformer {
         return dto;
     }
 
-    private static MoneyDTO transformMoney(final Money money) {
+	public static MoneyDTO transformMoney(final Money money) {
         MoneyDTO dto = new MoneyDTO();
 		if (money != null) {
         	dto.setCurrency(transformCurrency(money.currency()));
@@ -108,7 +108,7 @@ public final class EntityTransformer {
         return dto;
     }
 
-    private static CurrencyDTO transformCurrency(final Currency currency) {
+	public static CurrencyDTO transformCurrency(final Currency currency) {
         CurrencyDTO dto = new CurrencyDTO();
 		if (currency != null) {
 			dto.setFactor(currency.getFloatFactor());

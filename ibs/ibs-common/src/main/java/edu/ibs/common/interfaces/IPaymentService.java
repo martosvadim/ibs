@@ -2,10 +2,8 @@ package edu.ibs.common.interfaces;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import edu.ibs.common.dto.BankBookDTO;
-import edu.ibs.common.dto.CardBookDTO;
-import edu.ibs.common.dto.MoneyDTO;
-import edu.ibs.common.dto.UserDTO;
+import edu.ibs.common.dto.*;
+import edu.ibs.common.enums.CardBookType;
 import edu.ibs.common.exceptions.IbsServiceException;
 
 import java.util.List;
@@ -20,4 +18,6 @@ public interface IPaymentService extends RemoteService {
 	BankBookDTO createBankBook(String userId) throws IbsServiceException;
 	void pay(CardBookDTO from, long to, MoneyDTO money) throws IbsServiceException;
     List<CardBookDTO> getCardBooks(UserDTO user) throws IbsServiceException;
+	List<CurrencyDTO> getCurrencies() throws IbsServiceException;
+	void requestCard(String bankBookId, CardBookType cardBookType, CurrencyDTO currencyDTO) throws IbsServiceException;
 }

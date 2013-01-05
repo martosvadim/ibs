@@ -23,6 +23,7 @@ import com.smartgwt.client.widgets.layout.*;
 import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
+import edu.ibs.webui.client.controller.CardRequestController;
 import edu.ibs.webui.client.controller.FillUserInfoController;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.AppCallback;
@@ -116,7 +117,8 @@ public class NavigationPane extends SectionStack {
 		return getLink("Заявка на карту", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
-
+				CardRequestController controller = new CardRequestController();
+				controller.getWindow().draw();
 			}
 		});
 	}

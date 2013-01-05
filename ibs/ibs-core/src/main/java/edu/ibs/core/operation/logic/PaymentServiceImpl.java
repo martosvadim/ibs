@@ -1,9 +1,7 @@
 package edu.ibs.core.operation.logic;
 
-import edu.ibs.common.dto.BankBookDTO;
-import edu.ibs.common.dto.CardBookDTO;
-import edu.ibs.common.dto.MoneyDTO;
-import edu.ibs.common.dto.UserDTO;
+import edu.ibs.common.dto.*;
+import edu.ibs.common.enums.CardBookType;
 import edu.ibs.common.exceptions.IbsServiceException;
 import edu.ibs.common.interfaces.IPaymentService;
 import edu.ibs.core.entity.*;
@@ -11,6 +9,7 @@ import edu.ibs.core.gwt.EntityTransformer;
 import edu.ibs.core.operation.AdminOperations;
 import edu.ibs.core.operation.UserOperations;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,7 +60,32 @@ public class PaymentServiceImpl implements IPaymentService {
         return list;
     }
 
-    public UserOperations getUserLogic() {
+	@Override
+	public List<CurrencyDTO> getCurrencies() throws IbsServiceException {
+		try {
+			List<Currency> currencies = adminLogic.getCurrencies();
+			List<CurrencyDTO> result = new ArrayList<CurrencyDTO>();
+			if (currencies != null) {
+				for (Currency currency : currencies) {
+					result.add(EntityTransformer.transformCurrency(currency));
+				}
+			}
+			return result;
+		} catch (Throwable t) {
+			throw new IbsServiceException("Возникла ошибка при получении списка валют.");
+		}
+	}
+
+	@Override
+	public void requestCard(String bankBookId, CardBookType cardBookType, CurrencyDTO currencyDTO)
+			throws IbsServiceException {
+
+		if (bankBookId != null && bankBookId.length() > 0) {
+			//todo Сделать заявку на карту
+		}
+	}
+
+	public UserOperations getUserLogic() {
         return userLogic;
     }
 
