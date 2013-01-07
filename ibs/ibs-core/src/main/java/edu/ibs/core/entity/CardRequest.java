@@ -1,10 +1,9 @@
 package edu.ibs.core.entity;
 
 import edu.ibs.common.enums.CardBookType;
-
+import java.io.Serializable;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
 
 /**
  *
@@ -34,7 +33,7 @@ public class CardRequest implements Serializable, AbstractEntity {
 	@JoinColumn(name = "userID", referencedColumnName = "id", updatable = false, nullable = false)
 	@ManyToOne(optional = false)
 	private User user;
-	@JoinColumn(name = "bankBookID", referencedColumnName = "id", updatable = false, nullable = false)
+	@JoinColumn(name = "bankBookID", referencedColumnName = "id", updatable = true, nullable = true)
 	@OneToOne(optional = true)
 	private BankBook bankBook;
 	@Basic(optional = false)

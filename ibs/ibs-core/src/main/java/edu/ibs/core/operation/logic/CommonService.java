@@ -339,6 +339,9 @@ public final class CommonService implements UserOperations, AdminOperations {
 	
 	@Override
 	public CardRequest requestCreditCard(User user, BankBook bankBook, CreditPlan plan) throws IllegalArgumentException {
+		if(plan == null) {
+			throw new NullPointerException("Credit plan is null");
+		}
 		return dataSource.requestCard(user, bankBook, plan);
 	}
 	

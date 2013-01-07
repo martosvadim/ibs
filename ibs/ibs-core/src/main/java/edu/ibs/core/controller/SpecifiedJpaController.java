@@ -396,24 +396,25 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
+			Currency curr = bankBook.getCurrency();
 			bankBook = em.find(bankBook.getClass(), bankBook.getId());
 			user = em.find(user.getClass(), user.getId());
 			if (bankBook == null) {
-				throw new IllegalArgumentException("Bank book was not found");
+				bankBook = new BankBook(user, new Money(0L, curr));
+				em.persist(bankBook);
 			} else if (user == null) {
 				throw new IllegalArgumentException("User was not found");
 			} else if (!bankBook.getOwner().equals(user)) {
 				throw new IllegalArgumentException(String.format("User %s doesn't own bank book %s", user, bankBook));
-			} else {
-				CardRequest request;
-				if (plan == null) {
-					request = new CardRequest(user, bankBook);
-				} else {
-					request = new CardRequest(user, bankBook, plan);
-				}
-				em.persist(request);
-				return request;
 			}
+			CardRequest request;
+			if (plan == null) {
+				request = new CardRequest(user, bankBook);
+			} else {
+				request = new CardRequest(user, bankBook, plan);
+			}
+			em.persist(request);
+			return request;
 		} finally {
 			if (em != null) {
 				em.close();
