@@ -77,15 +77,39 @@ public class PaymentServiceImpl implements IPaymentService {
 	}
 
 	@Override
-	public void requestCard(String bankBookId, CardBookType cardBookType, CurrencyDTO currencyDTO)
+	public void requestCard(UserDTO userDTO, String bankBookId, CardBookType cardBookType, CurrencyDTO currencyDTO)
 			throws IbsServiceException {
 
-		if (bankBookId != null && bankBookId.length() > 0) {
-			//todo Сделать заявку на карту
-		}
+        try {
+            if (bankBookId != null && bankBookId.length() > 0) {
+                if (CardBookType.DEBIT.equals(cardBookType)) {
+                    BankBookDTO bankBookDTO = new BankBookDTO();
+                    bankBookDTO.setId(Integer.parseInt(bankBookId));
+                    bankBookDTO.setOwner(userDTO);
+                    bankBookDTO.setCurrency(currencyDTO);
+                    userLogic.requestDebitCard(new User(userDTO), new BankBook(bankBookDTO));
+                } else if (CardBookType.CREDIT.equals(cardBookType)) {
+
+                }
+            }
+        } catch (Throwable t) {
+            throw new IbsServiceException("Ошибка при обработке запроса на карт-счет.");
+        }
 	}
 
-	public UserOperations getUserLogic() {
+    @Override
+    public List<BankBookDTO> getBankBooks(UserDTO userDTO) throws IbsServiceException {
+        List<BankBookDTO> result = new LinkedList<BankBookDTO>();
+        if (userDTO != null) {
+            User user = new User(userDTO);
+            for (BankBook bankBook : userLogic.getBankBooks(user)) {
+                result.add(EntityTransformer.transformBankBook(bankBook));
+            }
+        }
+        return result;
+    }
+
+    public UserOperations getUserLogic() {
         return userLogic;
     }
 

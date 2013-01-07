@@ -1,5 +1,7 @@
 package edu.ibs.core.entity;
 
+import edu.ibs.common.dto.BankBookDTO;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -60,7 +62,12 @@ public class BankBook implements Serializable, AbstractEntity, MoneyEntity {
 		this(money, owner, false);
 	}
 
-	private void validateMoney() {
+    public BankBook(BankBookDTO bankBookDTO) {
+        this(new User(bankBookDTO.getOwner()), new Money(0, new Currency(bankBookDTO.getCurrency())));
+        this.id = bankBookDTO.getId();
+    }
+
+    private void validateMoney() {
 		if (this.money == null) {
 			this.money = new Money(this.balance, this.currency);
 		}

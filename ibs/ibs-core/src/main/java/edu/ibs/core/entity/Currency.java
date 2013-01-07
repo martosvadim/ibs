@@ -1,5 +1,6 @@
 package edu.ibs.core.entity;
 
+import edu.ibs.common.dto.CurrencyDTO;
 import edu.ibs.common.enums.Fraction;
 
 import javax.persistence.*;
@@ -49,7 +50,11 @@ public class Currency implements Serializable, AbstractEntity {
 		this.fraction = fraction;
 	}
 
-	public BigDecimal getFactor() {
+    public Currency(CurrencyDTO currency) {
+        this(currency.getName(), currency.getFactor(), currency.getFraction());
+    }
+
+    public BigDecimal getFactor() {
 		return BigDecimal.valueOf(factor);
 	}
 

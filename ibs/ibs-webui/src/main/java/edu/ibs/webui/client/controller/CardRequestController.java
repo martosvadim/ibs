@@ -6,10 +6,13 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
+import edu.ibs.common.dto.BankBookDTO;
 import edu.ibs.common.dto.CurrencyDTO;
+import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.dto.VocDTO;
 import edu.ibs.common.enums.CardBookType;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
+import edu.ibs.webui.client.ApplicationManager;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 
@@ -24,7 +27,7 @@ import java.util.List;
  */
 public class CardRequestController extends GenericWindowController {
 
-    private GenericController bankBookControl = Components.getTextItem();
+    private GenericController bankBookControl = Components.getComboBoxControll();
     private GenericController cardTypeControl = Components.getComboBoxControll();
     private GenericController currenciesControl = Components.getComboBoxControll();
 
@@ -32,6 +35,30 @@ public class CardRequestController extends GenericWindowController {
 
 	public CardRequestController() {
 		getWindow().setTitle("Заявка на карт-счёт");
+
+        UserDTO userDTO = ApplicationManager.getInstance().getAccount().getUser();
+        if (userDTO != null) {
+            IPaymentServiceAsync.Util.getInstance().getBankBooks(userDTO, new AppCallback<List<BankBookDTO>>() {
+                @Override
+                public void onSuccess(List<BankBookDTO> bankBookDTOs) {
+                    if (bankBookDTOs != null && bankBookDTOs.size() > 0) {
+                        List<VocDTO<String, String>> bindList = new LinkedList<VocDTO<String, String>>();
+                        for (BankBookDTO dto : bankBookDTOs) {
+                            VocDTO<String, String> vocDTO = new VocDTO<String, String>(
+                                    String.valueOf(dto.getId()), String.valueOf(dto.getId()));
+                            bindList.add(vocDTO);
+                        }
+                        bankBookControl.bind(bindList);
+                    } else {
+                        SC.say("Нет банковских счетов.");
+                        getWindow().hide();
+                    }
+                }
+            });
+        } else {
+            SC.warn("Аккаунт не связан с пользователем.");
+            getWindow().hide();
+        }
 
 		List<VocDTO<String, String>> types = new LinkedList<VocDTO<String, String>>();
 		for (CardBookType type : CardBookType.values()) {
@@ -69,7 +96,7 @@ public class CardRequestController extends GenericWindowController {
 		createButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent clickEvent) {
-				String bankBookIdTxt = ((String) bankBookControl.unbind());
+				String bankBookIdTxt = ((VocDTO<String, String>) bankBookControl.unbind()).getId();
 				VocDTO<String, String> cardTypeVoc = ((VocDTO<String, String>) cardTypeControl.unbind());
 				String cardTypeTxt = cardTypeVoc.getValue();
 				VocDTO<String, String> currencyVoc = ((VocDTO<String, String>) currenciesControl.unbind());
@@ -88,7 +115,8 @@ public class CardRequestController extends GenericWindowController {
 							currencyDTO = currencyDTO1;
 						}
 					}
-					IPaymentServiceAsync.Util.getInstance().requestCard(bankBookIdTxt, cardBookType, currencyDTO, new AppCallback<Void>() {
+					IPaymentServiceAsync.Util.getInstance().requestCard(ApplicationManager.getInstance().getAccount().getUser(),
+                            bankBookIdTxt, cardBookType, currencyDTO, new AppCallback<Void>() {
 						@Override
 						public void onSuccess(Void aVoid) {
 							SC.say("Заявка отправлена успешно!");
