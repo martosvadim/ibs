@@ -35,7 +35,6 @@ public class AuthServiceImpl implements IAuthService {
 
 		// Если есть куки
 		if (name.equals(ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_LOGIN))) {
-			//todo заполнить инфой из базы
             AccountDTO dto = (AccountDTO) ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_ACC);
 			return dto;
 		} else  if (!ValidationUtils.isEmpty(name) && !ValidationUtils.isEmpty(pass)) {
@@ -71,18 +70,18 @@ public class AuthServiceImpl implements IAuthService {
 			throws IbsServiceException {
 
 		if (ValidationUtils.isEmpty(name) || ValidationUtils.isEmpty(password)
-				|| ValidationUtils.isEmpty(passwordConfirm) || ValidationUtils.isEmpty(captchaText)) {
+				|| ValidationUtils.isEmpty(passwordConfirm) /*|| ValidationUtils.isEmpty(captchaText)*/) {
 			throw new IbsServiceException(EMPTY_CREDENTIALS_MSG);
 		} else if (!password.equals(passwordConfirm)) {
 			throw new IbsServiceException(PASSWORD_NOT_EQUAL_MSG);
 		} else {
 			// Верификация текста капчи
-			Captcha captcha = (Captcha) ServletUtils.getRequest().getSession().getAttribute(Captcha.NAME);
-			if (captcha != null && captcha.isCorrect(captchaText)) {
+//			Captcha captcha = (Captcha) ServletUtils.getRequest().getSession().getAttribute(Captcha.NAME);
+//			if (captcha != null && captcha.isCorrect(captchaText)) {
 				return EntityTransformer.transformAccount(register(name, password));
-			} else {
-				throw new IbsServiceException(INCORRECT_CAPTCHA_TXT);
-			}
+//			} else {
+//				throw new IbsServiceException(INCORRECT_CAPTCHA_TXT);
+//			}
 		}
 	}
 

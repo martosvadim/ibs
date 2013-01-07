@@ -23,6 +23,7 @@ import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.webui.client.admin.CreateBankBookController;
 import edu.ibs.webui.client.admin.CreateNewUserController;
 import edu.ibs.webui.client.controller.GenericController;
+import edu.ibs.webui.client.controller.GenericWindowController;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 import edu.ibs.webui.client.utils.JS;
@@ -98,7 +99,7 @@ public class MyApp implements EntryPoint {
 			final GenericController login = Components.getTextItem();
 			final GenericController pass = Components.getPasswordItem();
 			final GenericController repPass = Components.getPasswordItem();
-			final GenericController capthcaInputTextItemView = Components.getTextItem();
+//			final GenericController capthcaInputTextItemView = Components.getTextItem();
 
 			IButton regButton = new IButton("Зарегистрироваться");
 			regButton.addClickHandler(new ClickHandler() {
@@ -107,17 +108,17 @@ public class MyApp implements EntryPoint {
 					String name = (String) login.unbind();
 					String password = (String) pass.unbind();
 					String passwordAgain = (String) repPass.unbind();
-					String captchaText = (String) capthcaInputTextItemView.unbind();
+//					String captchaText = (String) capthcaInputTextItemView.unbind();
 					if (name == null || "".equals(name) || name.length() == 0) {
 						SC.warn("Почтовый адрес не заполнен.");
 					} else if (password == null || "".equals(password) || password.length() == 0) {
 						SC.warn("Пароль не заполнен.");
 					} else if (passwordAgain == null || "".equals(passwordAgain) || passwordAgain.length() == 0) {
 						SC.warn("Поле подтверждения пароля не заполнено.");
-					} else if (captchaText == null || "".equals(captchaText) || captchaText.length() == 0) {
-						SC.warn("Введите текст с картинки.");
+//					} else if (captchaText == null || "".equals(captchaText) || captchaText.length() == 0) {
+//						SC.warn("Введите текст с картинки.");
 					} else {
-						IAuthServiceAsync.Util.getInstance().register(name, password, passwordAgain, captchaText,
+						IAuthServiceAsync.Util.getInstance().register(name, password, passwordAgain, null,
 								new AppCallback<AccountDTO>() {
 									@Override
 									public void onSuccess(AccountDTO s) {
@@ -140,9 +141,9 @@ public class MyApp implements EntryPoint {
 			});
 			regButton.setWidth(150);
 
-			final Img captchaImage = new Img("/SimpleCaptcha.jpg");
-			captchaImage.setWidth(120);
-			captchaImage.setHeight(35);
+//			final Img captchaImage = new Img("/SimpleCaptcha.jpg");
+//			captchaImage.setWidth(120);
+//			captchaImage.setHeight(35);
 
 			VStack layout = new VStack();
 			layout.setMembersMargin(5);
@@ -151,8 +152,8 @@ public class MyApp implements EntryPoint {
 			layout.addMember(Components.addTitle("Пароль", pass.getView()));
 			layout.addMember(Components.addTitle("Подтверждение пароля", repPass.getView()));
 
-			layout.addMember(Components.addTitle("", captchaImage));
-			layout.addMember(Components.addTitle("", capthcaInputTextItemView.getView()));
+//			layout.addMember(Components.addTitle("", captchaImage));
+//			layout.addMember(Components.addTitle("", capthcaInputTextItemView.getView()));
 			layout.addMember(regButton);
 			layout.setShowResizeBar(false);
 
@@ -173,6 +174,7 @@ public class MyApp implements EntryPoint {
     private Window getLoginWindow() {
 		if (loginWindow == null) {
 			loginWindow = Components.getWindow();
+            loginWindow.setShowCloseButton(false);
 			final GenericController login = Components.getTextItem();
 			final GenericController pass = Components.getPasswordItem();
 
@@ -237,7 +239,7 @@ public class MyApp implements EntryPoint {
 			buttons.addMember(loginButton);
 			buttons.addMember(regForm);
 
-			layout.addMember(buttons);
+            layout.addMember(buttons);
 			layout.setShowResizeBar(false);
 
 			loginWindow.addItem(layout);
