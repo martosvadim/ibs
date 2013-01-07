@@ -24,16 +24,19 @@ import java.util.List;
  */
 public class CardRequestController extends GenericWindowController {
 
+    private GenericController bankBookControl = Components.getTextItem();
+    private GenericController cardTypeControl = Components.getComboBoxControll();
+    private GenericController currenciesControl = Components.getComboBoxControll();
+
 	private List<CurrencyDTO> currencyDTOList = new ArrayList<CurrencyDTO>();
 
 	public CardRequestController() {
 		getWindow().setTitle("Заявка на карт-счёт");
-		final GenericController bankBookControl = Components.getTextItem();
-		final GenericController cardTypeControl = Components.getComboBoxControll();
 
 		List<VocDTO<String, String>> types = new LinkedList<VocDTO<String, String>>();
 		for (CardBookType type : CardBookType.values()) {
-			VocDTO<String, String> vocDTO = new VocDTO<String, String>(type.toString(), type.toString());
+			VocDTO<String, String> vocDTO = new VocDTO<String, String>();
+            vocDTO.setId(type.toString());
 			if (CardBookType.DEBIT.equals(type)) {
 				vocDTO.setValue("Дебетная");
 			} else if (CardBookType.CREDIT.equals(type)) {
@@ -43,7 +46,6 @@ public class CardRequestController extends GenericWindowController {
 		}
 		cardTypeControl.bind(types);
 
-		final GenericController currenciesControl = Components.getComboBoxControll();
 		IPaymentServiceAsync.Util.getInstance().getCurrencies(new AppCallback<List<CurrencyDTO>>() {
 			@Override
 			public void onSuccess(List<CurrencyDTO> currencyDTOs) {
@@ -52,8 +54,9 @@ public class CardRequestController extends GenericWindowController {
 
 					for (CurrencyDTO dto : currencyDTOs) {
 						currencyDTOList.add(dto);
-						VocDTO<String, String> vocDTO
-								= new VocDTO<String, String>(String.valueOf(dto.getId()), dto.getName());
+						VocDTO<String, String> vocDTO = new VocDTO<String, String>();
+                        vocDTO.setId(String.valueOf(dto.getId()));
+                        vocDTO.setValue(dto.getName());
 						bindList.add(vocDTO);
 					}
 					currenciesControl.bind(bindList);
@@ -78,7 +81,7 @@ public class CardRequestController extends GenericWindowController {
 				} else if (currencyTxt == null || "".equals(currencyTxt) || currencyTxt.length() == 0) {
 					SC.warn("Не выбрана валюта счёта.");
 				} else {
-					CardBookType cardBookType = CardBookType.forName(cardTypeTxt);
+					CardBookType cardBookType = CardBookType.forName(cardTypeVoc.getId());
 					CurrencyDTO currencyDTO = null;
 					for (CurrencyDTO currencyDTO1 : currencyDTOList) {
 						if (currencyDTO1.getId() == Integer.parseInt(currencyVoc.getId())) {
