@@ -1,15 +1,19 @@
 package edu.ibs.webui.client.admin;
 
 import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import edu.ibs.common.dto.BankBookDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
+import edu.ibs.webui.client.ApplicationManager;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.controller.GenericWindowController;
+import edu.ibs.webui.client.controller.IAction;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 
@@ -20,60 +24,168 @@ import edu.ibs.webui.client.utils.Components;
  */
 public class AddMoneyController extends GenericWindowController {
 
-	private GenericController userIdControl;
+	private VLayout step1Layout, step2Layout;
+	private GenericController bankBookIdControl = Components.getTextItem();
+	private GenericController amountControl = Components.getTextItem();
+	final IButton nextBtn = new IButton("Дальше");
+	final IButton checkBtn = new IButton("Проверить");
+	final IButton addMoneyBtn = new IButton("Пополнить");
+	private boolean checked = false;
+	private BankBookDTO bankBookDTO;
 
 	public AddMoneyController() {
 		getWindow().setTitle("Пополнение счёта");
 
-		final IButton addMoneyButton = new IButton("Пополнить");
-		addMoneyButton.setWidth(80);
-		addMoneyButton.addClickHandler(new ClickHandler() {
+		bankBookIdControl.addOnChange(new IAction() {
+			@Override
+			public void execute(Object data) {
+				nextBtn.setDisabled(true);
+				checked = false;
+			}
+		});
+
+		nextBtn.setDisabled(true);
+		nextBtn.setWidth(80);
+		checkBtn.setWidth(80);
+		checkBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent clickEvent) {
-				String userIdText = ((String) userIdControl.unbind());
-				if (userIdText == null || "".equals(userIdText) || userIdText.length() == 0) {
-					SC.warn("Идентификатор пользователя не заполнен.");
+				String bankBookIdText = ((String) bankBookIdControl.unbind());
+				if (bankBookIdText == null || "".equals(bankBookIdText) || bankBookIdText.length() == 0) {
+					SC.warn("Номер банковского счета не заполнен.");
 				} else {
-					addMoneyButton.setDisabled(true);
-					IPaymentServiceAsync.Util.getInstance().createBankBook(userIdText, new AppCallback<BankBookDTO>() {
+					checkBtn.setDisabled(true);
+					long id = Long.valueOf(bankBookIdText);
+					IPaymentServiceAsync.Util.getInstance().getBankBook(ApplicationManager.getInstance().getAccount(),
+							id, new AppCallback<BankBookDTO>() {
 						@Override
 						public void onFailure(Throwable t) {
 							super.onFailure(t);
-							addMoneyButton.setDisabled(false);
+							checkBtn.setDisabled(false);
 						}
 
 						@Override
 						public void onSuccess(BankBookDTO bankBookDTO) {
-							addMoneyButton.setDisabled(false);
-							if (bankBookDTO != null && bankBookDTO.getId() != 0) {
-								long id = bankBookDTO.getId();
-								String owner = "";
-								if (bankBookDTO.getOwner() != null && bankBookDTO.getOwner().getId() != 0) {
-									owner = bankBookDTO.getOwner().getFirstName() + " " + bankBookDTO.getOwner().getLastName();
-								}
-								SC.say("Создан банковский счёт " + id + " для пользователя " + owner + ".");
+							checkBtn.setDisabled(false);
+							if (bankBookDTO != null && bankBookDTO.getId() > 0) {
+								setBankBookDTO(bankBookDTO);
+								nextBtn.setDisabled(false);
+								checked = true;
+							} else {
+								nextBtn.setDisabled(true);
 							}
 						}
 					});
 				}
 			}
 		});
-		VLayout layoutForm = new VLayout();
-		layoutForm.setWidth100();
-		layoutForm.setHeight100();
+		nextBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				getWindow().removeItem(getStep1Layout());
+				getWindow().addItem(getStep2Layout());
+				getWindow().redraw();
+			}
+		});
 
-		layoutForm.addMember(Components.addTitle("Идентификатор пользователя", userIdControl.getView()));
+		addMoneyBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				String amountTxt = ((String) amountControl.unbind());
+				if (amountTxt == null || "".equals(amountTxt) || amountTxt.length() == 0) {
+					SC.warn("Сумма не заполнена.");
+				} else {
+					try {
+						Double amountDouble = Double.parseDouble(amountTxt);
+						addMoneyBtn.setDisabled(true);
+						IPaymentServiceAsync.Util.getInstance().addMoney(getBankBookDTO(), amountDouble,
+								new AppCallback<Boolean>() {
 
-		HLayout buttons = new HLayout();
-		buttons.addMember(addMoneyButton);
+							@Override
+							public void onFailure(Throwable t) {
+								super.onFailure(t);
+								addMoneyBtn.setDisabled(false);
+							}
 
-		VLayout view = new VLayout();
-		view.setMembersMargin(MARGIN);
-		view.addMember(layoutForm);
-		view.addMember(buttons);
-		view.setMargin(MARGIN);
-		view.setShowResizeBar(false);
+							@Override
+							public void onSuccess(Boolean aBoolean) {
+								addMoneyBtn.setDisabled(false);
+								if (aBoolean) {
+									SC.say("Счёт пополнен.");
+								}
+							}
+						});
+					} catch (NumberFormatException e) {
+						SC.warn("Введите корректную сумму.");
+					}
+				}
+			}
+		});
 
-		getWindow().addItem(view);
+
+		getWindow().addItem(getStep1Layout());
+	}
+
+	private VLayout getStep1Layout() {
+		if (step1Layout == null) {
+			VLayout layoutForm = new VLayout();
+			layoutForm.setWidth100();
+			layoutForm.setHeight100();
+
+			layoutForm.addMember(Components.addTitle("Номер банковского счета", bankBookIdControl.getView()));
+
+			HLayout buttons = new HLayout();
+			buttons.setMembersMargin(MARGIN);
+			buttons.addMember(checkBtn);
+			buttons.addMember(nextBtn);
+
+			step1Layout = new VLayout();
+			step1Layout.setMembersMargin(MARGIN);
+			step1Layout.addMember(layoutForm);
+			step1Layout.addMember(buttons);
+			step1Layout.setMargin(MARGIN);
+			step1Layout.setShowResizeBar(false);
+		}
+		return step1Layout;
+	}
+
+	private Canvas getStep2Layout() {
+		if (step2Layout == null) {
+			VLayout layoutForm = new VLayout();
+			layoutForm.setMembersMargin(MARGIN);
+			layoutForm.setWidth100();
+			layoutForm.setHeight100();
+
+			layoutForm.addMember(
+					Components.addTitle("Идентификатор счета", new Label(String.valueOf(getBankBookDTO().getId()))));
+			layoutForm.addMember(
+					Components.addTitle("Баланс", new Label(String.valueOf(getBankBookDTO().getBalance()))));
+			layoutForm.addMember(
+					Components.addTitle("Валюта счета", new Label(getBankBookDTO().getCurrency().getName())));
+			layoutForm.addMember(
+					Components.addTitle("Владелец счета",
+							new Label(getBankBookDTO().getOwner().getFirstName()
+									+ getBankBookDTO().getOwner().getLastName())));
+			layoutForm.addMember(Components.addTitle("Сумма", amountControl.getView()));
+
+			HLayout buttons = new HLayout();
+			buttons.addMember(addMoneyBtn);
+
+			step2Layout = new VLayout();
+			step2Layout.setMembersMargin(MARGIN);
+			step2Layout.addMember(layoutForm);
+			step2Layout.addMember(buttons);
+			step2Layout.setMargin(MARGIN);
+			step2Layout.setShowResizeBar(false);
+		}
+		return step2Layout;
+	}
+
+	public void setBankBookDTO(BankBookDTO bankBookDTO) {
+		this.bankBookDTO = bankBookDTO;
+	}
+
+	public BankBookDTO getBankBookDTO() {
+		return bankBookDTO;
 	}
 }

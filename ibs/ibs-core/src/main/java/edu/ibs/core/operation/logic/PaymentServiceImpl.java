@@ -4,6 +4,7 @@ import edu.ibs.common.dto.*;
 import edu.ibs.common.enums.CardBookType;
 import edu.ibs.common.exceptions.IbsServiceException;
 import edu.ibs.common.interfaces.IPaymentService;
+import edu.ibs.core.controller.exception.FreezedException;
 import edu.ibs.core.entity.*;
 import edu.ibs.core.gwt.EntityTransformer;
 import edu.ibs.core.operation.AdminOperations;
@@ -135,11 +136,37 @@ public class PaymentServiceImpl implements IPaymentService {
 	}
 
 	@Override
-	public Boolean addMoney(BankBookDTO bankBookDTO, MoneyDTO moneyDTO) throws IbsServiceException {
+	public Boolean addMoney(BankBookDTO bankBookDTO, Double amount) throws IbsServiceException {
 		if (bankBookDTO != null && bankBookDTO.getId() != 0) {
-			return true;
+			try {
+				BankBook bankBook = new BankBook(bankBookDTO);
+				long part1 = amount.longValue();
+				String part2Str = String.valueOf(amount - part1);
+				int index = part2Str.indexOf('.');
+				if (index == 0) {
+					index = part2Str.indexOf(',');
+				}
+				part2Str = part2Str.substring(index + 1);
+				int part2 = Integer.valueOf(part2Str);
+				Money money = new Money(part1, part2, bankBook.getCurrency());
+				return adminLogic.addMoney(bankBook, money);
+			} catch (FreezedException fe) {
+				throw new IbsServiceException(fe.getLocalizedMessage());
+			} catch (Throwable t) {
+				throw new IbsServiceException("Не удалось пополнить счёт.");
+			}
 		}
 		return false;
+	}
+
+	@Override
+	public BankBookDTO getBankBook(AccountDTO accountDTO, long id) throws IbsServiceException {
+		try {
+			BankBook bankBook = adminLogic.getBankBook(new Account(accountDTO), id);
+			return EntityTransformer.transformBankBook(bankBook);
+		} catch (Throwable t) {
+			throw new IbsServiceException("Ошибка при получении банковского счёта.");
+		}
 	}
 
 	public UserOperations getUserLogic() {

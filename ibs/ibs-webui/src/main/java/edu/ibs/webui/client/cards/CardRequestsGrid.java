@@ -19,10 +19,9 @@ import edu.ibs.webui.client.utils.Components;
 public class CardRequestsGrid extends ListGrid {
 	public CardRequestsGrid() {
 		super();
-		this.setShowAllRecords(true);
-		this.setAutoFetchData(true);
-		this.setSortField(1);
 		Components.prepareGrid(this);
+		this.setShowAllRecords(true);
+		this.setSortField(1);
 
 		ListGridField idField = new ListGridField("id", "ID", 320);
 		ListGridField userField = new ListGridField("user", "Пользователь", 100);
