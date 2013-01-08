@@ -20,8 +20,11 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 import edu.ibs.common.dto.AccountDTO;
+import edu.ibs.common.dto.CardBookDTO;
+import edu.ibs.common.dto.CardRequestDTO;
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
+import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.admin.CreateBankBookController;
 import edu.ibs.webui.client.admin.CreateNewUserController;
 import edu.ibs.webui.client.cards.CardRequestDataSource;
@@ -308,10 +311,6 @@ public class MyApp implements EntryPoint {
 			createBankBook.addClickHandler(createBankBookClickHandler);
 			links.addMember(createBankBook);
 
-			Label createCardBook = new Label("Создать карт-счёт");
-			createCardBook.setStyleName(adminLinkStyleName);
-			links.addMember(createCardBook);
-
 			Label addMoney = new Label("Пополнить счёт");
 			addMoney.setStyleName(adminLinkStyleName);
 			links.addMember(addMoney);
@@ -319,7 +318,7 @@ public class MyApp implements EntryPoint {
 			VLayout adminContentLayout = new VLayout();
 			adminContentLayout.setWidth100();
 
-			ListGrid cardRequestsGrid = Components.getGrid();
+			final ListGrid cardRequestsGrid = Components.getGrid();
 			ListGridField idField = new ListGridField("id", "ID", 320);
 			ListGridField userField = new ListGridField("user", "Пользователь", 100);
 			ListGridField cardBookTypeField = new ListGridField("cardbooktype", "Тип", 100);
@@ -329,8 +328,20 @@ public class MyApp implements EntryPoint {
 						@Override
 						public void onRecordClick(RecordClickEvent event) {
 							if (event.getRecord() != null) {
-								//todo
-								SC.say("TODO: создавать карт-счет.");
+								CardRequestDTO requestDTO
+										= (CardRequestDTO) event.getRecord().getAttributeAsObject("cardrequestdto");
+								if (requestDTO != null) {
+									IPaymentServiceAsync.Util.getInstance().approveCardRequest(requestDTO, new AppCallback<CardBookDTO>() {
+										@Override
+										public void onSuccess(CardBookDTO cardBookDTO) {
+											if (cardBookDTO != null) {
+												SC.say("Создан карт счёт " + cardBookDTO.getId()
+														+ " для пользователя " + cardBookDTO.getBankBook().getOwner().getId());
+												cardRequestsGrid.fetchData();
+											}
+										}
+									});
+								}
 							}
 						}
 					});

@@ -28,11 +28,11 @@ public class ContextAreaListGrid extends ListGrid {
         iconField.setImageURLPrefix("icons/16/");
         iconField.setImageURLSuffix(".png");
 
-        ListGridField cardTypeField = new ListGridField("cardType", "Тип", 320);
-        ListGridField cardNumberField = new ListGridField("cardNumber", "Номер", 100);
-        ListGridField currencyField = new ListGridField("currency", "Валюта", 100);
-        ListGridField balanceField = new ListGridField("balance", "Остаток", 140);
-        ListGridField infoField = new ListGridField("info", "Дополнительно", 180);
+        ListGridField cardTypeField = new ListGridField("card.type", "Тип", 320);
+        ListGridField cardNumberField = new ListGridField("cardbook.id", "Номер", 100);
+        ListGridField currencyField = new ListGridField("currency.name", "Валюта", 100);
+        ListGridField balanceField = new ListGridField("bankbook.balance", "Остаток", 140);
+        ListGridField infoField = new ListGridField("date.expire", "Дополнительно", 180);
         ListGridField emptyField = new ListGridField("emptyField", " ");
         this.setFields(new ListGridField[]{iconField, cardTypeField, cardNumberField, currencyField,
                 balanceField, infoField, emptyField});

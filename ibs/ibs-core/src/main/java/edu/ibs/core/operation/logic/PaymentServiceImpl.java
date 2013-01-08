@@ -122,6 +122,26 @@ public class PaymentServiceImpl implements IPaymentService {
 		return result;
 	}
 
+	@Override
+	public CardBookDTO approveCardRequest(CardRequestDTO dto) throws IbsServiceException {
+		CardBookDTO cardBookDTO = new CardBookDTO();
+		try {
+			CardRequest cardRequest = new CardRequest(dto);
+			cardBookDTO = EntityTransformer.transformCardBook(adminLogic.approve(cardRequest));
+		} catch (Throwable t) {
+			throw new IbsServiceException("Ошибка при создании карт-счёта.");
+		}
+		return cardBookDTO;
+	}
+
+	@Override
+	public Boolean addMoney(BankBookDTO bankBookDTO, MoneyDTO moneyDTO) throws IbsServiceException {
+		if (bankBookDTO != null && bankBookDTO.getId() != 0) {
+			return true;
+		}
+		return false;
+	}
+
 	public UserOperations getUserLogic() {
         return userLogic;
     }

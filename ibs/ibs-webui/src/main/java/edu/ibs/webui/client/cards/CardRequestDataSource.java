@@ -36,6 +36,7 @@ public class CardRequestDataSource extends GwtRpcDataSource {
 						record.setAttribute("user", dto.getUser().getId());
 						record.setAttribute("cardbooktype", dto.getType());
 						record.setAttribute("bankbookid", dto.getBankBook().getId());
+						record.setAttribute("cardrequestdto", dto);
 						listGridRecords[i] = record;
 					}
 					response.setData(listGridRecords);

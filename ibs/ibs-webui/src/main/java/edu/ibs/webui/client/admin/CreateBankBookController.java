@@ -41,7 +41,7 @@ public class CreateBankBookController extends GenericWindowController {
 								long id = bankBookDTO.getId();
 								String owner = "";
 								if (bankBookDTO.getOwner() != null && bankBookDTO.getOwner().getId() != 0) {
-									owner = bankBookDTO.getOwner().getEmail();
+									owner = bankBookDTO.getOwner().getFirstName() + " " + bankBookDTO.getOwner().getLastName();
 								}
 								SC.say("Создан банковский счёт " + id + " для пользователя " + owner + ".");
 							}

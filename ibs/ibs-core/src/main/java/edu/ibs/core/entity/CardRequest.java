@@ -1,5 +1,6 @@
 package edu.ibs.core.entity;
 
+import edu.ibs.common.dto.CardRequestDTO;
 import edu.ibs.common.enums.CardBookType;
 import java.io.Serializable;
 import javax.persistence.*;
@@ -75,6 +76,11 @@ public class CardRequest implements Serializable, AbstractEntity {
 
 	public CardRequest(User user, BankBook bankBook) {
 		this(user, bankBook, CardBookType.DEBIT, null);
+	}
+
+	public CardRequest(CardRequestDTO dto) {
+		this(new User(dto.getUser()), new BankBook(dto.getBankBook()));
+		this.id = dto.getId();
 	}
 
 	public boolean isApproved() {
