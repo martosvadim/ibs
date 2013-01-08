@@ -71,7 +71,7 @@ public class CreateNewUserController extends GenericWindowController {
 									@Override
 									public void onSuccess(final AccountDTO s) {
 										SC.say("Создан пользователь " + s.getEmail() + " с ролью " + roleDisplayName);
-										reload();
+										getWindow().hide();
 									}
 								});
 				}

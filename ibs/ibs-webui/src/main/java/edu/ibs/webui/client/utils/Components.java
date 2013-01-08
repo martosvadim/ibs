@@ -6,10 +6,7 @@ import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
-import com.smartgwt.client.widgets.form.fields.FormItem;
-import com.smartgwt.client.widgets.form.fields.PasswordItem;
-import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.fields.*;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -237,23 +234,23 @@ public class Components {
 	/**
 	 * Заполняем комбобокс значениями
 	 *
-	 * @param values значения
-	 * @param combo комбобокс
+	 * @param values     значения
+	 * @param selectItem комбобокс
 	 */
-	public static void fillComboBox(final List values, final ComboBoxItem combo) {
-		if (values.size() >= 1) {
-			fillComboBox(values, combo, true);
-		}
+	public static void fillComboBox(final List values,
+									final SelectItem selectItem) {
+		fillComboBox(values, selectItem, false);
 	}
 
 	/**
 	 * Заполняем комбобокс значениями
 	 *
-	 * @param values значения
-	 * @param combo комбобокс
+	 * @param values          значения
+	 * @param selectItem      комбобокс
 	 * @param setDefaultFirst устонавливать ли первое значение по умолчанию
 	 */
-	public static void fillComboBox(final List values, final ComboBoxItem combo, final boolean setDefaultFirst) {
+	public static void fillComboBox(final List values,
+									final SelectItem selectItem, final boolean setDefaultFirst) {
 		LinkedHashMap<String, String> svalues = new LinkedHashMap<String, String>();
 		if (values != null) {
 
@@ -267,13 +264,13 @@ public class Components {
 			if (setDefaultFirst && values.size() > 0) {
 				Object o = values.get(0);
 				if (o instanceof VocDTO) {
-					combo.setValue("" + ((VocDTO) o).getValue());
+					selectItem.setValue("" + ((VocDTO) o).getValue());
 				} else {
-					combo.setValue("" + o);
+					selectItem.setValue("" + o);
 				}
 			}
 		}
-		combo.setValueMap(svalues);
+		selectItem.setValueMap(svalues);
 	}
 
 	/**

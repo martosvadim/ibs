@@ -20,6 +20,8 @@ import edu.ibs.webui.client.utils.JS;
  */
 public class FillUserInfoController extends GenericWindowController {
 
+	private IAction<Object> closeAction = null;
+
 	public FillUserInfoController() {
 		getWindow().setTitle("Информация о пользователе");
 		final GenericController firstName = Components.getTextItem();
@@ -46,7 +48,11 @@ public class FillUserInfoController extends GenericWindowController {
 						public void onSuccess(UserDTO userDTO) {
 							if (userDTO != null && userDTO.getFirstName() != null) {
 								ApplicationManager.getInstance().getAccount().setUser(userDTO);
-                                JS.refreshPage();
+//                                JS.refreshPage();
+								if (closeAction != null) {
+									closeAction.execute(null);
+								}
+								getWindow().hide();
 							}
 						}
 					});
@@ -72,5 +78,9 @@ public class FillUserInfoController extends GenericWindowController {
 		view.setShowResizeBar(false);
 
 		getWindow().addItem(view);
+	}
+
+	public void setCloseAction(IAction<Object> closeAction) {
+		this.closeAction = closeAction;
 	}
 }

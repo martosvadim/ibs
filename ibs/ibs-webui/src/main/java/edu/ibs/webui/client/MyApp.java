@@ -1,11 +1,9 @@
 package edu.ibs.webui.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -23,7 +21,6 @@ import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.webui.client.admin.CreateBankBookController;
 import edu.ibs.webui.client.admin.CreateNewUserController;
 import edu.ibs.webui.client.controller.GenericController;
-import edu.ibs.webui.client.controller.GenericWindowController;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 import edu.ibs.webui.client.utils.JS;
@@ -292,9 +289,9 @@ public class MyApp implements EntryPoint {
 			addUser.addClickHandler(addUserClickHandler);
 			links.addMember(addUser);
 
-			Label deleteUser = new Label("Удалить пользователя");
-			deleteUser.setStyleName(adminLinkStyleName);
-			links.addMember(deleteUser);
+//			Label deleteUser = new Label("Удалить пользователя");
+//			deleteUser.setStyleName(adminLinkStyleName);
+//			links.addMember(deleteUser);
 
 			Label createBankBook = new Label("Создать банковский счёт");
 			createBankBook.setStyleName(adminLinkStyleName);
@@ -311,6 +308,7 @@ public class MyApp implements EntryPoint {
 			Label createCardBook = new Label("Создать карт-счёт");
 			createCardBook.setStyleName(adminLinkStyleName);
 			links.addMember(createCardBook);
+
 			Label addMoney = new Label("Пополнить счёт");
 			addMoney.setStyleName(adminLinkStyleName);
 			links.addMember(addMoney);

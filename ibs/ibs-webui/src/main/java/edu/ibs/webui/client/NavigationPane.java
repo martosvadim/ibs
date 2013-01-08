@@ -17,18 +17,14 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.LinkItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.HStack;
-import com.smartgwt.client.widgets.layout.SectionStack;
-import com.smartgwt.client.widgets.layout.SectionStackSection;
-import com.smartgwt.client.widgets.layout.VLayout;
-import com.smartgwt.client.widgets.layout.VStack;
+import com.smartgwt.client.widgets.layout.*;
 import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.controller.CardRequestController;
 import edu.ibs.webui.client.controller.FillUserInfoController;
 import edu.ibs.webui.client.controller.GenericController;
+import edu.ibs.webui.client.controller.IAction;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 
@@ -37,6 +33,9 @@ public class NavigationPane extends SectionStack {
 
     private static final int WEST_WIDTH = 200;
 	private static final Integer MARGIN = 5;
+
+	private VStack userInfoStack = new VStack();
+	private SectionStackSection userInfoSection = new SectionStackSection("Настройки");
 
 	public NavigationPane() {
         super();
@@ -61,9 +60,18 @@ public class NavigationPane extends SectionStack {
 		stack2.addMember(getAutoPaymentLink());
 		section2.setItems(stack2);
 
-        SectionStackSection section3 = new SectionStackSection("Настройки");
-        section3.setExpanded(true);
-		VStack stack3 = new VStack();
+        userInfoSection.setExpanded(true);
+		defineUserInfoStack();
+		userInfoSection.setItems(userInfoStack);
+
+        this.addSection(section1);
+        this.addSection(section2);
+        this.addSection(userInfoSection);
+    }
+
+	private void defineUserInfoStack() {
+
+		userInfoStack.removeMembers(userInfoStack.getMembers());
 
 		boolean isUserFilled = false;
 		AccountDTO account = ApplicationManager.getInstance().getAccount();
@@ -77,33 +85,34 @@ public class NavigationPane extends SectionStack {
 
 		if (!isUserFilled) {
 			// Если UserDTO пустой, предлагаем заполнить информацию о пользователе
-			stack3.addMember(getFillUserLink());
+			userInfoStack.addMember(getFillUserLink());
 		} else {
 			//Иначе выводим заполненную информацию о пользователе
 
 			Label firstNameLbl = new Label(user.getFirstName());
-			stack3.addMember(Components.addTitle("Имя", firstNameLbl));
+			userInfoStack.addMember(Components.addTitle("Имя", firstNameLbl));
 
 			Label lastNameLbl = new Label(user.getLastName());
-			stack3.addMember(Components.addTitle("Фамилия", lastNameLbl));
+			userInfoStack.addMember(Components.addTitle("Фамилия", lastNameLbl));
 
 			Label passportNumberLbl = new Label(user.getPassportNumber());
-			stack3.addMember(Components.addTitle("№ пасспорта", passportNumberLbl));
+			userInfoStack.addMember(Components.addTitle("№ пасспорта", passportNumberLbl));
 
 		}
-
-		section3.setItems(stack3);
-
-        this.addSection(section1);
-        this.addSection(section2);
-        this.addSection(section3);
-    }
+	}
 
 	private Canvas getFillUserLink() {
 		return getLink("Заполнить информацию о пользователе", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				FillUserInfoController controller = new FillUserInfoController();
+				controller.setCloseAction(new IAction<Object>() {
+					@Override
+					public void execute(Object data) {
+						defineUserInfoStack();
+						userInfoStack.redraw();
+					}
+				});
 				controller.getWindow().draw();
 			}
 		});

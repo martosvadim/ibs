@@ -93,7 +93,13 @@ public class AuthServiceImpl implements IAuthService {
 				ServletUtils.getRequest().getSession().getAttribute(ServerConstants.ADMIN_ATTR))) {
 			throw new IbsServiceException(NO_PERMISSION_MSG);
 		} else {
-			return EntityTransformer.transformAccount(adminLogic.create(role, email, password));
+			try {
+				return EntityTransformer.transformAccount(adminLogic.create(role, email, password));
+			} catch (IllegalArgumentException e) {
+				throw new IbsServiceException("Введён некорректный e-mail адрес или данный e-mail уже используется.");
+			} catch (Throwable t) {
+				throw new IbsServiceException("Произошла ошибка при создании пользователя.");
+			}
 		}
 	}
 
