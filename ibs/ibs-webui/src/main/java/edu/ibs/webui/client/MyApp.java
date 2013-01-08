@@ -99,14 +99,14 @@ public class MyApp implements EntryPoint {
 	private Window getRegisterCanvas() {
 		if (registerWindow == null) {
 			registerWindow = Components.getWindow();
-			registerWindow.setHeight(270);
+			registerWindow.setHeight(200);
 
 			final GenericController login = Components.getTextItem();
 			final GenericController pass = Components.getPasswordItem();
 			final GenericController repPass = Components.getPasswordItem();
 //			final GenericController capthcaInputTextItemView = Components.getTextItem();
 
-			IButton regButton = new IButton("Зарегистрироваться");
+			final IButton regButton = new IButton("Зарегистрироваться");
 			regButton.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(final ClickEvent clickEvent) {
@@ -123,10 +123,17 @@ public class MyApp implements EntryPoint {
 //					} else if (captchaText == null || "".equals(captchaText) || captchaText.length() == 0) {
 //						SC.warn("Введите текст с картинки.");
 					} else {
+						regButton.setDisabled(true);
 						IAuthServiceAsync.Util.getInstance().register(name, password, passwordAgain, null,
 								new AppCallback<AccountDTO>() {
 									@Override
+									public void onFailure(Throwable t) {
+										super.onFailure(t);
+										regButton.setDisabled(false);
+									}
+									@Override
 									public void onSuccess(AccountDTO s) {
+										regButton.setDisabled(false);
                                         if (s != null) {
                                             JS.setCookie(LOGIN_COOKIE_NAME, s.getEmail());
                                             if (AccountRole.ADMIN.equals(s.getRole())) {
@@ -151,18 +158,27 @@ public class MyApp implements EntryPoint {
 //			captchaImage.setHeight(35);
 
 			VStack layout = new VStack();
-			layout.setMembersMargin(5);
-			layout.setMargin(5);
+			layout.setWidth100();
+			layout.setHeight100();
 			layout.addMember(Components.addTitle("E-mail", login.getView()));
 			layout.addMember(Components.addTitle("Пароль", pass.getView()));
 			layout.addMember(Components.addTitle("Подтверждение пароля", repPass.getView()));
 
 //			layout.addMember(Components.addTitle("", captchaImage));
 //			layout.addMember(Components.addTitle("", capthcaInputTextItemView.getView()));
-			layout.addMember(regButton);
 			layout.setShowResizeBar(false);
 
-			registerWindow.addItem(layout);
+			HLayout buttons = new HLayout();
+			buttons.addMember(regButton);
+
+			VLayout view = new VLayout();
+			view.setMembersMargin(5);
+			view.addMember(layout);
+			view.addMember(buttons);
+			view.setMargin(5);
+			view.setShowResizeBar(false);
+
+			registerWindow.addItem(view);
 			registerWindow.addCloseClickHandler(new CloseClickHandler() {
 				@Override
 				public void onCloseClick(final CloseClickEvent closeClickEvent) {

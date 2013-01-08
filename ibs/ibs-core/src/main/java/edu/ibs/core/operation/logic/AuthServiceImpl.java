@@ -75,6 +75,7 @@ public class AuthServiceImpl implements IAuthService {
 		} else if (!password.equals(passwordConfirm)) {
 			throw new IbsServiceException(PASSWORD_NOT_EQUAL_MSG);
 		} else {
+			try {
 			// Верификация текста капчи
 //			Captcha captcha = (Captcha) ServletUtils.getRequest().getSession().getAttribute(Captcha.NAME);
 //			if (captcha != null && captcha.isCorrect(captchaText)) {
@@ -82,6 +83,11 @@ public class AuthServiceImpl implements IAuthService {
 //			} else {
 //				throw new IbsServiceException(INCORRECT_CAPTCHA_TXT);
 //			}
+			} catch (IllegalArgumentException e) {
+				throw new IbsServiceException("Вы ввели недопустимый e-mail или ваш e-mail уже занят.");
+			} catch (Throwable t) {
+				throw new IbsServiceException("Ошибка при регистрации.");
+			}
 		}
 	}
 
