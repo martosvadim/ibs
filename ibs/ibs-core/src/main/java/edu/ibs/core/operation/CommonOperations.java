@@ -1,6 +1,7 @@
 package edu.ibs.core.operation;
 
 import edu.ibs.core.entity.Account;
+import edu.ibs.core.entity.BankBook;
 import edu.ibs.core.entity.CreditPlan;
 import edu.ibs.core.entity.Currency;
 import java.util.List;
@@ -29,6 +30,8 @@ public interface CommonOperations {
 	public CreditPlan getCreditPlan(String name);
 
 	public boolean bankBookExists(long id);
+    
+    public BankBook getBankBook(Account user, long id);
 
 	public boolean cardBookExists(long id);
 }
