@@ -48,7 +48,7 @@ public class CreateNewUserController extends GenericWindowController {
 		}
 		role.bind(roles);
 
-		IButton createButton = new IButton("Создать");
+		final IButton createButton = new IButton("Создать");
 		createButton.setWidth(80);
 		createButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -66,10 +66,18 @@ public class CreateNewUserController extends GenericWindowController {
 					SC.warn("Неверная роль.");
 				} else {
 					AccountRole role1 = AccountRole.forName(roleTxt);
+					createButton.setDisabled(true);
 						IAuthServiceAsync.Util.getInstance().create(role1, emailText, passText,
 								new AppCallback<AccountDTO>() {
 									@Override
+									public void onFailure(Throwable t) {
+										super.onFailure(t);
+										createButton.setDisabled(false);
+									}
+
+									@Override
 									public void onSuccess(final AccountDTO s) {
+										createButton.setDisabled(false);
 										SC.say("Создан пользователь " + s.getEmail() + " с ролью " + roleDisplayName);
 										getWindow().hide();
 									}

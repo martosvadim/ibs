@@ -15,35 +15,36 @@ import edu.ibs.webui.client.utils.Components;
 
 /**
  * User: EgoshinME
- * Date: 05.01.13
- * Time: 5:48
+ * Date: 08.01.13
+ * Time: 8:42
  */
-public class CreateBankBookController extends GenericWindowController {
+public class AddMoneyController extends GenericWindowController {
 
-	private final GenericController userIdControl = Components.getTextItem();
+	private GenericController userIdControl;
 
-	public CreateBankBookController() {
-		getWindow().setTitle("Создание банковского счёта");
+	public AddMoneyController() {
+		getWindow().setTitle("Пополнение счёта");
 
-		final IButton createButton = new IButton("Создать");
-		createButton.setWidth(80);
-		createButton.addClickHandler(new ClickHandler() {
+		final IButton addMoneyButton = new IButton("Пополнить");
+		addMoneyButton.setWidth(80);
+		addMoneyButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent clickEvent) {
 				String userIdText = ((String) userIdControl.unbind());
 				if (userIdText == null || "".equals(userIdText) || userIdText.length() == 0) {
 					SC.warn("Идентификатор пользователя не заполнен.");
 				} else {
-					createButton.setDisabled(true);
+					addMoneyButton.setDisabled(true);
 					IPaymentServiceAsync.Util.getInstance().createBankBook(userIdText, new AppCallback<BankBookDTO>() {
 						@Override
 						public void onFailure(Throwable t) {
 							super.onFailure(t);
-							createButton.setDisabled(false);
+							addMoneyButton.setDisabled(false);
 						}
+
 						@Override
 						public void onSuccess(BankBookDTO bankBookDTO) {
-							createButton.setDisabled(false);
+							addMoneyButton.setDisabled(false);
 							if (bankBookDTO != null && bankBookDTO.getId() != 0) {
 								long id = bankBookDTO.getId();
 								String owner = "";
@@ -64,7 +65,7 @@ public class CreateBankBookController extends GenericWindowController {
 		layoutForm.addMember(Components.addTitle("Идентификатор пользователя", userIdControl.getView()));
 
 		HLayout buttons = new HLayout();
-		buttons.addMember(createButton);
+		buttons.addMember(addMoneyButton);
 
 		VLayout view = new VLayout();
 		view.setMembersMargin(MARGIN);
@@ -74,10 +75,5 @@ public class CreateBankBookController extends GenericWindowController {
 		view.setShowResizeBar(false);
 
 		getWindow().addItem(view);
-	}
-
-	@Override
-	public void reload() {
-		userIdControl.bind("");
 	}
 }

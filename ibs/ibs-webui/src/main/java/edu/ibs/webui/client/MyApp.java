@@ -28,6 +28,7 @@ import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.admin.CreateBankBookController;
 import edu.ibs.webui.client.admin.CreateNewUserController;
 import edu.ibs.webui.client.cards.CardRequestDataSource;
+import edu.ibs.webui.client.cards.CardRequestsGrid;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
@@ -131,6 +132,7 @@ public class MyApp implements EntryPoint {
 										super.onFailure(t);
 										regButton.setDisabled(false);
 									}
+
 									@Override
 									public void onSuccess(AccountDTO s) {
 										regButton.setDisabled(false);
@@ -329,43 +331,21 @@ public class MyApp implements EntryPoint {
 
 			Label addMoney = new Label("Пополнить счёт");
 			addMoney.setStyleName(adminLinkStyleName);
+			final ClickHandler addMoneyClickHandler = new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent clickEvent) {
+					AddMoneyController controller = new AddMoneyController();
+					controller.getWindow().draw();
+				}
+			};
+			addMoney.addClickHandler(addMoneyClickHandler);
 			links.addMember(addMoney);
 
 			VLayout adminContentLayout = new VLayout();
 			adminContentLayout.setWidth100();
 
-			final ListGrid cardRequestsGrid = Components.getGrid();
-			ListGridField idField = new ListGridField("id", "ID", 320);
-			ListGridField userField = new ListGridField("user", "Пользователь", 100);
-			ListGridField cardBookTypeField = new ListGridField("cardbooktype", "Тип", 100);
-			ListGridField bankBookIdField = new ListGridField("bankbookid", "Банковский счет", 100);
-			ListGridField approveActionField = Components.getIconGridField("approve", "Создать карт-счет",
-					"toolbar/assign.png", new RecordClickHandler() {
-						@Override
-						public void onRecordClick(RecordClickEvent event) {
-							if (event.getRecord() != null) {
-								CardRequestDTO requestDTO
-										= (CardRequestDTO) event.getRecord().getAttributeAsObject("cardrequestdto");
-								if (requestDTO != null) {
-									IPaymentServiceAsync.Util.getInstance().approveCardRequest(requestDTO, new AppCallback<CardBookDTO>() {
-										@Override
-										public void onSuccess(CardBookDTO cardBookDTO) {
-											if (cardBookDTO != null) {
-												SC.say("Создан карт счёт " + cardBookDTO.getId()
-														+ " для пользователя " + cardBookDTO.getBankBook().getOwner().getId());
-												cardRequestsGrid.fetchData();
-											}
-										}
-									});
-								}
-							}
-						}
-					});
-			ListGridField emptyField = new ListGridField("emptyField", " ");
-			cardRequestsGrid.setFields(new ListGridField[] {
-					idField, userField, cardBookTypeField, bankBookIdField, approveActionField, emptyField});
-			cardRequestsGrid.setDataSource(new CardRequestDataSource());
-			adminContentLayout.addMember(cardRequestsGrid);
+
+			adminContentLayout.addMember(new CardRequestsGrid());
 
 			HLayout view = new HLayout();
 			view.addMember(links);

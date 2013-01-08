@@ -91,7 +91,7 @@ public class CardRequestController extends GenericWindowController {
 			}
 		});
 
-		IButton createButton = new IButton("Отправить");
+		final IButton createButton = new IButton("Отправить");
 		createButton.setWidth(80);
 		createButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -115,10 +115,19 @@ public class CardRequestController extends GenericWindowController {
 							currencyDTO = currencyDTO1;
 						}
 					}
+					createButton.setDisabled(true);
 					IPaymentServiceAsync.Util.getInstance().requestCard(ApplicationManager.getInstance().getAccount().getUser(),
                             bankBookIdTxt, cardBookType, currencyDTO, new AppCallback<Void>() {
+
+						@Override
+						public void onFailure(Throwable t) {
+							super.onFailure(t);
+							createButton.setDisabled(false);
+						}
+
 						@Override
 						public void onSuccess(Void aVoid) {
+							createButton.setDisabled(false);
 							SC.say("Заявка отправлена успешно!");
 						}
 					});
