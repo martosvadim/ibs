@@ -109,7 +109,20 @@ public class PaymentServiceImpl implements IPaymentService {
         return result;
     }
 
-    public UserOperations getUserLogic() {
+	@Override
+	public List<CardRequestDTO> getCardRequests() throws IbsServiceException {
+		List<CardRequestDTO> result = new LinkedList<CardRequestDTO>();
+		try {
+			for (CardRequest cardRequest : adminLogic.getAllRequests()) {
+				result.add(EntityTransformer.transformCardRequest(cardRequest));
+			}
+		} catch (Throwable t) {
+			throw new IbsServiceException("Ошибка при получении списка заявок на карт-счета.");
+		}
+		return result;
+	}
+
+	public UserOperations getUserLogic() {
         return userLogic;
     }
 

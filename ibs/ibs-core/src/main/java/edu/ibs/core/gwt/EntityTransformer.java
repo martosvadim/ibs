@@ -1,21 +1,7 @@
 package edu.ibs.core.gwt;
 
-import edu.ibs.common.dto.AccountDTO;
-import edu.ibs.common.dto.BankBookDTO;
-import edu.ibs.common.dto.CardBookDTO;
-import edu.ibs.common.dto.CreditDTO;
-import edu.ibs.common.dto.CreditPlanDTO;
-import edu.ibs.common.dto.CurrencyDTO;
-import edu.ibs.common.dto.MoneyDTO;
-import edu.ibs.common.dto.UserDTO;
-import edu.ibs.core.entity.Account;
-import edu.ibs.core.entity.BankBook;
-import edu.ibs.core.entity.CardBook;
-import edu.ibs.core.entity.Credit;
-import edu.ibs.core.entity.CreditPlan;
-import edu.ibs.core.entity.Currency;
-import edu.ibs.core.entity.Money;
-import edu.ibs.core.entity.User;
+import edu.ibs.common.dto.*;
+import edu.ibs.core.entity.*;
 
 /**
  * User: EgoshinME
@@ -132,4 +118,21 @@ public final class EntityTransformer {
 		}
         return dto;
     }
+
+	public static CardRequestDTO transformCardRequest(CardRequest cardRequest) {
+		CardRequestDTO dto = new CardRequestDTO();
+		if (cardRequest != null) {
+			dto.setApproved(cardRequest.isApproved());
+			dto.setBankBook(transformBankBook(cardRequest.getBankBook()));
+			dto.setCardBook(transformCardBook(cardRequest.getCardBook()));
+			dto.setDateCreated(cardRequest.getDateCreated());
+			dto.setDateWatched(cardRequest.getDateWatched());
+			dto.setId(cardRequest.getId());
+			dto.setPlan(transformCreditPlan(cardRequest.getPlan()));
+			dto.setReason(cardRequest.getReason());
+			dto.setType(cardRequest.getType());
+			dto.setUser(transformUser(cardRequest.getUser()));
+		}
+		return dto;
+	}
 }

@@ -5,6 +5,7 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
+import edu.ibs.webui.client.utils.Components;
 
 /**
  * User: Максим
@@ -16,7 +17,9 @@ public class ContextAreaListGrid extends ListGrid {
         super();
         GWT.log("init ContextAreaListGrid()...", null);
         this.setShowAllRecords(true);
+		this.setAutoFetchData(true);
         this.setSortField(1);
+		Components.localizeGrid(this);
 
         ListGridField iconField = new ListGridField("icon", "#", 27);
         iconField.setImageSize(16);

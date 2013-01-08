@@ -12,6 +12,10 @@ import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.LinkItem;
+import com.smartgwt.client.widgets.grid.ListGrid;
+import com.smartgwt.client.widgets.grid.ListGridField;
+import com.smartgwt.client.widgets.grid.events.RecordClickEvent;
+import com.smartgwt.client.widgets.grid.events.RecordClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
@@ -20,6 +24,7 @@ import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.webui.client.admin.CreateBankBookController;
 import edu.ibs.webui.client.admin.CreateNewUserController;
+import edu.ibs.webui.client.cards.CardRequestDataSource;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
@@ -272,9 +277,7 @@ public class MyApp implements EntryPoint {
             vLayout.addMember(new Masthead());
 
 			VLayout links = new VLayout();
-//			links.setMembersMargin(2);
-			links.setWidth100();
-//			links.setAlign(Alignment.CENTER);
+			links.setWidth("20%");
 			final String adminLinkStyleName = "label-link-admin";
 
 			Label addUser = new Label("Добавить пользователя");
@@ -313,9 +316,37 @@ public class MyApp implements EntryPoint {
 			addMoney.setStyleName(adminLinkStyleName);
 			links.addMember(addMoney);
 
-            adminLayout.addMember(vLayout);
-            adminLayout.addMember(links);
+			VLayout adminContentLayout = new VLayout();
+			adminContentLayout.setWidth100();
 
+			ListGrid cardRequestsGrid = Components.getGrid();
+			ListGridField idField = new ListGridField("id", "ID", 320);
+			ListGridField userField = new ListGridField("user", "Пользователь", 100);
+			ListGridField cardBookTypeField = new ListGridField("cardbooktype", "Тип", 100);
+			ListGridField bankBookIdField = new ListGridField("bankbookid", "Банковский счет", 100);
+			ListGridField approveActionField = Components.getIconGridField("approve", "Создать карт-счет",
+					"toolbar/assign.png", new RecordClickHandler() {
+						@Override
+						public void onRecordClick(RecordClickEvent event) {
+							if (event.getRecord() != null) {
+								//todo
+								SC.say("TODO: создавать карт-счет.");
+							}
+						}
+					});
+			ListGridField emptyField = new ListGridField("emptyField", " ");
+			cardRequestsGrid.setFields(new ListGridField[] {
+					idField, userField, cardBookTypeField, bankBookIdField, approveActionField, emptyField});
+			cardRequestsGrid.setDataSource(new CardRequestDataSource());
+			adminContentLayout.addMember(cardRequestsGrid);
+
+			HLayout view = new HLayout();
+			view.addMember(links);
+			view.addMember(adminContentLayout);
+
+            adminLayout.addMember(vLayout);
+            adminLayout.addMember(view);
+			adminLayout.setStyleName("crm-ContextArea");
         }
 
         return adminLayout;

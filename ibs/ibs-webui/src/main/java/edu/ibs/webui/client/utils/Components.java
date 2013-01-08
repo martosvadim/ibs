@@ -2,6 +2,8 @@ package edu.ibs.webui.client.utils;
 
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Cursor;
+import com.smartgwt.client.types.ListGridFieldType;
+import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
@@ -9,7 +11,13 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.*;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
+import com.smartgwt.client.widgets.grid.HoverCustomizer;
+import com.smartgwt.client.widgets.grid.ListGrid;
+import com.smartgwt.client.widgets.grid.ListGridField;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.RecordClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.tree.TreeGridField;
 import edu.ibs.common.dto.VocDTO;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.controller.SelectController;
@@ -23,6 +31,8 @@ import java.util.List;
 public class Components {
 
     private static final int DEFAULT_TITLE_LABEL_WIDTH = 105;
+	public static final int STANDART_ICON_SIZE = 16;
+	public static final int STANDART_ACTION_FIELD_WIDTH = 24;
 
     public static DynamicForm createForm(final FormItem... items) {
         DynamicForm form = new DynamicForm();
@@ -271,6 +281,107 @@ public class Components {
 			}
 		}
 		selectItem.setValueMap(svalues);
+	}
+
+	/**
+	 * Получаем таблицу с начальными настройками
+	 *
+	 * @return таблица
+	 */
+	public static ListGrid getGrid() {
+		ListGrid grid = new ListGrid();
+		return prepareGrid(grid);
+	}
+
+	/**
+	 * Подготавливаем таблицу к использованию
+	 *
+	 * @param grid Таблица
+	 * @return Таблица
+	 */
+	public static ListGrid prepareGrid(final ListGrid grid) {
+		localizeGrid(grid);
+		grid.setAutoFetchData(true);
+		grid.setCanEdit(false);
+		grid.setWidth100();
+		grid.setHeight100();
+		grid.setShowRollOver(false);
+		grid.setAlternateRecordStyles(true);
+		grid.setCanDragSelect(false);
+		grid.setCanHover(false);
+		grid.setSelectionType(SelectionStyle.SINGLE);
+		return grid;
+	}
+
+	/**
+	 * Локализация таблицы
+	 *
+	 * @param grid Таблица
+	 */
+	public static void localizeGrid(final ListGrid grid) {
+		grid.setEmptyMessage("Нет данных");
+		grid.setLoadingMessage("Загрузка...");
+		grid.setLoadingDataMessage("Загрузка...");
+		grid.setSortFieldAscendingText("Сортировать по возрастанию");
+		grid.setSortFieldDescendingText("Сортировать по убыванию");
+		grid.setFreezeFieldText("Зафиксировать ");
+		grid.setUnfreezeFieldText("Убрать фиксацию по ");
+		grid.setGroupByText("Групировать по ");
+		grid.setClearFilterText("Убрать сортировку");
+	}
+
+	/**
+	 * Иконка в таблице или дереве Отличается от IMAGE тем что всегда отображается
+	 *
+	 * @param element Идентификатор элемента
+	 * @param hover Описание
+	 * @param imgPath Путь к картинке
+	 * @param handler обработчик клика на картинку
+	 * @return колонка
+	 */
+	public static ListGridField getIconGridField(final String element, final String hover, final String imgPath, final RecordClickHandler handler) {
+		return getIconGridField(element, hover, STANDART_ACTION_FIELD_WIDTH, STANDART_ICON_SIZE, imgPath, handler);
+	}
+
+	/**
+	 * Иконка в таблице или дереве Отличается от IMAGE тем что всегда отображается
+	 *
+	 * @param element Идентификатор элемента
+	 * @param hover Описание
+	 * @param width Ширина колонки
+	 * @param imageSize Размеры иконки
+	 * @param imgPath Путь к картинке
+	 * @param handler обработчик клика на картинку
+	 * @return колонка
+	 */
+	public static ListGridField getIconGridField(final String element, final String hover, final int width, final int imageSize, final String imgPath,
+												 final RecordClickHandler handler) {
+		TreeGridField field = Components.getTreeGridFieldWithPrompt(element, null, width);
+		field.setAlign(Alignment.CENTER);
+		field.setType(ListGridFieldType.ICON);
+		field.setCellIcon(imgPath);
+		field.setImageHeight(imageSize);
+		field.setImageWidth(imageSize);
+		field.setCanFilter(false);
+		field.setCanSort(false);
+		field.setHoverCustomizer(Components.getHover(hover));
+		field.addRecordClickHandler(handler);
+		return field;
+	}
+
+	public static TreeGridField getTreeGridFieldWithPrompt(final String name, final String title, final int width) {
+		TreeGridField result = new TreeGridField(name, title, width);
+		result.setPrompt(title);
+		return result;
+	}
+
+	public static HoverCustomizer getHover(final String hover) {
+		return new HoverCustomizer() {
+
+			public String hoverHTML(final Object value, final ListGridRecord record, final int rowNum, final int colNum) {
+				return hover;
+			}
+		};
 	}
 
 	/**
