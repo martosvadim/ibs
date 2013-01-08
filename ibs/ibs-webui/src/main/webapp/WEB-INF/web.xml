@@ -55,6 +55,16 @@
         <url-pattern>/SimpleCaptcha.jpg</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>CS</servlet-name>
+        <servlet-class>edu.ibs.core.currencies.CurrenciesServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CS</servlet-name>
+        <url-pattern>/cs</url-pattern>
+    </servlet-mapping>
+
     <!-- Default page to serve -->
     <welcome-file-list>
         <welcome-file>MyApp.html</welcome-file>
