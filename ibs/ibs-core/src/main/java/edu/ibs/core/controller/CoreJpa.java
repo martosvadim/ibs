@@ -12,7 +12,8 @@ import javax.persistence.Persistence;
  */
 class CoreJpa {
 
-	private static final EntityManagerFactory factory = Persistence.createEntityManagerFactory("edu.ibs.core.jpa");
+	public static final String PERSISTANCE_UTIN_NAME = "edu.ibs.core.jpa";
+	private static final EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTANCE_UTIN_NAME);
 	public static final int BATCH_SIZE = 15;
 
 	public EntityManager createEntityManager() {
@@ -23,6 +24,5 @@ class CoreJpa {
 		if (factory.isOpen()) {
 			factory.close();
 		}
-
 	}
 }

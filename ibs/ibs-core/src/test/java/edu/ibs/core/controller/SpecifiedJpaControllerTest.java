@@ -31,7 +31,6 @@ public class SpecifiedJpaControllerTest {
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
-		controller.close();
 	}
 
 	@Before

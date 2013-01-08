@@ -5,6 +5,7 @@ import edu.ibs.common.enums.CardBookType;
 import edu.ibs.core.controller.exception.FreezedException;
 import edu.ibs.core.controller.exception.NotEnoughMoneyException;
 import edu.ibs.core.entity.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +20,7 @@ import javax.persistence.criteria.*;
  *
  * @author Vadim Martos
  */
-public final class SpecifiedJpaController extends CSUIDJpaController {
+public final class SpecifiedJpaController extends CSUIDJpaController implements Serializable {
 
 	private static final SpecifiedJpaController instance = new SpecifiedJpaController();
 
@@ -397,14 +398,18 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 		try {
 			em = createEntityManager();
 			Currency curr = bankBook.getCurrency();
+			em.getTransaction().begin();
 			bankBook = em.find(bankBook.getClass(), bankBook.getId());
 			user = em.find(user.getClass(), user.getId());
 			if (bankBook == null) {
 				bankBook = new BankBook(user, new Money(0L, curr));
 				em.persist(bankBook);
+				em.flush();
 			} else if (user == null) {
+				em.getTransaction().rollback();
 				throw new IllegalArgumentException("User was not found");
 			} else if (!bankBook.getOwner().equals(user)) {
+				em.getTransaction().rollback();
 				throw new IllegalArgumentException(String.format("User %s doesn't own bank book %s", user, bankBook));
 			}
 			CardRequest request;
@@ -414,6 +419,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController {
 				request = new CardRequest(user, bankBook, plan);
 			}
 			em.persist(request);
+			em.getTransaction().commit();
 			return request;
 		} finally {
 			if (em != null) {
