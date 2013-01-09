@@ -26,14 +26,14 @@ public interface CommonOperations {
 	public List<Currency> getCurrencies();
 
 	public List<CreditPlan> getCreditPlans();
-    
-    public List<CreditPlan> getCreditPlansOf(Currency curr);
+
+	public List<CreditPlan> getCreditPlansFor(Currency curr);
 
 	public CreditPlan getCreditPlan(String name);
 
 	public boolean bankBookExists(long id);
-    
-    public BankBook getBankBook(Account user, long id);
+
+	public BankBook getBankBook(Account user, long id);
 
 	public boolean cardBookExists(long id);
 }
