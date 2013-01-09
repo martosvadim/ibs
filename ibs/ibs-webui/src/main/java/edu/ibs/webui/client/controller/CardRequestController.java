@@ -129,6 +129,7 @@ public class CardRequestController extends GenericWindowController {
 						public void onSuccess(Void aVoid) {
 							createButton.setDisabled(false);
 							SC.say("Заявка отправлена успешно!");
+							getWindow().hide();
 						}
 					});
 				}
