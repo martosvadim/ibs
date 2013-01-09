@@ -41,4 +41,6 @@ public interface AdminOperations extends CommonOperations {
 	public CardBook approve(CardRequest request);
 
 	public void decline(CardRequest request, String reason);
+    
+    public User getUser(long id);
 }

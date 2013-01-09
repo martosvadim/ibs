@@ -373,4 +373,9 @@ public final class CommonService implements UserOperations, AdminOperations {
             throw new IllegalArgumentException(String.format("User %s doesn't own bank book %s", user, book));
         }
     }
+
+    @Override
+    public User getUser(long id) {
+        return dataSource.select(User.class, id);
+    }
 }
