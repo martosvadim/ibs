@@ -136,9 +136,18 @@ public class PaymentServiceImpl implements IPaymentService {
 			CardRequest cardRequest = new CardRequest(dto);
 			cardBookDTO = EntityTransformer.transformCardBook(adminLogic.approve(cardRequest));
 		} catch (Throwable t) {
-			throw new IbsServiceException("Ошибка при создании карт-счёта.");
+			throw new IbsServiceException("Ошибка при создании карт-счета.");
 		}
 		return cardBookDTO;
+	}
+
+	@Override
+	public void declineCardRequest(CardRequestDTO dto, String reason) throws IbsServiceException {
+		try {
+			adminLogic.decline(new CardRequest(dto), reason);
+		} catch (Throwable t) {
+			throw new IbsServiceException("Ошибка при отклонении заявки на создание карт-счета.");
+		}
 	}
 
 	@Override

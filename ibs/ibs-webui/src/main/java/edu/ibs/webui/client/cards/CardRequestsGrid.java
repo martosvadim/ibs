@@ -49,9 +49,29 @@ public class CardRequestsGrid extends ListGrid {
 				}
 			}
 		});
+		ListGridField declineActionField = Components.getIconGridField("decline", "Удалить заявку на карт-счет",
+				"toolbar/delete.png", new RecordClickHandler() {
+			@Override
+			public void onRecordClick(RecordClickEvent event) {
+				if (event.getRecord() != null) {
+					final CardRequestDTO requestDTO
+							= (CardRequestDTO) event.getRecord().getAttributeAsObject("cardrequestdto");
+					if (requestDTO != null) {
+						IPaymentServiceAsync.Util.getInstance().declineCardRequest(requestDTO, "", new AppCallback<Void>() {
+							@Override
+							public void onSuccess(Void v) {
+								SC.say("Отклонена заявка номер " + requestDTO.getId());
+								invalidateCache();
+								fetchData();
+							}
+						});
+					}
+				}
+			}
+		});
 		ListGridField emptyField = new ListGridField("emptyField", " ");
-		this.setFields(new ListGridField[]{
-				idField, userField, cardBookTypeField, bankBookIdField, approveActionField, emptyField});
+		this.setFields(new ListGridField[]{idField, userField, cardBookTypeField, bankBookIdField, approveActionField,
+				declineActionField, emptyField});
 		this.setDataSource(new CardRequestDataSource());
 	}
 
