@@ -34,7 +34,7 @@ public class PaymentServiceImpl implements IPaymentService {
 				if (user != null) {
 					Currency currency = adminLogic.getCurrencies().get(0);
 					Money money = new Money(0, currency);
-					BankBook bankBook = adminLogic.create(user, money);
+					BankBook bankBook = adminLogic.createBankBook(user, money);
 					dto = EntityTransformer.transformBankBook(bankBook);
 				} else {
 					throw new IbsServiceException("Введите существующий идентификатор.");

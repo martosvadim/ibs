@@ -16,17 +16,17 @@ import java.util.List;
  */
 public interface AdminOperations extends CommonOperations {
 
-	public Account create(AccountRole role, String email, String passwd);
+	public Account createAccount(AccountRole role, String email, String passwd);
 
-	public BankBook create(User user, Money money);
+	public BankBook createBankBook(User user, Money money);
 
-	public CardBook create(User user, BankBook bankBook);
+	public CardBook createDebitCardBook(User user, BankBook bankBook);
 
-	public CardBook create(User user, BankBook bankBook, CreditPlan credit);
+	public CardBook createCreditCardBook(User user, BankBook bankBook, CreditPlan credit);
 
 	public boolean addMoney(BankBook bankBook, Money money) throws IllegalArgumentException, FreezedException;
 
-	public CreditPlan create(String name, Money limit, Period period, int periodMultiply, int percent);
+	public CreditPlan createCreditPlan(String name, Money limit, Period period, int periodMultiply, int percent);
 
 	public void delete(User user);
 
@@ -41,6 +41,18 @@ public interface AdminOperations extends CommonOperations {
 	public CardBook approve(CardRequest request);
 
 	public void decline(CardRequest request, String reason);
-    
-    public User getUser(long id);
+
+	public User getUser(long id);
+
+	public void freeze(CreditPlan plan);
+
+	public void unfreeze(CreditPlan plan);
+
+	public void freeze(CardBook book);
+
+	public void unfreeze(CardBook book);
+
+	public void freeze(BankBook book);
+
+	public void unfreeze(BankBook book);
 }

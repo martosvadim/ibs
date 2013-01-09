@@ -45,7 +45,7 @@ public class Credit implements Serializable, AbstractEntity, MoneyEntity {
         this.amount = 0L;
         this.creditPlan = creditPlan;
         validateMoney();
-        this.lastPayDate = System.currentTimeMillis();
+//        this.lastPayDate = System.currentTimeMillis();
 //		int multiply = creditPlan.getPeriodMultiply();
 //		switch (creditPlan.getPeriod()) {
 //			//todo fill nextPayDate according to given period and multiply

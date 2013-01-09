@@ -35,7 +35,7 @@ public interface UserOperations extends CommonOperations {
 
 	public void reassign(CardBook cardBook, String toUserWithEmail);
 
-	public boolean reassignmentIsAvailable(String toUserWithEmail);
+	public boolean checkIfReassignmentIsAvailable(String toUserWithEmail);
 
 	public Transaction pay(CardBook from, long toCardBookID, Money money, TransactionType type) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException;
 
@@ -45,9 +45,9 @@ public interface UserOperations extends CommonOperations {
 
 	public List<SavedPayment> getSavedPayments(User user);
 
-	public List<Transaction> getHistory(User user, TransactionType type);
+	public List<Transaction> getAllHistory(User user, TransactionType type);
 
-	public List<Transaction> getHistory(User user, TransactionType type, Date from, Date to);
+	public List<Transaction> getAllHistory(User user, TransactionType type, Date from, Date to);
 
 	public List<Transaction> getHistoryIncome(User user, TransactionType type);
 
@@ -63,5 +63,5 @@ public interface UserOperations extends CommonOperations {
 
 	public CardRequest requestCreditCard(User user, BankBook bankBook, CreditPlan plan);
 
-	public List<CardRequest> getAllRequestsOf(User user);
+	public List<CardRequest> getCardRequestsOf(User user, boolean watched);
 }

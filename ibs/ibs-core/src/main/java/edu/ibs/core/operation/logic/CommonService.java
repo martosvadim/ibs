@@ -45,7 +45,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public List<BankBook> getBankBooks(User user) {
-		return dataSource.bankBooks(user);
+		return dataSource.getBankBooksOf(user);
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 		if (user == null) {
 			throw new NullPointerException();
 		}
-		return dataSource.getCardBooks(user);
+		return dataSource.getCardBooksOf(user);
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 		if (user == null || book == null || type == null) {
 			throw new NullPointerException();
 		}
-		return dataSource.getCardBooks(user, book, type);
+		return dataSource.getCardBooksOf(user, book, type);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 		if (user == null || book == null) {
 			throw new NullPointerException();
 		}
-		return dataSource.getCardBooks(user, book);
+		return dataSource.getCardBooksOf(user, book);
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 		if (user == null || type == null) {
 			throw new NullPointerException();
 		}
-		return dataSource.getCardBooks(user, type);
+		return dataSource.getCardBooksOf(user, type);
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 		if (bankBook == null) {
 			throw new NullPointerException();
 		}
-		return dataSource.getCardBooks(bankBook);
+		return dataSource.getCardBooksOf(bankBook);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 		if (bankBook == null || type == null) {
 			throw new NullPointerException();
 		}
-		return dataSource.getCardBooks(bankBook, type);
+		return dataSource.getCardBooksOf(bankBook, type);
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 			throw new IllegalArgumentException(String.format("Invalid email %s", toUserWithEmail));
 		} else if (!dataSource.exist(cardBook.getClass(), cardBook.getId())) {
 			throw new IllegalArgumentException(String.format("Card book %s does not exist", cardBook));
-		} else if (!reassignmentIsAvailable(toUserWithEmail)) {
+		} else if (!checkIfReassignmentIsAvailable(toUserWithEmail)) {
 			throw new IllegalArgumentException(String.format("No active user with account's email %s found", toUserWithEmail));
 		} else {
 			User u = dataSource.getUserByEmail(toUserWithEmail);
@@ -120,7 +120,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 	}
 
 	@Override
-	public boolean reassignmentIsAvailable(String toUserWithEmail) {
+	public boolean checkIfReassignmentIsAvailable(String toUserWithEmail) {
 		return dataSource.userExists(toUserWithEmail);
 	}
 
@@ -147,37 +147,37 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public List<SavedPayment> getSavedPayments(User user) {
-		return dataSource.savedPayments(user);
+		return dataSource.getSavedPayments(user);
 	}
 
 	@Override
-	public List<Transaction> getHistory(User user, TransactionType type) {
-		return dataSource.historyAll(user, type, null, null);
+	public List<Transaction> getAllHistory(User user, TransactionType type) {
+		return dataSource.getTrAllHistory(user, type, null, null);
 	}
 
 	@Override
-	public List<Transaction> getHistory(User user, TransactionType type, Date from, Date to) {
-		return dataSource.historyAll(user, type, from, to);
+	public List<Transaction> getAllHistory(User user, TransactionType type, Date from, Date to) {
+		return dataSource.getTrAllHistory(user, type, from, to);
 	}
 
 	@Override
 	public List<Transaction> getHistoryIncome(User user, TransactionType type) {
-		return dataSource.historyIncome(user, type, null, null);
+		return dataSource.getTrInHistory(user, type, null, null);
 	}
 
 	@Override
 	public List<Transaction> getHistoryIncome(User user, TransactionType type, Date from, Date to) {
-		return dataSource.historyIncome(user, type, from, to);
+		return dataSource.getTrInHistory(user, type, from, to);
 	}
 
 	@Override
 	public List<Transaction> getHistoryOutcome(User user, TransactionType type) {
-		return dataSource.historyOutcome(user, type, null, null);
+		return dataSource.getTrOutHistory(user, type, null, null);
 	}
 
 	@Override
 	public List<Transaction> getHistoryOutcome(User user, TransactionType type, Date from, Date to) {
-		return dataSource.historyOutcome(user, type, from, to);
+		return dataSource.getTrOutHistory(user, type, from, to);
 	}
 
 	@Override
@@ -197,7 +197,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public Account register(String email, String passwd) {
-		return create(AccountRole.USER, email, passwd);
+		return createAccount(AccountRole.USER, email, passwd);
 	}
 
 	@Override
@@ -211,7 +211,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public Currency getCurrency(String name) {
-		return dataSource.currency(name);
+		return dataSource.getCurrency(name);
 	}
 
 	@Override
@@ -225,7 +225,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 	}
 
 	@Override
-	public Account create(AccountRole role, String email, String passwd) {
+	public Account createAccount(AccountRole role, String email, String passwd) {
 		if (isValid(email)) {
 			if (isFree(email)) {
 				Account acc = new Account(email, passwd, role);
@@ -240,7 +240,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 	}
 
 	@Override
-	public BankBook create(User user, Money money) {
+	public BankBook createBankBook(User user, Money money) {
 		if (!dataSource.exist(user.getClass(), user.getId())) {
 			throw new IllegalArgumentException("User does not exist");
 		}
@@ -251,13 +251,16 @@ public final class CommonService implements UserOperations, AdminOperations {
 	}
 
 	@Override
-	public CardBook create(User user, BankBook bankBook) {
-		return dataSource.create(user, bankBook, null);
+	public CardBook createDebitCardBook(User user, BankBook bankBook) {
+		return dataSource.createCardBook(user, bankBook, null);
 	}
 
 	@Override
-	public CardBook create(User user, BankBook bankBook, CreditPlan credit) {
-		return dataSource.create(user, bankBook, credit);
+	public CardBook createCreditCardBook(User user, BankBook bankBook, CreditPlan credit) {
+		if (credit == null) {
+			throw new NullPointerException("Credit plan can't be null for credit card");
+		}
+		return dataSource.createCardBook(user, bankBook, credit);
 	}
 
 	@Override
@@ -267,7 +270,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 	}
 
 	@Override
-	public CreditPlan create(String name, Money limit, Period period, int periodMultiply, int percent) {
+	public CreditPlan createCreditPlan(String name, Money limit, Period period, int periodMultiply, int percent) {
 		CreditPlan plan = new CreditPlan(name, limit, period, periodMultiply, percent);
 		dataSource.insert(plan);
 		return plan;
@@ -298,7 +301,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 		if ((from == null && to != null) || (from != null && to == null)) {
 			throw new NullPointerException();
 		}
-		return dataSource.requests(from, to);
+		return dataSource.getCardRequests(from, to);
 	}
 
 	@Override
@@ -330,18 +333,18 @@ public final class CommonService implements UserOperations, AdminOperations {
 	}
 
 	@Override
-	public List<CardRequest> getAllRequestsOf(User user) {
-		return dataSource.getAllCardRequestsOf(user);
+	public List<CardRequest> getCardRequestsOf(User user, boolean watched) {
+		return dataSource.getCardRequestsOf(user, watched);
 	}
 
 	@Override
 	public CardBook approve(CardRequest request) {
-		return dataSource.process(request, true, null);
+		return dataSource.processCardRequest(request, true, null);
 	}
 
 	@Override
 	public void decline(CardRequest request, String reason) {
-		dataSource.process(request, false, reason);
+		dataSource.processCardRequest(request, false, reason);
 	}
 
 	@Override
@@ -365,5 +368,41 @@ public final class CommonService implements UserOperations, AdminOperations {
 	@Override
 	public List<CreditPlan> getCreditPlansFor(Currency curr) {
 		return dataSource.getCreditPlansFor(curr);
+	}
+
+	@Override
+	public void freeze(CreditPlan plan) {
+		plan.setFreezed(true);
+		dataSource.update(plan);
+	}
+
+	@Override
+	public void unfreeze(CreditPlan plan) {
+		plan.setFreezed(false);
+		dataSource.update(plan);
+	}
+
+	@Override
+	public void freeze(CardBook book) {
+		book.setFreezed(true);
+		dataSource.update(book);
+	}
+
+	@Override
+	public void unfreeze(CardBook book) {
+		book.setFreezed(false);
+		dataSource.update(book);
+	}
+
+	@Override
+	public void freeze(BankBook book) {
+		book.setFreezed(true);
+		dataSource.update(book);
+	}
+
+	@Override
+	public void unfreeze(BankBook book) {
+		book.setFreezed(false);
+		dataSource.update(book);
 	}
 }

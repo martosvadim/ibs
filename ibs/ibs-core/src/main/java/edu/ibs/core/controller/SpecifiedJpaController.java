@@ -176,7 +176,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		return getAccByEmail(email) != null;
 	}
 
-	public List<CardRequest> requests(Date from, Date to) {
+	public List<CardRequest> getCardRequests(Date from, Date to) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
@@ -200,7 +200,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	public List<SavedPayment> savedPayments(User user) {
+	public List<SavedPayment> getSavedPayments(User user) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
@@ -216,7 +216,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	private List<Transaction> history(User owner, TransactionType type, boolean from, boolean to, Date start, Date end) {
+	private List<Transaction> getTransactionHistory(User owner, TransactionType type, boolean from, boolean to, Date start, Date end) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
@@ -246,19 +246,19 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	public List<Transaction> historyOutcome(User owner, TransactionType type, Date from, Date to) {
-		return history(owner, type, true, false, from, to);
+	public List<Transaction> getTrOutHistory(User owner, TransactionType type, Date from, Date to) {
+		return getTransactionHistory(owner, type, true, false, from, to);
 	}
 
-	public List<Transaction> historyIncome(User owner, TransactionType type, Date from, Date to) {
-		return history(owner, type, false, true, from, to);
+	public List<Transaction> getTrInHistory(User owner, TransactionType type, Date from, Date to) {
+		return getTransactionHistory(owner, type, false, true, from, to);
 	}
 
-	public List<Transaction> historyAll(User owner, TransactionType type, Date from, Date to) {
-		return history(owner, type, true, true, from, to);
+	public List<Transaction> getTrAllHistory(User owner, TransactionType type, Date from, Date to) {
+		return getTransactionHistory(owner, type, true, true, from, to);
 	}
 
-	public List<BankBook> bankBooks(User owner) {
+	public List<BankBook> getBankBooksOf(User owner) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
@@ -275,7 +275,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	public List<CardBook> getCardBooks(User user, BankBook bankBook, CardBookType type) {
+	public List<CardBook> getCardBooksOf(User user, BankBook bankBook, CardBookType type) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
@@ -301,27 +301,27 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	public List<CardBook> getCardBooks(User user) {
-		return getCardBooks(user, null, null);
+	public List<CardBook> getCardBooksOf(User user) {
+		return getCardBooksOf(user, null, null);
 	}
 
-	public List<CardBook> getCardBooks(User user, CardBookType type) {
-		return getCardBooks(user, null, type);
+	public List<CardBook> getCardBooksOf(User user, CardBookType type) {
+		return getCardBooksOf(user, null, type);
 	}
 
-	public List<CardBook> getCardBooks(BankBook bankBook) {
-		return getCardBooks(null, bankBook, null);
+	public List<CardBook> getCardBooksOf(BankBook bankBook) {
+		return getCardBooksOf(null, bankBook, null);
 	}
 
-	public List<CardBook> getCardBooks(BankBook bankBook, CardBookType type) {
-		return getCardBooks(null, bankBook, type);
+	public List<CardBook> getCardBooksOf(BankBook bankBook, CardBookType type) {
+		return getCardBooksOf(null, bankBook, type);
 	}
 
-	public List<CardBook> getCardBooks(User user, BankBook bankBook) {
-		return getCardBooks(user, bankBook, null);
+	public List<CardBook> getCardBooksOf(User user, BankBook bankBook) {
+		return getCardBooksOf(user, bankBook, null);
 	}
 
-	public Currency currency(String name) {
+	public Currency getCurrency(String name) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
@@ -418,14 +418,17 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	public List<CardRequest> getAllCardRequestsOf(User user) {
+	public List<CardRequest> getCardRequestsOf(User user, boolean watched) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
-			CriteriaBuilder builder = em.getCriteriaBuilder();
-			CriteriaQuery<CardRequest> criteria = builder.createQuery(CardRequest.class);
-			Root<CardRequest> cardRequest = criteria.from(CardRequest.class);
-			criteria.select(cardRequest).where(builder.equal(cardRequest.get("user"), user));
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<CardRequest> criteria = cb.createQuery(CardRequest.class);
+			Root<CardRequest> request = criteria.from(CardRequest.class);
+			Expression<Boolean> watchedExpr = request.get("watched");
+			Expression<User> userExpr = request.get("user");
+			Predicate where = cb.and(cb.equal(watchedExpr, watched), cb.equal(userExpr, user));
+			criteria.select(request).where(where);
 			return em.createQuery(criteria).getResultList();
 		} finally {
 			if (em != null) {
@@ -469,7 +472,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	public CardBook process(CardRequest request, boolean approved, String reason) {
+	public CardBook processCardRequest(CardRequest request, boolean approved, String reason) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
@@ -507,7 +510,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	public CardBook create(User user, BankBook book, CreditPlan plan) {
+	public CardBook createCardBook(User user, BankBook book, CreditPlan plan) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();

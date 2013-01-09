@@ -197,13 +197,13 @@ public class CommonServiceTest {
             assertNotNull(requests);
             assertEquals(count + 1, requests.size());
 
-            CardRequest actual = service.getAllRequestsOf(u1).iterator().next();
+            CardRequest actual = service.getCardRequestsOf(u1, false).iterator().next();
             assertNotNull(actual);
             assertFalse(actual.isApproved());
             assertFalse(request.isWatched());
 
             service.decline(actual, "Fake request");
-            actual = service.getAllRequestsOf(u1).iterator().next();
+            actual = service.getCardRequestsOf(u1, true).iterator().next();
             assertNotNull(actual);
             assertFalse(actual.isApproved());
             assertTrue(actual.isWatched());
@@ -228,7 +228,7 @@ public class CommonServiceTest {
     public void createCardBookTest() {
         CardBook cb = null;
         try {
-            cb = service.create(u2, bb1);
+            cb = service.createDebitCardBook(u2, bb1);
             Assert.assertNotNull(cb);
             Assert.assertEquals(cb.getOwner(), u2);
             Assert.assertEquals(cb.getBankBook(), bb1);
