@@ -21,7 +21,6 @@ public class CardRequestsGrid extends ListGrid {
 		super();
 		Components.prepareGrid(this);
 		this.setShowAllRecords(true);
-		this.setSortField(1);
 
 		ListGridField idField = new ListGridField("id", "ID", 320);
 		ListGridField userField = new ListGridField("user", "Пользователь", 100);
@@ -41,6 +40,7 @@ public class CardRequestsGrid extends ListGrid {
 								if (cardBookDTO != null) {
 									SC.say("Создан карт счёт " + cardBookDTO.getId()
 											+ " для пользователя " + cardBookDTO.getBankBook().getOwner().getId());
+									invalidateCache();
 									fetchData();
 								}
 							}
