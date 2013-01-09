@@ -37,6 +37,9 @@ public class Currency implements Serializable, AbstractEntity {
 	@Column(name = "factor")
 	private float factor;
 	@Basic(optional = false)
+	@Column(name = "lastUpdated")
+	private long lastUpdated;
+	@Basic(optional = false)
 	@Column(name = "fraction", updatable = false)
 	@Enumerated(EnumType.STRING)
 	private Fraction fraction;
@@ -48,13 +51,14 @@ public class Currency implements Serializable, AbstractEntity {
 		this.name = name;
 		this.factor = factor;
 		this.fraction = fraction;
+		this.lastUpdated = System.currentTimeMillis();
 	}
 
-    public Currency(CurrencyDTO currency) {
-        this(currency.getName(), currency.getFactor(), currency.getFraction());
-    }
+	public Currency(CurrencyDTO currency) {
+		this(currency.getName(), currency.getFactor(), currency.getFraction());
+	}
 
-    public BigDecimal getFactor() {
+	public BigDecimal getFactor() {
 		return BigDecimal.valueOf(factor);
 	}
 
@@ -78,6 +82,14 @@ public class Currency implements Serializable, AbstractEntity {
 		return fraction;
 	}
 
+	public long getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(long lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -99,5 +111,4 @@ public class Currency implements Serializable, AbstractEntity {
 		hash = 97 * hash + (int) (this.id ^ (this.id >>> 32));
 		return hash;
 	}
-
 }

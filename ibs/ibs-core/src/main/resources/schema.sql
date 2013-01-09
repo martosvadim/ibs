@@ -41,13 +41,14 @@ create table Currency
 (
 	id bigint primary key auto_increment,
 	name varchar(8) unique not null,
+	lastUpdated bigint not null,
 	factor float not null,
 	fraction enum('ZERO', 'ONE', 'TWO', 'THREE') not null
 )engine InnoDB;
 
-insert into Currency (id, name, factor, fraction) values(1, 'BR', 1, 'ZERO');
-insert into Currency (id, name, factor, fraction) values(2, 'EUR', 10120.4, 'TWO');
-insert into Currency (id, name, factor, fraction) values(3, 'USD', 8560.5, 'TWO');
+insert into Currency (id, name, factor, fraction, lastUpdated) values(1, 'BR', 1, 'ZERO', UNIX_TIMESTAMP());
+insert into Currency (id, name, factor, fraction, lastUpdated) values(2, 'EUR', 10120.4, 'TWO', UNIX_TIMESTAMP());
+insert into Currency (id, name, factor, fraction, lastUpdated) values(3, 'USD', 8560.5, 'TWO', UNIX_TIMESTAMP());
 
 create table BankBook
 (
@@ -125,6 +126,17 @@ create table Transaction
 	FOREIGN KEY (fromCardBookID) REFERENCES CardBook(id) on delete restrict on update cascade,
 	FOREIGN KEY (toCardBookID) REFERENCES CardBook(id) on delete restrict on update cascade,
 	FOREIGN KEY (currencyID) REFERENCES Currency(id) on delete restrict on update cascade
+)engine InnoDB;
+
+create table Autopay
+(
+	id bigint primary key auto_increment,
+	currencyID bigint not null,
+	amount bigint not null default 0,	
+	period enum('DAY', 'WEEK', 'MONTH', 'YEAR') not null default 'month',
+	periodMultiply int not null default 1,
+	INDEX currencyIndex (currencyID),
+	FOREIGN KEY (currencyID) REFERENCES Currency(id) on delete cascade on update cascade
 )engine InnoDB;
 
 create table SavedPayment

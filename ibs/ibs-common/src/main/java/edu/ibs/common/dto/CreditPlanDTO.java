@@ -3,15 +3,13 @@ package edu.ibs.common.dto;
 import edu.ibs.common.enums.Period;
 
 /**
- * User: EgoshinME
- * Date: 17.12.12
- * Time: 5:23
+ * User: EgoshinME Date: 17.12.12 Time: 5:23
  */
 public class CreditPlanDTO implements IBaseDTO {
+
 	private long id;
 	private int percent;
-	private Period period;
-	private int periodMultiply;
+	private long period;
 	private long moneyLimit;
 	private String name;
 	private boolean freezed;
@@ -34,20 +32,16 @@ public class CreditPlanDTO implements IBaseDTO {
 		this.percent = percent;
 	}
 
-	public Period getPeriod() {
+	public long getPeriod() {
 		return period;
 	}
 
-	public void setPeriod(Period period) {
+	public void setPeriod(Period period, int multiply) {
+		this.period = Period.calculatePeriod(period, multiply);
+	}
+
+	public void setPeriod(long period) {
 		this.period = period;
-	}
-
-	public int getPeriodMultiply() {
-		return periodMultiply;
-	}
-
-	public void setPeriodMultiply(int periodMultiply) {
-		this.periodMultiply = periodMultiply;
 	}
 
 	public long getMoneyLimit() {

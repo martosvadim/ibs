@@ -25,6 +25,9 @@ public class Money implements Comparable<Money>, Comparator<Money>, Serializable
 	private final Currency currency;
 
 	public Money(long integer, int fraction, Currency currency) throws IllegalArgumentException, NullPointerException {
+		if (integer < 0 || fraction < 0) {
+			throw new IllegalArgumentException("Positive value expected on money");
+		}
 		int multiply = currency.getFraction().multiply();
 		if (fraction / multiply != 0) {
 			throw new IllegalArgumentException(String.format("Fraction %s has more digits than allowed(%s)", fraction, currency.getFraction()));
@@ -33,7 +36,10 @@ public class Money implements Comparable<Money>, Comparator<Money>, Serializable
 		this.currency = currency;
 	}
 
-	public Money(long amount, Currency currency) throws NullPointerException {
+	public Money(long amount, Currency currency) throws NullPointerException, IllegalArgumentException {
+		if (amount < 0) {
+			throw new IllegalArgumentException("Positive value expected on money");
+		}
 		this.amount = BigDecimal.valueOf(amount);
 		this.currency = currency;
 	}

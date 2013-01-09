@@ -549,4 +549,22 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 			}
 		}
 	}
+
+	public void payForCredits() {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			em.getTransaction().begin();
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Credit> query = cb.createQuery(Credit.class);
+			Root<Credit> credit = query.from(Credit.class);
+			Expression<Long> lastPayed = credit.get("lastPayDate");
+			//todo
+			em.getTransaction().commit();
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
 }

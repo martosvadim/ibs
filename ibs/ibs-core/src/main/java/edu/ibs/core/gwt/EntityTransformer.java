@@ -4,9 +4,7 @@ import edu.ibs.common.dto.*;
 import edu.ibs.core.entity.*;
 
 /**
- * User: EgoshinME
- * Date: 17.12.12
- * Time: 6:19
+ * User: EgoshinME Date: 17.12.12 Time: 6:19
  */
 public final class EntityTransformer {
 
@@ -45,8 +43,8 @@ public final class EntityTransformer {
 		return dto;
 	}
 
-    public static CardBookDTO transformCardBook(final CardBook cardBook) {
-        CardBookDTO dto = new CardBookDTO();
+	public static CardBookDTO transformCardBook(final CardBook cardBook) {
+		CardBookDTO dto = new CardBookDTO();
 		if (cardBook != null) {
 			dto.setDateExpire(cardBook.getDateExpire());
 			dto.setFreezed(cardBook.isFreezed());
@@ -56,22 +54,22 @@ public final class EntityTransformer {
 			dto.setBankBook(transformBankBook(cardBook.getBankBook()));
 			dto.setCredit(transformCredit(cardBook.getCredit()));
 		}
-        return dto;
-    }
+		return dto;
+	}
 
 	public static CreditDTO transformCredit(final Credit credit) {
-        CreditDTO dto = new CreditDTO();
+		CreditDTO dto = new CreditDTO();
 		if (credit != null) {
 			dto.setId(credit.getId());
 			dto.setLastPayDate(credit.getLastPayDate());
 			dto.setMoney(transformMoney(credit.getMoney()));
 			dto.setCreditPlan(transformCreditPlan(credit.getCreditPlan()));
 		}
-        return dto;
-    }
+		return dto;
+	}
 
 	public static CreditPlanDTO transformCreditPlan(CreditPlan creditPlan) {
-        CreditPlanDTO dto = new CreditPlanDTO();
+		CreditPlanDTO dto = new CreditPlanDTO();
 		if (creditPlan != null) {
 			dto.setId(creditPlan.getId());
 			dto.setCurrency(transformCurrency(creditPlan.getCurrency()));
@@ -80,33 +78,32 @@ public final class EntityTransformer {
 			dto.setName(creditPlan.getName());
 			dto.setPercent(creditPlan.getPercent());
 			dto.setPeriod(creditPlan.getPeriod());
-			dto.setPeriodMultiply(creditPlan.getPeriodMultiply());
 		}
-        return dto;
-    }
+		return dto;
+	}
 
 	public static MoneyDTO transformMoney(final Money money) {
-        MoneyDTO dto = new MoneyDTO();
+		MoneyDTO dto = new MoneyDTO();
 		if (money != null) {
-        	dto.setCurrency(transformCurrency(money.currency()));
-        	//todo Как конвертировать?
+			dto.setCurrency(transformCurrency(money.currency()));
+			//todo Как конвертировать?
 		}
-        return dto;
-    }
+		return dto;
+	}
 
 	public static CurrencyDTO transformCurrency(final Currency currency) {
-        CurrencyDTO dto = new CurrencyDTO();
+		CurrencyDTO dto = new CurrencyDTO();
 		if (currency != null) {
 			dto.setFactor(currency.getFloatFactor());
 			dto.setFraction(currency.getFraction());
 			dto.setId(currency.getId());
 			dto.setName(currency.getName());
 		}
-        return dto;
-    }
+		return dto;
+	}
 
-    public static BankBookDTO transformBankBook(final BankBook bankBook) {
-        BankBookDTO dto = new BankBookDTO();
+	public static BankBookDTO transformBankBook(final BankBook bankBook) {
+		BankBookDTO dto = new BankBookDTO();
 		if (bankBook != null) {
 			dto.setId(bankBook.getId());
 			dto.setCurrency(transformCurrency(bankBook.getCurrency()));
@@ -116,8 +113,8 @@ public final class EntityTransformer {
 			dto.setMoney(transformMoney(bankBook.getMoney()));
 			dto.setOwner(transformUser(bankBook.getOwner()));
 		}
-        return dto;
-    }
+		return dto;
+	}
 
 	public static CardRequestDTO transformCardRequest(CardRequest cardRequest) {
 		CardRequestDTO dto = new CardRequestDTO();

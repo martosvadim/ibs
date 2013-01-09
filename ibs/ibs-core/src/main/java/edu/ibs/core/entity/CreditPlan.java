@@ -5,6 +5,8 @@ import edu.ibs.common.enums.Period;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  *
@@ -34,13 +36,12 @@ public class CreditPlan implements Serializable, AbstractEntity {
 	@Basic(optional = false)
 	@Column(name = "percent")
 	private int percent;
+//	@Basic(optional = false)
+//	@Column(name = "period", updatable = false)
+//	@Enumerated(EnumType.STRING)
 	@Basic(optional = false)
 	@Column(name = "period", updatable = false)
-	@Enumerated(EnumType.STRING)
-	private Period period;
-	@Basic(optional = false)
-	@Column(name = "periodMultiply")
-	private int periodMultiply;
+	private long period;
 	@Basic(optional = false)
 	@Column(name = "moneyLimit")
 	private long moneyLimit;
@@ -60,9 +61,12 @@ public class CreditPlan implements Serializable, AbstractEntity {
 	}
 
 	public CreditPlan(String name, Money limit, Period period, int periodMultiply, int percent) {
+		this(name, limit, Period.calculatePeriod(period, periodMultiply), percent);
+	}
+
+	public CreditPlan(String name, Money limit, long period, int percent) {
 		this.percent = percent;
 		this.period = period;
-		this.periodMultiply = periodMultiply;
 		this.moneyLimit = limit.balance();
 		this.currency = limit.currency();
 		this.name = name;
@@ -99,16 +103,11 @@ public class CreditPlan implements Serializable, AbstractEntity {
 		return percent;
 	}
 
-	public Period getPeriod() {
+	public long getPeriod() {
 		return period;
-	}
-
-	public int getPeriodMultiply() {
-		return periodMultiply;
 	}
 
 	public String getName() {
 		return name;
 	}
-
 }
