@@ -12,17 +12,17 @@ import javax.persistence.Persistence;
  */
 class CoreJpa {
 
-	public static final String PERSISTANCE_UTIN_NAME = "edu.ibs.core.jpa";
-	private static final EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTANCE_UTIN_NAME);
-	public static final int BATCH_SIZE = 15;
+    public static final String PERSISTANCE_UTIN_NAME = "edu.ibs.core.jpa";
+    private static final EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTANCE_UTIN_NAME);
+    public static final int BATCH_SIZE = 15;
 
-	public EntityManager createEntityManager() {
-		return factory.createEntityManager();
-	}
+    public EntityManager createEntityManager() {
+        return factory.createEntityManager();
+    }
 
-	public synchronized void close() {
-		if (factory.isOpen()) {
-			factory.close();
-		}
-	}
+    public synchronized void close() {
+        if (factory.isOpen()) {
+            factory.close();
+        }
+    }
 }

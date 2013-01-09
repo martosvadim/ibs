@@ -258,6 +258,7 @@ public final class CommonService implements UserOperations, AdminOperations {
             throw new IllegalArgumentException("Bank book does not exist");
         } else {
             CardBook cb = new CardBook(bankBook);
+            cb.setOwner(user);
             dataSource.insert(cb);
             return cb;
         }

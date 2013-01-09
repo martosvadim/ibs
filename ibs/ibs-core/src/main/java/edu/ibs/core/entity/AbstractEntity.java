@@ -6,5 +6,5 @@ package edu.ibs.core.entity;
  */
 public interface AbstractEntity {
 
-	public long getId();
+    public long getId();
 }
