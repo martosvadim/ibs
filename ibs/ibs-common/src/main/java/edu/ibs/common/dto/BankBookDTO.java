@@ -8,7 +8,7 @@ package edu.ibs.common.dto;
 public class BankBookDTO implements IBaseDTO {
 
 	private long id;
-	private long balance;
+	private String balance;
 	private boolean freezed;
 	private CurrencyDTO currency;
 	private UserDTO owner;
@@ -24,11 +24,11 @@ public class BankBookDTO implements IBaseDTO {
 		this.id = id;
 	}
 
-	public long getBalance() {
+	public String getBalance() {
 		return balance;
 	}
 
-	public void setBalance(long balance) {
+	public void setBalance(String balance) {
 		this.balance = balance;
 	}
 

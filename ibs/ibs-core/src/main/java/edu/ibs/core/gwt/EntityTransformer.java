@@ -112,6 +112,7 @@ public final class EntityTransformer {
 			dto.setFreezed(bankBook.isFreezed());
 			dto.setMoney(transformMoney(bankBook.getMoney()));
 			dto.setOwner(transformUser(bankBook.getOwner()));
+			dto.setBalance(bankBook.getMoney().toString());
 		}
 		return dto;
 	}
