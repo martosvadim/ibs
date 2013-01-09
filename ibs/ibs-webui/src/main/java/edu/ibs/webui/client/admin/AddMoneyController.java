@@ -97,24 +97,28 @@ public class AddMoneyController extends GenericWindowController {
 				} else {
 					try {
 						Double amountDouble = Double.parseDouble(amountTxt);
-						addMoneyBtn.setDisabled(true);
-						IPaymentServiceAsync.Util.getInstance().addMoney(getBankBookDTO(), amountDouble,
-								new AppCallback<Boolean>() {
+						if (amountDouble <= 0d) {
+							SC.warn("Введите положительное значение.");
+						} else {
+							addMoneyBtn.setDisabled(true);
+							IPaymentServiceAsync.Util.getInstance().addMoney(getBankBookDTO(), amountDouble,
+									new AppCallback<Boolean>() {
 
-							@Override
-							public void onFailure(Throwable t) {
-								super.onFailure(t);
-								addMoneyBtn.setDisabled(false);
-							}
-
-							@Override
-							public void onSuccess(Boolean aBoolean) {
-								addMoneyBtn.setDisabled(false);
-								if (aBoolean) {
-									SC.say("Счёт пополнен.");
+								@Override
+								public void onFailure(Throwable t) {
+									super.onFailure(t);
+									addMoneyBtn.setDisabled(false);
 								}
-							}
-						});
+
+								@Override
+								public void onSuccess(Boolean aBoolean) {
+									addMoneyBtn.setDisabled(false);
+									if (aBoolean) {
+										SC.say("Счёт пополнен.");
+									}
+								}
+							});
+						}
 					} catch (NumberFormatException e) {
 						SC.warn("Введите корректную сумму.");
 					}
@@ -165,7 +169,7 @@ public class AddMoneyController extends GenericWindowController {
 			layoutForm.addMember(
 					Components.addTitle("Владелец счета",
 							new Label(getBankBookDTO().getOwner().getFirstName()
-									+ getBankBookDTO().getOwner().getLastName())));
+									+ " " + getBankBookDTO().getOwner().getLastName())));
 			layoutForm.addMember(Components.addTitle("Сумма", amountControl.getView()));
 
 			HLayout buttons = new HLayout();

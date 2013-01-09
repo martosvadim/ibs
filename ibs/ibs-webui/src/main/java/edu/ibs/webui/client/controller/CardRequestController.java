@@ -103,9 +103,9 @@ public class CardRequestController extends GenericWindowController {
 				String currencyTxt = currencyVoc.getValue();
 				if (bankBookIdTxt == null || "".equals(bankBookIdTxt) || bankBookIdTxt.length() == 0) {
 					SC.warn("Номер банковского счёта не заполнен.");
-				} else if (cardTypeTxt == null || "".equals(cardTypeTxt) || cardTypeTxt.length() == 0) {
+				} else if (cardTypeTxt == null || "".equals(cardTypeTxt) || cardTypeTxt.length() == 0 || cardTypeVoc.getId() == null) {
 					SC.warn("Тип карты не выбран.");
-				} else if (currencyTxt == null || "".equals(currencyTxt) || currencyTxt.length() == 0) {
+				} else if (currencyTxt == null || "".equals(currencyTxt) || currencyTxt.length() == 0 || currencyVoc.getId() == null) {
 					SC.warn("Не выбрана валюта счёта.");
 				} else {
 					CardBookType cardBookType = CardBookType.forName(cardTypeVoc.getId());
