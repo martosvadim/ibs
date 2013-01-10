@@ -28,11 +28,11 @@ public class PaymentServiceImpl implements IPaymentService {
 	private CurrenciesCache currenciesCache;
 
 	@Override
-	public BankBookDTO createBankBook(String userId, CurrencyDTO currencyDTO) throws IbsServiceException {
+	public BankBookDTO createBankBook(UserDTO userDTO, CurrencyDTO currencyDTO) throws IbsServiceException {
 		BankBookDTO dto = null;
 		try {
-			if (userId != null && userId.length() > 0) {
-				User user = adminLogic.getUser(Long.parseLong(userId));
+			if (userDTO != null && userDTO.getId() > 0) {
+				User user = new User(userDTO);
 				if (user != null) {
 					Currency currency = new Currency(currencyDTO);
 					Money money = new Money(0, currency);
@@ -220,7 +220,20 @@ public class PaymentServiceImpl implements IPaymentService {
 		}
 	}
 
-	public UserOperations getUserLogic() {
+    @Override
+    public UserDTO getUser(String email) throws IbsServiceException {
+        UserDTO userDTO = null;
+        if (email != null && email.length() > 0) {
+            try {
+                userDTO = EntityTransformer.transformUser(adminLogic.getUser(email));
+            } catch (Throwable t) {
+                throw new IbsServiceException("Ошибка при получении пользователя.");
+            }
+        }
+        return userDTO;
+    }
+
+    public UserOperations getUserLogic() {
         return userLogic;
     }
 
