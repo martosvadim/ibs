@@ -67,7 +67,9 @@ public class Account implements Serializable, AbstractEntity {
     public Account(AccountDTO dto) {
         this(dto.getEmail(), dto.getPassword(), dto.getRole(), dto.getSecurityQuestion(), dto.getSecurityAnswer(), dto.getAvatar());
         this.id = dto.getId();
-        setUser(new User(dto.getUser()));
+		if (!AccountRole.ADMIN.equals(dto.getRole())) {
+			setUser(new User(dto.getUser()));
+		}
     }
 
     public String getAvatar() {
