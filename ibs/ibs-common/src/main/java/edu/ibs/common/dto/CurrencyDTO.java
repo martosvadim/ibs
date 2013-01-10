@@ -3,45 +3,53 @@ package edu.ibs.common.dto;
 import edu.ibs.common.enums.Fraction;
 
 /**
- * User: EgoshinME
- * Date: 17.12.12
- * Time: 5:15
+ * User: EgoshinME Date: 17.12.12 Time: 5:15
  */
 public class CurrencyDTO implements IBaseDTO {
-	private long id;
-	private String name;
-	private float factor;
-	private Fraction fraction;
 
-	public long getId() {
-		return id;
-	}
+    private long id;
+    private String name;
+    private float factor;
+    private Fraction fraction;
+    private long lastUpdated;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public float getFactor() {
-		return factor;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setFactor(float factor) {
-		this.factor = factor;
-	}
+    public float getFactor() {
+        return factor;
+    }
 
-	public Fraction getFraction() {
-		return fraction;
-	}
+    public void setFactor(float factor) {
+        this.factor = factor;
+    }
 
-	public void setFraction(Fraction fraction) {
-		this.fraction = fraction;
-	}
+    public Fraction getFraction() {
+        return fraction;
+    }
+
+    public void setFraction(Fraction fraction) {
+        this.fraction = fraction;
+    }
+
+    public long getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(long lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 }
