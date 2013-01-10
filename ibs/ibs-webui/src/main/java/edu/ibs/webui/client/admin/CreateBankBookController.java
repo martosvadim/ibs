@@ -1,17 +1,22 @@
 package edu.ibs.webui.client.admin;
 
 import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import edu.ibs.common.dto.BankBookDTO;
 import edu.ibs.common.dto.CurrencyDTO;
+import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.dto.VocDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
+import edu.ibs.webui.client.ApplicationManager;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.controller.GenericWindowController;
+import edu.ibs.webui.client.controller.IAction;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 
@@ -26,13 +31,61 @@ import java.util.List;
  */
 public class CreateBankBookController extends GenericWindowController {
 
-	private final GenericController userIdControl = Components.getTextItem();
+    private VLayout step1Layout, step2Layout;
+	private final GenericController userEmailControl = Components.getTextItem();
 	private GenericController currenciesControl = Components.getComboBoxControll();
+    private final IButton nextBtn = new IButton("Дальше");
+	private final IButton checkBtn = new IButton("Проверить");
+    private final IButton createButton = new IButton("Создать");
+    private boolean checked = false;
+    private UserDTO userDTO;
 
 	private List<CurrencyDTO> currencyDTOList = new ArrayList<CurrencyDTO>();
 
 	public CreateBankBookController() {
 		getWindow().setTitle("Создание банковского счёта");
+
+        userEmailControl.addOnChange(new IAction() {
+			@Override
+			public void execute(Object data) {
+				nextBtn.setDisabled(true);
+				checked = false;
+			}
+		});
+
+		nextBtn.setDisabled(true);
+		nextBtn.setWidth(80);
+        checkBtn.setWidth(80);
+		checkBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent clickEvent) {
+				String userEmailTxt = ((String) userEmailControl.unbind());
+				if (userEmailTxt == null || "".equals(userEmailTxt) || userEmailTxt.length() == 0) {
+					SC.warn("E-mail не заполнен.");
+				} else {
+					checkBtn.setDisabled(true);
+					IPaymentServiceAsync.Util.getInstance().getUser(userEmailTxt, new AppCallback<UserDTO>() {
+                        @Override
+                        public void onFailure(Throwable t) {
+                            super.onFailure(t);
+                            checkBtn.setDisabled(false);
+                        }
+
+                        @Override
+                        public void onSuccess(UserDTO uDTO) {
+                            checkBtn.setDisabled(false);
+                            if (uDTO != null && uDTO.getId() > 0) {
+                                setUserDTO(uDTO);
+                                nextBtn.setDisabled(false);
+                                checked = true;
+                            } else {
+                                nextBtn.setDisabled(true);
+                            }
+                        }
+                    });
+				}
+			}
+		});
 
 		IPaymentServiceAsync.Util.getInstance().getCurrencies(new AppCallback<List<CurrencyDTO>>() {
 			@Override
@@ -52,17 +105,15 @@ public class CreateBankBookController extends GenericWindowController {
 			}
 		});
 
-		final IButton createButton = new IButton("Создать");
+
 		createButton.setWidth(80);
 		createButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent clickEvent) {
-				String userIdText = ((String) userIdControl.unbind());
+
 				VocDTO<String, String> currencyVoc = ((VocDTO<String, String>) currenciesControl.unbind());
 				String currencyTxt = currencyVoc.getValue();
-				if (userIdText == null || "".equals(userIdText) || userIdText.length() == 0) {
-					SC.warn("Идентификатор пользователя не заполнен.");
-				} else if (currencyTxt == null || "".equals(currencyTxt) || currencyTxt.length() == 0 || currencyVoc.getId() == null) {
+				if (currencyTxt == null || "".equals(currencyTxt) || currencyTxt.length() == 0 || currencyVoc.getId() == null) {
 					SC.warn("Не выбрана валюта счёта.");
 				} else {
 					createButton.setDisabled(true);
@@ -72,7 +123,7 @@ public class CreateBankBookController extends GenericWindowController {
 							currencyDTO = currencyDTO1;
 						}
 					}
-					IPaymentServiceAsync.Util.getInstance().createBankBook(userIdText, currencyDTO, new AppCallback<BankBookDTO>() {
+					IPaymentServiceAsync.Util.getInstance().createBankBook(getUserDTO(), currencyDTO, new AppCallback<BankBookDTO>() {
 						@Override
 						public void onFailure(Throwable t) {
 							super.onFailure(t);
@@ -94,28 +145,81 @@ public class CreateBankBookController extends GenericWindowController {
 				}
 			}
 		});
-		VLayout layoutForm = new VLayout();
-		layoutForm.setWidth100();
-		layoutForm.setHeight100();
 
-		layoutForm.addMember(Components.addTitle("Идентификатор пользователя", userIdControl.getView()));
-		layoutForm.addMember(Components.addTitle("Валюта", currenciesControl.getView()));
+        nextBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				getWindow().removeItem(getStep1Layout());
+				getWindow().addItem(getStep2Layout());
+				getWindow().redraw();
+			}
+		});
 
-		HLayout buttons = new HLayout();
-		buttons.addMember(createButton);
-
-		VLayout view = new VLayout();
-		view.setMembersMargin(MARGIN);
-		view.addMember(layoutForm);
-		view.addMember(buttons);
-		view.setMargin(MARGIN);
-		view.setShowResizeBar(false);
-
-		getWindow().addItem(view);
+		getWindow().addItem(getStep1Layout());
 	}
 
-	@Override
+    private VLayout getStep1Layout() {
+		if (step1Layout == null) {
+            VLayout layoutForm = new VLayout();
+            layoutForm.setWidth100();
+            layoutForm.setHeight100();
+
+            layoutForm.addMember(Components.addTitle("E-mail", userEmailControl.getView()));
+
+            HLayout buttons = new HLayout();
+            buttons.setMembersMargin(MARGIN);
+			buttons.addMember(checkBtn);
+			buttons.addMember(nextBtn);
+
+			step1Layout = new VLayout();
+			step1Layout.setMembersMargin(MARGIN);
+			step1Layout.addMember(layoutForm);
+			step1Layout.addMember(buttons);
+			step1Layout.setMargin(MARGIN);
+			step1Layout.setShowResizeBar(false);
+		}
+		return step1Layout;
+	}
+
+	private Canvas getStep2Layout() {
+		if (step2Layout == null) {
+			VLayout layoutForm = new VLayout();
+			layoutForm.setMembersMargin(MARGIN);
+			layoutForm.setWidth100();
+			layoutForm.setHeight100();
+
+			layoutForm.addMember(
+					Components.addTitle("Имя", new Label(String.valueOf(getUserDTO().getFirstName()))));
+			layoutForm.addMember(
+					Components.addTitle("Фамилия", new Label(String.valueOf(getUserDTO().getLastName()))));
+			layoutForm.addMember(
+					Components.addTitle("Номер паспорта", new Label(getUserDTO().getPassportNumber())));
+
+			layoutForm.addMember(Components.addTitle("Валюта", currenciesControl.getView()));
+
+			HLayout buttons = new HLayout();
+			buttons.addMember(createButton);
+
+			step2Layout = new VLayout();
+			step2Layout.setMembersMargin(MARGIN);
+			step2Layout.addMember(layoutForm);
+			step2Layout.addMember(buttons);
+			step2Layout.setMargin(MARGIN);
+			step2Layout.setShowResizeBar(false);
+		}
+		return step2Layout;
+	}
+
+    public UserDTO getUserDTO() {
+        return userDTO;
+    }
+
+    public void setUserDTO(UserDTO userDTO) {
+        this.userDTO = userDTO;
+    }
+
+    @Override
 	public void reload() {
-		userIdControl.bind("");
+		userEmailControl.bind("");
 	}
 }
