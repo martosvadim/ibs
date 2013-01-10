@@ -15,15 +15,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "Account")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a"),
-    @NamedQuery(name = "Account.findById", query = "SELECT a FROM Account a WHERE a.id = :id"),
-    @NamedQuery(name = "Account.findByEmail", query = "SELECT a FROM Account a WHERE a.email = :email"),
-    @NamedQuery(name = "Account.findByRole", query = "SELECT a FROM Account a WHERE a.role = :role"),
-    @NamedQuery(name = "Account.findByPassword", query = "SELECT a FROM Account a WHERE a.password = :password"),
-    @NamedQuery(name = "Account.findBySecurityQuestion", query = "SELECT a FROM Account a WHERE a.securityQuestion = :securityQuestion"),
-    @NamedQuery(name = "Account.findBySecurityAnswer", query = "SELECT a FROM Account a WHERE a.securityAnswer = :securityAnswer"),
-    @NamedQuery(name = "Account.findByAvatar", query = "SELECT a FROM Account a WHERE a.avatar = :avatar")})
 public class Account implements Serializable, AbstractEntity {
 
     private static final long serialVersionUID = 4245141234284L;

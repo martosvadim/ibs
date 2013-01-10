@@ -15,14 +15,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "CardRequest")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "CardRequest.findAll", query = "SELECT c FROM CardRequest c"),
-    @NamedQuery(name = "CardRequest.findById", query = "SELECT c FROM CardRequest c WHERE c.id = :id"),
-    @NamedQuery(name = "CardRequest.findByType", query = "SELECT c FROM CardRequest c WHERE c.type = :type"),
-    @NamedQuery(name = "CardRequest.findByDateCreated", query = "SELECT c FROM CardRequest c WHERE c.dateCreated = :dateCreated"),
-    @NamedQuery(name = "CardRequest.findByDateWatched", query = "SELECT c FROM CardRequest c WHERE c.dateWatched = :dateWatched"),
-    @NamedQuery(name = "CardRequest.findByApproved", query = "SELECT c FROM CardRequest c WHERE c.approved = :approved"),
-    @NamedQuery(name = "CardRequest.findByReason", query = "SELECT c FROM CardRequest c WHERE c.reason = :reason")})
 public class CardRequest implements Serializable, AbstractEntity {
 
     private static final long serialVersionUID = 791271095876512309L;

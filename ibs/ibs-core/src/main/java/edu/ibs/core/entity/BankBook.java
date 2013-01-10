@@ -14,11 +14,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "BankBook")
 @XmlRootElement
-@NamedQueries({
-	@NamedQuery(name = "BankBook.findAll", query = "SELECT b FROM BankBook b"),
-	@NamedQuery(name = "BankBook.findById", query = "SELECT b FROM BankBook b WHERE b.id = :id"),
-	@NamedQuery(name = "BankBook.findByBalance", query = "SELECT b FROM BankBook b WHERE b.balance = :balance"),
-	@NamedQuery(name = "BankBook.findByFreezed", query = "SELECT b FROM BankBook b WHERE b.freezed = :freezed")})
 public class BankBook implements Serializable, AbstractEntity, MoneyEntity {
 
 	private static final long serialVersionUID = 7689532939542907L;

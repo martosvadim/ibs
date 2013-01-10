@@ -14,11 +14,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "Transaction")
 @XmlRootElement
-@NamedQueries({
-	@NamedQuery(name = "Transaction.findAll", query = "SELECT t FROM Transaction t"),
-	@NamedQuery(name = "Transaction.findById", query = "SELECT t FROM Transaction t WHERE t.id = :id"),
-	@NamedQuery(name = "Transaction.findByAmount", query = "SELECT t FROM Transaction t WHERE t.amount = :amount"),
-	@NamedQuery(name = "Transaction.findByType", query = "SELECT t FROM Transaction t WHERE t.type = :type")})
 public class Transaction implements Serializable, AbstractEntity {
 
 	private static final long serialVersionUID = 1389809123753412L;

@@ -1,12 +1,9 @@
 package edu.ibs.core.entity;
 
 import edu.ibs.common.enums.Period;
-
+import java.io.Serializable;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  *
@@ -17,14 +14,6 @@ import java.util.Date;
 @Entity
 @Table(name = "CreditPlan")
 @XmlRootElement
-@NamedQueries({
-	@NamedQuery(name = "CreditPlan.findAll", query = "SELECT c FROM CreditPlan c"),
-	@NamedQuery(name = "CreditPlan.findById", query = "SELECT c FROM CreditPlan c WHERE c.id = :id"),
-	@NamedQuery(name = "CreditPlan.findByPercent", query = "SELECT c FROM CreditPlan c WHERE c.percent = :percent"),
-	@NamedQuery(name = "CreditPlan.findByPeriod", query = "SELECT c FROM CreditPlan c WHERE c.period = :period"),
-	@NamedQuery(name = "CreditPlan.findByPeriodMultiply", query = "SELECT c FROM CreditPlan c WHERE c.periodMultiply = :periodMultiply"),
-	@NamedQuery(name = "CreditPlan.findByMoneyLimit", query = "SELECT c FROM CreditPlan c WHERE c.moneyLimit = :moneyLimit"),
-	@NamedQuery(name = "CreditPlan.findByFreezed", query = "SELECT c FROM CreditPlan c WHERE c.freezed = :freezed")})
 public class CreditPlan implements Serializable, AbstractEntity {
 
 	private static final long serialVersionUID = 47183913713123L;

@@ -15,13 +15,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "CardBook")
 @XmlRootElement
-@NamedQueries({
-	@NamedQuery(name = "CardBook.findAll", query = "SELECT c FROM CardBook c"),
-	@NamedQuery(name = "CardBook.findById", query = "SELECT c FROM CardBook c WHERE c.id = :id"),
-	@NamedQuery(name = "CardBook.findByType", query = "SELECT c FROM CardBook c WHERE c.type = :type"),
-	@NamedQuery(name = "CardBook.findByDateExpire", query = "SELECT c FROM CardBook c WHERE c.dateExpire = :dateExpire"),
-	@NamedQuery(name = "CardBook.findByFreezed", query = "SELECT c FROM CardBook c WHERE c.freezed = :freezed"),
-	@NamedQuery(name = "CardBook.findByPin", query = "SELECT c FROM CardBook c WHERE c.pin = :pin")})
 public class CardBook implements Serializable, AbstractEntity {
 
 	private static final long serialVersionUID = 11234125367622134L;

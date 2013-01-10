@@ -15,11 +15,6 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "Currency")
 @XmlRootElement
-@NamedQueries({
-	@NamedQuery(name = "Currency.findAll", query = "SELECT c FROM Currency c"),
-	@NamedQuery(name = "Currency.findById", query = "SELECT c FROM Currency c WHERE c.id = :id"),
-	@NamedQuery(name = "Currency.findByName", query = "SELECT c FROM Currency c WHERE c.name = :name"),
-	@NamedQuery(name = "Currency.findByFactor", query = "SELECT c FROM Currency c WHERE c.factor = :factor")})
 public class Currency implements Serializable, AbstractEntity {
 
 	private static final int[] CENTS_FACTOR = {1, 10, 100, 1000};

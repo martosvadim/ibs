@@ -11,9 +11,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "SavedPayment")
 @XmlRootElement
-@NamedQueries({
-	@NamedQuery(name = "SavedPayment.findAll", query = "SELECT s FROM SavedPayment s"),
-	@NamedQuery(name = "SavedPayment.findById", query = "SELECT s FROM SavedPayment s WHERE s.id = :id")})
 public class SavedPayment implements Serializable, AbstractEntity {
 
 	private static final long serialVersionUID = 12154345127589623L;

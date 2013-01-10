@@ -13,11 +13,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "Credit")
 @XmlRootElement
-@NamedQueries({
-	@NamedQuery(name = "Credit.findAll", query = "SELECT c FROM Credit c"),
-	@NamedQuery(name = "Credit.findById", query = "SELECT c FROM Credit c WHERE c.id = :id"),
-	@NamedQuery(name = "Credit.findByAmount", query = "SELECT c FROM Credit c WHERE c.amount = :amount"),
-	@NamedQuery(name = "Credit.findByLastPayDate", query = "SELECT c FROM Credit c WHERE c.lastPayDate = :lastPayDate")})
 public class Credit implements Serializable, AbstractEntity, MoneyEntity {
 
 	private static final long serialVersionUID = 481713712378789123L;

@@ -15,14 +15,6 @@ import java.util.regex.Pattern;
 @Entity
 @Table(name = "User")
 @XmlRootElement
-//@NamedQueries({
-//	@NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
-//	@NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
-//	@NamedQuery(name = "User.findByRole", query = "SELECT u FROM User u WHERE u.role = :role"),
-//	@NamedQuery(name = "User.findByFirstName", query = "SELECT u FROM User u WHERE u.firstName = :firstName"),
-//	@NamedQuery(name = "User.findByLastName", query = "SELECT u FROM User u WHERE u.lastName = :lastName"),
-//	@NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
-//	@NamedQuery(name = "User.findByDescription", query = "SELECT u FROM User u WHERE u.description = :description")})
 public class User implements Serializable, AbstractEntity {
 
     public static final String PASSPORT_NUMBER_REGEXP = "^[A-Z]{2}[0-9]{7}$";
