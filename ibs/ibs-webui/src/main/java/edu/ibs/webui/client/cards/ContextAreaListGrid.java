@@ -3,6 +3,7 @@ package edu.ibs.webui.client.cards;
 import com.google.gwt.core.client.GWT;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridFieldType;
+import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import edu.ibs.webui.client.utils.Components;
@@ -20,6 +21,7 @@ public class ContextAreaListGrid extends ListGrid {
 		this.setAutoFetchData(true);
         this.setSortField(1);
 		Components.localizeGrid(this);
+		this.setSelectionType(SelectionStyle.SINGLE);
 
         ListGridField iconField = new ListGridField("icon", "#", 27);
         iconField.setImageSize(16);

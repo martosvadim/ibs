@@ -10,12 +10,21 @@ import edu.ibs.webui.client.cards.ContextAreaListGrid;
  * Time: 23:01
  */
 public class AccountView extends VLayout {
+
+	private ContextAreaListGrid contextAreaListGrid;
+
     public AccountView() {
         super();
         GWT.log("init AccountView()...", null);
         this.setStyleName("crm-ContextArea");
         this.setWidth("*");
-        this.addMember(new ContextAreaListGrid());
+        this.addMember(getContextAreaListGrid());
     }
 
+	public ContextAreaListGrid getContextAreaListGrid() {
+		if (contextAreaListGrid == null) {
+			contextAreaListGrid = new ContextAreaListGrid();
+		}
+		return contextAreaListGrid;
+	}
 }

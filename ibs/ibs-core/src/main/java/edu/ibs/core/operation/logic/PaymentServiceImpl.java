@@ -5,6 +5,7 @@ import edu.ibs.common.enums.CardBookType;
 import edu.ibs.common.exceptions.IbsServiceException;
 import edu.ibs.common.interfaces.IPaymentService;
 import edu.ibs.core.controller.exception.FreezedException;
+import edu.ibs.core.controller.exception.NotEnoughMoneyException;
 import edu.ibs.core.entity.*;
 import edu.ibs.core.gwt.EntityTransformer;
 import edu.ibs.core.operation.AdminOperations;
@@ -49,8 +50,18 @@ public class PaymentServiceImpl implements IPaymentService {
 	}
 
 	@Override
-	public void pay(CardBookDTO from, long to, MoneyDTO money) throws IbsServiceException {
+	public void pay(CardBookDTO from, String toId, Double amount) throws IbsServiceException {
 
+		try {
+			Money money = parseMoney(amount, new Currency(from.getBankBook().getCurrency()));
+			userLogic.pay(new CardBook(from), Long.parseLong(toId), money, TransactionType.PAYMENT);
+		} catch (FreezedException e) {
+			throw new IbsServiceException("Счёт заморожен.");
+		} catch (NotEnoughMoneyException e) {
+			throw new IbsServiceException("Не достаточно средств.");
+		} catch (Throwable t) {
+			throw new IbsServiceException("При оплате возникла ошибка.");
+		}
 	}
 
     @Override
@@ -157,15 +168,7 @@ public class PaymentServiceImpl implements IPaymentService {
 		if (bankBookDTO != null && bankBookDTO.getId() != 0) {
 			try {
 				BankBook bankBook = new BankBook(bankBookDTO);
-				long part1 = amount.longValue();
-				String part2Str = String.valueOf(amount - part1);
-				int index = part2Str.indexOf('.');
-				if (index == 0) {
-					index = part2Str.indexOf(',');
-				}
-				part2Str = part2Str.substring(index + 1);
-				int part2 = Integer.valueOf(part2Str);
-				Money money = new Money(part1, part2, bankBook.getCurrency());
+				Money money = parseMoney(amount, bankBook.getCurrency());
 				return adminLogic.addMoney(bankBook, money);
 			} catch (FreezedException fe) {
 				throw new IbsServiceException(fe.getLocalizedMessage());
@@ -174,6 +177,18 @@ public class PaymentServiceImpl implements IPaymentService {
 			}
 		}
 		return false;
+	}
+
+	private Money parseMoney(Double amount, Currency currency) {
+		long part1 = amount.longValue();
+		String part2Str = String.valueOf(amount - part1);
+		int index = part2Str.indexOf('.');
+		if (index == 0) {
+			index = part2Str.indexOf(',');
+		}
+		part2Str = part2Str.substring(index + 1);
+		int part2 = Integer.valueOf(part2Str);
+		return new Money(part1, part2, currency);
 	}
 
 	@Override

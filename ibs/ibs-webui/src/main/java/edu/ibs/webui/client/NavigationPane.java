@@ -19,6 +19,7 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.LinkItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.HStack;
 import com.smartgwt.client.widgets.layout.SectionStack;
@@ -26,12 +27,10 @@ import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 import edu.ibs.common.dto.AccountDTO;
+import edu.ibs.common.dto.CardBookDTO;
 import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
-import edu.ibs.webui.client.controller.CardRequestController;
-import edu.ibs.webui.client.controller.FillUserInfoController;
-import edu.ibs.webui.client.controller.GenericController;
-import edu.ibs.webui.client.controller.IAction;
+import edu.ibs.webui.client.controller.*;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 
@@ -43,6 +42,7 @@ public class NavigationPane extends SectionStack {
 
 	private VStack userInfoStack = new VStack();
 	private SectionStackSection userInfoSection = new SectionStackSection("Настройки");
+	private AccountView accountView;
 
 	public NavigationPane() {
         super();
@@ -117,7 +117,6 @@ public class NavigationPane extends SectionStack {
 					@Override
 					public void execute(Object data) {
 						defineUserInfoStack();
-//						userInfoStack.redraw();
 						userInfoStack.getParentElement().redraw();
 					}
 				});
@@ -158,53 +157,22 @@ public class NavigationPane extends SectionStack {
 		return getLink("Добавить", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
-				Window wnd = Components.getWindow();
-				wnd.setTitle("Добавление платежа");
-				final GenericController reciepient = Components.getTextItem();
-				final GenericController amount = Components.getTextItem();
-				IButton payButton = new IButton("Оплатить");
-				payButton.setWidth(80);
-				payButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-					@Override
-					public void onClick(com.smartgwt.client.widgets.events.ClickEvent clickEvent) {
-						final String reciepientId = ((String) reciepient.unbind());
-						final String amountTxt = ((String) amount.unbind());
-						if (reciepientId == null || "".equals(reciepientId) || reciepientId.length() == 0) {
-							SC.warn("Получатель не заполнен. Введите допустимый идентификатор.");
-						} else if (amountTxt == null || "".equals(amountTxt) || amountTxt.length() == 0) {
-							SC.warn("Введите корректную сумму платежа.");
-						} else {
-							//todo Передать соотв. параметры в метод
-							IPaymentServiceAsync.Util.getInstance().pay(null, Long.parseLong(amountTxt), null,
-									new AppCallback<Void>() {
-								@Override
-								public void onSuccess(Void aVoid) {
-									//todo Платёж успешно проведён
-									SC.say("Платёж успешно проведён");
-								}
-							});
-						}
+				AddPaymentController controller = new AddPaymentController();
+				ListGridRecord record = getAccountView().getContextAreaListGrid().getSelectedRecord();
+				CardBookDTO cardBookDTO = null;
+				if (record != null) {
+					try {
+						cardBookDTO = (CardBookDTO) record.getAttributeAsObject("dto");
+					} catch (Throwable t) {
+
 					}
-				});
-				VLayout layoutForm = new VLayout();
-				layoutForm.setWidth100();
-				layoutForm.setHeight100();
-
-				layoutForm.addMember(Components.addTitle("Получатель", reciepient.getView()));
-				layoutForm.addMember(Components.addTitle("Сумма", amount.getView()));
-
-				HLayout buttons = new HLayout();
-				buttons.addMember(payButton);
-
-				VLayout view = new VLayout();
-				view.setMembersMargin(MARGIN);
-				view.addMember(layoutForm);
-				view.addMember(buttons);
-				view.setMargin(MARGIN);
-				view.setShowResizeBar(false);
-				
-				wnd.addItem(view);
-				wnd.draw();
+				}
+				if (cardBookDTO != null) {
+					controller.setCardBookDTO(cardBookDTO);
+					controller.getWindow().draw();
+				} else {
+					SC.say("Выберите карту для совершения оплаты.");
+				}
 			}
 		});
 	}
@@ -243,5 +211,12 @@ public class NavigationPane extends SectionStack {
 		return stack;
 	}
 
+	public void setAccountView(AccountView view) {
+		this.accountView = view;
+	}
+
+	public AccountView getAccountView() {
+		return accountView;
+	}
 }
 

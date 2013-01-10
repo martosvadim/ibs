@@ -372,6 +372,8 @@ public class MyApp implements EntryPoint {
             VLayout eastLayout = new AccountView();
             eastLayout.setWidth("85%");
 
+			((NavigationPane) westLayout).setAccountView((AccountView) eastLayout);
+
             HLayout southLayout = new HLayout();
             southLayout.setMembers(westLayout, eastLayout);
 			southLayout.setHeight100();

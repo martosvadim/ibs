@@ -1,5 +1,6 @@
 package edu.ibs.core.entity;
 
+import edu.ibs.common.dto.CardBookDTO;
 import edu.ibs.common.enums.CardBookType;
 import java.io.Serializable;
 import java.util.Random;
@@ -65,6 +66,11 @@ public class CardBook implements Serializable, AbstractEntity {
 
 	public CardBook(BankBook bankBook, Credit credit) {
 		this(CardBookType.CREDIT, bankBook, credit);
+	}
+
+	public CardBook(CardBookDTO from) {
+		this(new BankBook(from.getBankBook()));
+		this.id = from.getId();
 	}
 
 	@Override

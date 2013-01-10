@@ -326,6 +326,7 @@ public class Components {
 		grid.setUnfreezeFieldText("Убрать фиксацию по ");
 		grid.setGroupByText("Групировать по ");
 		grid.setClearFilterText("Убрать сортировку");
+		grid.setUngroupText("Убрать группировку");
 	}
 
 	/**
