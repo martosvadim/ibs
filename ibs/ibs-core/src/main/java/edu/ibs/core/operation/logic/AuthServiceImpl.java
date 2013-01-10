@@ -32,16 +32,16 @@ public class AuthServiceImpl implements IAuthService {
 
 	@Override
 	public AccountDTO login(String name, String pass) throws IbsServiceException {
-
+		AccountDTO dto = null;
 		// Если есть куки
 		if (name.equals(ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_LOGIN))) {
-            AccountDTO dto = (AccountDTO) ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_ACC);
+            dto  = (AccountDTO) ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_ACC);
 			return dto;
 		} else  if (!ValidationUtils.isEmpty(name) && !ValidationUtils.isEmpty(pass)) {
             try {
 				Account account = userLogic.login(name, pass);
 				if (account != null) {
-					AccountDTO dto = EntityTransformer.transformAccount(account);
+					dto = EntityTransformer.transformAccount(account);
 					ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, name);
                     ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_ACC, dto);
 					ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR,
@@ -53,9 +53,8 @@ public class AuthServiceImpl implements IAuthService {
             } catch (NoResultException e) {
                 throw new IbsServiceException(CANNOT_LOGIN_MSG);
             }
-		} else {
-			throw new IbsServiceException(EMPTY_CREDENTIALS_MSG);
 		}
+		return dto;
 	}
 
 	@Override
