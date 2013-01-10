@@ -26,14 +26,13 @@ public class PaymentServiceImpl implements IPaymentService {
 	private AdminOperations adminLogic;
 
 	@Override
-	public BankBookDTO createBankBook(String userId) throws IbsServiceException {
+	public BankBookDTO createBankBook(String userId, CurrencyDTO currencyDTO) throws IbsServiceException {
 		BankBookDTO dto = null;
 		try {
-			//todo Разобраться, откуда брать валюту
 			if (userId != null && userId.length() > 0) {
 				User user = adminLogic.getUser(Long.parseLong(userId));
 				if (user != null) {
-					Currency currency = adminLogic.getCurrencies().get(0);
+					Currency currency = new Currency(currencyDTO);
 					Money money = new Money(0, currency);
 					BankBook bankBook = adminLogic.createBankBook(user, money);
 					dto = EntityTransformer.transformBankBook(bankBook);
@@ -97,17 +96,20 @@ public class PaymentServiceImpl implements IPaymentService {
 	}
 
 	@Override
-	public void requestCard(UserDTO userDTO, String bankBookId, CardBookType cardBookType, CurrencyDTO currencyDTO)
+	public void requestCard(UserDTO userDTO, String bankBookId, CardBookType cardBookType)
 			throws IbsServiceException {
 
         try {
             if (bankBookId != null && bankBookId.length() > 0) {
                 if (CardBookType.DEBIT.equals(cardBookType)) {
-                    BankBookDTO bankBookDTO = new BankBookDTO();
-                    bankBookDTO.setId(Integer.parseInt(bankBookId));
-                    bankBookDTO.setOwner(userDTO);
-                    bankBookDTO.setCurrency(currencyDTO);
-                    userLogic.requestDebitCard(new User(userDTO), new BankBook(bankBookDTO));
+					User user = new User(userDTO);
+					for (BankBook bankBook : userLogic.getBankBooks(user)) {
+						if (bankBook.getId() == Long.parseLong(bankBookId)) {
+							userLogic.requestDebitCard(user, bankBook);
+							break;
+						}
+					}
+
                 } else if (CardBookType.CREDIT.equals(cardBookType)) {
 
                 }

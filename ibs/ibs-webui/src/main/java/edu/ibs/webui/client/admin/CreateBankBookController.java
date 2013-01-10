@@ -7,11 +7,17 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import edu.ibs.common.dto.BankBookDTO;
+import edu.ibs.common.dto.CurrencyDTO;
+import edu.ibs.common.dto.VocDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.controller.GenericWindowController;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * User: EgoshinME
@@ -21,9 +27,30 @@ import edu.ibs.webui.client.utils.Components;
 public class CreateBankBookController extends GenericWindowController {
 
 	private final GenericController userIdControl = Components.getTextItem();
+	private GenericController currenciesControl = Components.getComboBoxControll();
+
+	private List<CurrencyDTO> currencyDTOList = new ArrayList<CurrencyDTO>();
 
 	public CreateBankBookController() {
 		getWindow().setTitle("Создание банковского счёта");
+
+		IPaymentServiceAsync.Util.getInstance().getCurrencies(new AppCallback<List<CurrencyDTO>>() {
+			@Override
+			public void onSuccess(List<CurrencyDTO> currencyDTOs) {
+				if (currencyDTOs != null && currencyDTOs.size() > 0) {
+					List<VocDTO<String, String>> bindList = new LinkedList<VocDTO<String, String>>();
+
+					for (CurrencyDTO dto : currencyDTOs) {
+						currencyDTOList.add(dto);
+						VocDTO<String, String> vocDTO = new VocDTO<String, String>();
+						vocDTO.setId(String.valueOf(dto.getId()));
+						vocDTO.setValue(dto.getName());
+						bindList.add(vocDTO);
+					}
+					currenciesControl.bind(bindList);
+				}
+			}
+		});
 
 		final IButton createButton = new IButton("Создать");
 		createButton.setWidth(80);
@@ -31,11 +58,21 @@ public class CreateBankBookController extends GenericWindowController {
 			@Override
 			public void onClick(final ClickEvent clickEvent) {
 				String userIdText = ((String) userIdControl.unbind());
+				VocDTO<String, String> currencyVoc = ((VocDTO<String, String>) currenciesControl.unbind());
+				String currencyTxt = currencyVoc.getValue();
 				if (userIdText == null || "".equals(userIdText) || userIdText.length() == 0) {
 					SC.warn("Идентификатор пользователя не заполнен.");
+				} else if (currencyTxt == null || "".equals(currencyTxt) || currencyTxt.length() == 0 || currencyVoc.getId() == null) {
+					SC.warn("Не выбрана валюта счёта.");
 				} else {
 					createButton.setDisabled(true);
-					IPaymentServiceAsync.Util.getInstance().createBankBook(userIdText, new AppCallback<BankBookDTO>() {
+					CurrencyDTO currencyDTO = null;
+					for (CurrencyDTO currencyDTO1 : currencyDTOList) {
+						if (currencyDTO1.getId() == Integer.parseInt(currencyVoc.getId())) {
+							currencyDTO = currencyDTO1;
+						}
+					}
+					IPaymentServiceAsync.Util.getInstance().createBankBook(userIdText, currencyDTO, new AppCallback<BankBookDTO>() {
 						@Override
 						public void onFailure(Throwable t) {
 							super.onFailure(t);
@@ -62,6 +99,7 @@ public class CreateBankBookController extends GenericWindowController {
 		layoutForm.setHeight100();
 
 		layoutForm.addMember(Components.addTitle("Идентификатор пользователя", userIdControl.getView()));
+		layoutForm.addMember(Components.addTitle("Валюта", currenciesControl.getView()));
 
 		HLayout buttons = new HLayout();
 		buttons.addMember(createButton);
