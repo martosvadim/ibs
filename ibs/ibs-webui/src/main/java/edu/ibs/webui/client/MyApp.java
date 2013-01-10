@@ -1,6 +1,7 @@
 package edu.ibs.webui.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.ui.Widget;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
@@ -22,6 +23,7 @@ import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.admin.AddMoneyController;
 import edu.ibs.webui.client.admin.CreateBankBookController;
 import edu.ibs.webui.client.admin.CreateNewUserController;
+import edu.ibs.webui.client.admin.CurrenciesGrid;
 import edu.ibs.webui.client.cards.CardRequestsGrid;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.utils.AppCallback;
@@ -43,8 +45,9 @@ public class MyApp implements EntryPoint {
      * Основное окно
      */
     private Canvas bg = new Canvas();
+	private CurrenciesGrid currenciesGrid = new CurrenciesGrid();
 
-    public void onModuleLoad() {
+	public void onModuleLoad() {
 
         com.google.gwt.user.client.Window.enableScrolling(false);
         com.google.gwt.user.client.Window.setMargin("0px");
@@ -344,6 +347,8 @@ public class MyApp implements EntryPoint {
 						@Override
 						public void onSuccess(Void aVoid) {
 							SC.say("Курсы валют обновлены.");
+							currenciesGrid.invalidateCache();
+							currenciesGrid.fetchData();
 						}
 					});
 				}
@@ -354,12 +359,18 @@ public class MyApp implements EntryPoint {
 			VLayout adminContentLayout = new VLayout();
 			adminContentLayout.setWidth100();
 
+			VLayout currenciesLayout = new VLayout();
+			currenciesLayout.setWidth(180);
+			currenciesLayout.setHeight("30%");
+			currenciesLayout.setMargin(20);
+			currenciesLayout.addMember(currenciesGrid);
 
 			adminContentLayout.addMember(new CardRequestsGrid());
 
 			HLayout view = new HLayout();
 			view.addMember(links);
 			view.addMember(adminContentLayout);
+			view.addMember(currenciesLayout);
 
             adminLayout.addMember(vLayout);
             adminLayout.addMember(view);
