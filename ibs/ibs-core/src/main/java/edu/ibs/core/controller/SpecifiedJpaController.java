@@ -454,7 +454,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
                 request.approve(cardBook);
                 em.persist(cardBook);
             } else {
-                request.decline(reason);;
+                request.decline(reason);
             }
             em.merge(request);
             em.getTransaction().commit();

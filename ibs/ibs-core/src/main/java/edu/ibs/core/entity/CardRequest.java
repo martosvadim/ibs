@@ -134,13 +134,13 @@ public class CardRequest implements Serializable, AbstractEntity {
     public void approve(CardBook cardBook) {
         this.watched = true;
         this.cardBook = cardBook;
-        this.approved = Boolean.TRUE;
+        this.approved = true;
         this.dateWatched = System.currentTimeMillis();
     }
 
     public void decline(String reason) {
         this.watched = true;
-        this.approved = Boolean.FALSE;
+        this.approved = false;
         this.reason = reason;
         this.dateWatched = System.currentTimeMillis();
     }

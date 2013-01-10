@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  * @author vadim
  */
 public class CommonServiceTest {
-    
+
     private final CommonService service = new CommonService();
     private final SpecifiedJpaController controller = SpecifiedJpaController.instance();
     Account acc1, acc2;
@@ -23,66 +23,66 @@ public class CommonServiceTest {
     BankBook bb1, bb2;
     CardBook cb1, cb2;
     Currency usd, eur;
-    
+
     public CommonServiceTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
     }
-    
+
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
-    
+
     @Before
     public void setUp() {
         u1 = new User("Test1", "User1", "MP3452165");
         controller.insert(u1);
         u2 = new User("Test2", "User2", "MP5125634");
         controller.insert(u2);
-        
+
         acc1 = new Account("test1@gmail.com", "test1", AccountRole.USER);
         acc1.setUser(u1);
         controller.insert(acc1);
         acc2 = new Account("test2@gmail.com", "test2", AccountRole.USER);
         acc2.setUser(u2);
         controller.insert(acc2);
-        
+
         usd = new Currency("USD", 8560.2f, Fraction.TWO);
         controller.insert(usd);
         eur = new Currency("EUR", 10320.4f, Fraction.TWO);
         controller.insert(eur);
-        
+
         bb1 = new BankBook(u1, new Money(10000l, usd));
         controller.insert(bb1);
         bb2 = new BankBook(u2, new Money(10000l, eur));
         controller.insert(bb2);
-        
+
         cb1 = new CardBook(bb1);
         controller.insert(cb1);
         cb2 = new CardBook(bb2);
         controller.insert(cb2);
     }
-    
+
     @After
     public void tearDown() {
         controller.delete(cb1.getClass(), cb1.getId());
         controller.delete(cb2.getClass(), cb2.getId());
-        
+
         controller.delete(bb1.getClass(), bb1.getId());
         controller.delete(bb2.getClass(), bb2.getId());
-        
+
         controller.delete(eur.getClass(), eur.getId());
         controller.delete(usd.getClass(), usd.getId());
-        
+
         controller.delete(acc1.getClass(), acc1.getId());
         controller.delete(acc2.getClass(), acc2.getId());
-        
+
         controller.delete(u1.getClass(), u1.getId());
         controller.delete(u2.getClass(), u2.getId());
     }
-    
+
     @Test
     public void registerTest() {
         String email = "testuser@gmail.com";
@@ -99,7 +99,7 @@ public class CommonServiceTest {
             }
         }
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void registerInvalidEmailTest() {
         String email = "testuser.gmail@com";
@@ -118,7 +118,7 @@ public class CommonServiceTest {
             }
         }
     }
-    
+
     @Test
     public void loginTest() {
         String email = "testuser@gmail.com", pass = "pass";
@@ -137,7 +137,7 @@ public class CommonServiceTest {
             }
         }
     }
-    
+
     @Test
     public void updateAccountTest() {
         String email = "testuser@gmail.com", pass = "ad";
@@ -168,12 +168,13 @@ public class CommonServiceTest {
             }
         }
     }
-    
+
     @Test
     public void requestCardTest() {
         CardRequest request = null;
         BankBook bb = null;
         try {
+            int count = service.getAllRequests().size();
             bb = new BankBook(u1, new Money(2, usd));
             Date from = new Date();
             request = service.requestDebitCard(u1, bb);
@@ -182,30 +183,38 @@ public class CommonServiceTest {
             assertNotNull(bb);
             assertFalse(request.isWatched());
             assertFalse(request.isApproved());
-            assertEquals(request.getType(), CardBookType.DEBIT);            
-            
+            assertEquals(request.getType(), CardBookType.DEBIT);
+
             List<CardRequest> requests = service.getRequests(from, to);
             assertNotNull(requests);
             assertEquals(1, requests.size());
-            
+
             List<BankBook> bankBooks = service.getBankBooks(u1);
             assertNotNull(bankBooks);
             assertEquals(2, bankBooks.size());
-            
+
+            requests = service.getAllRequests();
+            assertNotNull(requests);
+            assertEquals(count + 1, requests.size());
+
             CardRequest actual = service.getAllRequestsOf(u1).iterator().next();
             assertNotNull(actual);
             assertFalse(actual.isApproved());
             assertFalse(request.isWatched());
-            
+
             service.decline(actual, "Fake request");
             actual = service.getAllRequestsOf(u1).iterator().next();
             assertNotNull(actual);
             assertFalse(actual.isApproved());
             assertTrue(actual.isWatched());
-            
+
             requests = service.getRequests(from, to);
             assertNotNull(requests);
             assertEquals(0, requests.size());
+
+            requests = service.getAllRequests();
+            assertNotNull(requests);
+            assertEquals(count, requests.size());
         } finally {
             if (bb != null && bb.getId() > 0) {
                 controller.delete(bb.getClass(), bb.getId());
@@ -214,7 +223,7 @@ public class CommonServiceTest {
             }
         }
     }
-    
+
     @Test
     public void createCardBookTest() {
         CardBook cb = null;
