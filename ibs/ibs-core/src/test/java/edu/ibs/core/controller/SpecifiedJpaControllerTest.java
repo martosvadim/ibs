@@ -4,6 +4,7 @@ import edu.ibs.common.dto.TransactionType;
 import edu.ibs.common.enums.Fraction;
 import edu.ibs.core.controller.exception.NotEnoughMoneyException;
 import edu.ibs.core.entity.*;
+import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.*;
 
@@ -115,4 +116,11 @@ public class SpecifiedJpaControllerTest {
 		controller.delete(Transaction.class, tr.getId());
 	}
 	//todo add test cases for credit
+
+	@Test
+	public void getContragentListTest() {
+		List<CardBook> contragents = controller.getContragentList();
+		assertNotNull(contragents);
+		assertEquals(SpecifiedJpaController.CONTRAGENT_CARD_BOOK_IDS.length, contragents.size());
+	}
 }

@@ -18,8 +18,6 @@ create table User
 	description varchar(255)
 )engine InnoDB;
 
-insert into User (id, passportNumber, firstName, lastName, zipCode, description) values(1, '1', 'skip', 'skip', 0, 'Bank');
-
 create table Account
 (
 	id bigint primary key auto_increment,
@@ -34,8 +32,6 @@ create table Account
 	FOREIGN KEY (userID) REFERENCES User(id) on delete set null on update cascade
 )engine InnoDB;
 
-insert into Account(id, email, role, password) values (1, 'root@noreply.edu', 'ADMIN', 'root');
-
 create table Currency
 (
 	id bigint primary key auto_increment,
@@ -44,10 +40,6 @@ create table Currency
 	factor float not null,
 	fraction enum('ZERO', 'ONE', 'TWO', 'THREE') not null
 )engine InnoDB;
-
-insert into Currency (id, name, factor, fraction, lastUpdated) values(1, 'BR', 1, 'ZERO', UNIX_TIMESTAMP());
-insert into Currency (id, name, factor, fraction, lastUpdated) values(2, 'EUR', 10120.4, 'TWO', UNIX_TIMESTAMP());
-insert into Currency (id, name, factor, fraction, lastUpdated) values(3, 'USD', 8560.5, 'TWO', UNIX_TIMESTAMP());
 
 create table BankBook
 (
@@ -64,8 +56,6 @@ create table BankBook
 	FOREIGN KEY (currencyID) REFERENCES Currency(id) on delete restrict on update cascade
 )engine InnoDB;
 
-insert into BankBook(id, ownerID, currencyID, balance) values(1, 1, 1, 1000000000);
-
 create table CreditPlan
 (
 	id bigint primary key auto_increment,
@@ -79,8 +69,6 @@ create table CreditPlan
 	INDEX currencyIndex (currencyID),
 	FOREIGN KEY (currencyID) REFERENCES Currency(id) on delete restrict on update cascade
 )engine InnoDB;
-
-insert into CreditPlan(id, name, currencyID, percent, period, periodMultiply, moneyLimit) values(1, 'National Credit', 1, 5, 'WEEK', 1, 1000000);
 
 create table Credit
 (
@@ -177,3 +165,26 @@ create table CardRequest
 	FOREIGN KEY (cardBookID) REFERENCES CardBook(id) on delete cascade on update cascade,
 	FOREIGN KEY (bankBookID) REFERENCES BankBook(id) on delete cascade on update cascade
 )engine InnoDB;
+
+insert into User (id, passportNumber, firstName, lastName, description) values(1, '1', 'skip', 'skip', 'Bank');
+insert into User (id, passportNumber, firstName, lastName, description) values (2, 'mts_fake', 'skip', 'skip', 'ООО МТС');
+insert into User (id, passportNumber, firstName, lastName, description) values (3, 'velcom_fake', 'skip', 'skip', 'ИП Велком');
+insert into User (id, passportNumber, firstName, lastName, description) values (4, 'beltelecom_byfly_fake', 'skip', 'skip', 'Byfly');
+
+insert into Account(id, email, role, password) values (1, 'root@noreply.edu', 'ADMIN', 'root');
+
+insert into Currency (id, name, factor, fraction, lastUpdated) values(1, 'BR', 1, 'ZERO', UNIX_TIMESTAMP());
+insert into Currency (id, name, factor, fraction, lastUpdated) values(2, 'EUR', 10120.4, 'TWO', UNIX_TIMESTAMP());
+insert into Currency (id, name, factor, fraction, lastUpdated) values(3, 'USD', 8560.5, 'TWO', UNIX_TIMESTAMP());
+
+insert into BankBook(id, ownerID, currencyID, balance, description) values(1, 1, 1, 1000000000, 'Внутренный банк-счет кредитов');
+insert into BankBook(id, ownerID, currencyID, balance, description) values(2, 2, 1, 0, 'Платежный счет услуг МТС');
+insert into BankBook(id, ownerID, currencyID, balance, description) values(3, 3, 1, 0, 'Платежный счет услуг Велком');
+insert into BankBook(id, ownerID, currencyID, balance, description) values(4, 4, 1, 0, 'Платежный счет услуг Byfly');
+
+insert into CreditPlan(id, name, currencyID, percent, period, periodMultiply, moneyLimit) values(1, 'National Credit', 1, 5, 'WEEK', 1, 1000000);
+
+insert into CardBook(id, bankBookID, ownerID, type, pin) values(1, 1, 1, 'DEBIT', 1111);
+insert into CardBook(id, bankBookID, ownerID, type, pin) values(2, 2, 2, 'DEBIT', 1111);
+insert into CardBook(id, bankBookID, ownerID, type, pin) values(3, 3, 3, 'DEBIT', 1111);
+insert into CardBook(id, bankBookID, ownerID, type, pin) values(4, 4, 4, 'DEBIT', 1111);
