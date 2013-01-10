@@ -1,7 +1,6 @@
 package edu.ibs.core.controller;
 
 import edu.ibs.common.dto.TransactionType;
-import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.enums.Fraction;
 import edu.ibs.core.controller.exception.NotEnoughMoneyException;
 import edu.ibs.core.entity.*;
@@ -35,7 +34,7 @@ public class SpecifiedJpaControllerTest {
 
 	@Before
 	public void setUp() {
-		user = new User("vadim", "martos", "AB1953782");
+		user = new User("test", "user", "MP1452752");
 		controller.insert(user);
 		usd = new Currency("usd", 1.5f, Fraction.TWO);
 		controller.insert(usd);

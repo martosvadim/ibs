@@ -145,6 +145,7 @@ create table CardRequest
 	dateCreated bigint not null,
 	dateWatched bigint,
 	approved boolean not null default 0,
+    watched boolean not null default 0,
 	reason varchar(255),
 	INDEX cardAccountIndex (cardBookID),
 	INDEX bankBookIndex (bankBookID),
