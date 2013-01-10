@@ -139,6 +139,7 @@ public class CreateBankBookController extends GenericWindowController {
 									owner = bankBookDTO.getOwner().getFirstName() + " " + bankBookDTO.getOwner().getLastName();
 								}
 								SC.say("Создан банковский счёт " + id + " для пользователя " + owner + ".");
+                                getWindow().hide();
 							}
 						}
 					});
