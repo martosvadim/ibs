@@ -26,6 +26,8 @@ public interface CommonOperations {
 	public List<Currency> getCurrencies();
 
 	public List<CreditPlan> getCreditPlans();
+    
+    public List<CreditPlan> getCreditPlansOf(Currency curr);
 
 	public CreditPlan getCreditPlan(String name);
 

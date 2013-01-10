@@ -45,7 +45,9 @@ create table Currency
 	fraction enum('ZERO', 'ONE', 'TWO', 'THREE') not null
 )engine InnoDB;
 
-insert into Currency (id, name, factor, fraction) values(1, 'Br', 1, 'ZERO');
+insert into Currency (id, name, factor, fraction) values(1, 'BR', 1, 'ZERO');
+insert into Currency (id, name, factor, fraction) values(2, 'EUR', 10120.4, 'TWO');
+insert into Currency (id, name, factor, fraction) values(3, 'USD', 8560.5, 'TWO');
 
 create table BankBook
 (
@@ -78,12 +80,14 @@ create table CreditPlan
 	FOREIGN KEY (currencyID) REFERENCES Currency(id) on delete restrict on update cascade
 )engine InnoDB;
 
+insert into CreditPlan(id, name, currencyID, percent, period, periodMultiply, moneyLimit) values(1, 'National Credit', 1, 5, 'WEEK', 1, 1000000);
+
 create table Credit
 (
 	id bigint primary key auto_increment,
 	creditPlanID bigint not null,
 	amount bigint not null default 0,
-	nextPayDate bigint not null,
+	lastPayDate bigint not null,
 	INDEX creditPlanIndex (creditPlanID),
 	FOREIGN KEY (creditPlanID) REFERENCES CreditPlan(id) on delete restrict on update cascade
 )engine InnoDB;

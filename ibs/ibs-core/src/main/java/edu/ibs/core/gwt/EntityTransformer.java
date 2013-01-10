@@ -63,7 +63,7 @@ public final class EntityTransformer {
         CreditDTO dto = new CreditDTO();
 		if (credit != null) {
 			dto.setId(credit.getId());
-			dto.setNextPayDate(credit.getNextPayDate());
+			dto.setLastPayDate(credit.getLastPayDate());
 			dto.setMoney(transformMoney(credit.getMoney()));
 			dto.setCreditPlan(transformCreditPlan(credit.getCreditPlan()));
 		}

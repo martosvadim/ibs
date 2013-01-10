@@ -8,7 +8,7 @@ package edu.ibs.common.dto;
 public class CreditDTO implements IBaseDTO {
 	private long id;
 	private long amount;
-	private long nextPayDate;
+	private long lastPayDate;
 	private CreditPlanDTO creditPlan;
 	private MoneyDTO money;
 
@@ -28,12 +28,12 @@ public class CreditDTO implements IBaseDTO {
 		this.amount = amount;
 	}
 
-	public long getNextPayDate() {
-		return nextPayDate;
+	public long getLastPayDate() {
+		return lastPayDate;
 	}
 
-	public void setNextPayDate(long nextPayDate) {
-		this.nextPayDate = nextPayDate;
+	public void setLastPayDate(long lastPayDate) {
+		this.lastPayDate = lastPayDate;
 	}
 
 	public CreditPlanDTO getCreditPlan() {

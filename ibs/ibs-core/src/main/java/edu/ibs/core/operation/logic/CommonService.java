@@ -221,7 +221,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 
     @Override
     public List<CreditPlan> getCreditPlans() {
-        return dataSource.selectAll(CreditPlan.class);
+        return dataSource.getActualCreditPlans();
     }
 
     @Override
@@ -377,5 +377,10 @@ public final class CommonService implements UserOperations, AdminOperations {
     @Override
     public User getUser(long id) {
         return dataSource.select(User.class, id);
+    }
+
+    @Override
+    public List<CreditPlan> getCreditPlansOf(Currency curr) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

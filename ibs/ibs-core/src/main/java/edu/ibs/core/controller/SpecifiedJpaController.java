@@ -364,12 +364,31 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
         EntityManager em = null;
         try {
             em = createEntityManager();
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            CriteriaQuery<CreditPlan> criteria = builder.createQuery(CreditPlan.class);
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<CreditPlan> criteria = cb.createQuery(CreditPlan.class);
             Root<CreditPlan> plan = criteria.from(CreditPlan.class);
-            criteria.select(plan).where(builder.equal(plan.get("name"), name));
+            Expression<String> nameExpr = plan.get("name");
+            Expression<Boolean> freezedExpr = plan.get("freezed");
+            criteria.select(plan).where(cb.and(cb.equal(nameExpr, name), cb.not(freezedExpr)));
             Iterator<CreditPlan> it = em.createQuery(criteria).setMaxResults(1).getResultList().iterator();
             return it.hasNext() ? it.next() : null;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+    
+    public List<CreditPlan> getActualCreditPlans() {
+                EntityManager em = null;
+        try {
+            em = createEntityManager();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<CreditPlan> criteria = cb.createQuery(CreditPlan.class);
+            Root<CreditPlan> plan = criteria.from(CreditPlan.class);
+            Expression<Boolean> freezedExpr = plan.get("freezed");
+            criteria.select(plan).where(cb.not(freezedExpr));
+            return em.createQuery(criteria).getResultList();
         } finally {
             if (em != null) {
                 em.close();
