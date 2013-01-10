@@ -36,9 +36,9 @@ public class SpecifiedJpaControllerTest {
 	public void setUp() {
 		user = new User("test", "user", "MP1452752");
 		controller.insert(user);
-		usd = new Currency("usd", 1.5f, Fraction.TWO);
+		usd = new Currency("usd-test", 1.5f, Fraction.TWO);
 		controller.insert(usd);
-		eur = new Currency("eur", 3f, Fraction.TWO);
+		eur = new Currency("eur-test", 3f, Fraction.TWO);
 		controller.insert(eur);
 		Money m1 = new Money(10000, usd);
 		fromBB = new BankBook(m1, user, false);

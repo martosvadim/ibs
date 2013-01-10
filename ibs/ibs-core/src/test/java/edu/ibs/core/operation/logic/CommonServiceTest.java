@@ -49,9 +49,9 @@ public class CommonServiceTest {
         acc2.setUser(u2);
         controller.insert(acc2);
 
-        usd = new Currency("USD", 8560.2f, Fraction.TWO);
+        usd = new Currency("USD-test", 8560.2f, Fraction.TWO);
         controller.insert(usd);
-        eur = new Currency("EUR", 10320.4f, Fraction.TWO);
+        eur = new Currency("EUR-test", 10320.4f, Fraction.TWO);
         controller.insert(eur);
 
         bb1 = new BankBook(u1, new Money(10000l, usd));
