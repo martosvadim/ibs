@@ -78,7 +78,7 @@ public class NavigationPane extends SectionStack {
 
 	private void defineUserInfoStack() {
 
-		userInfoStack.removeMembers(userInfoStack.getMembers());clear();
+		userInfoStack.removeMembers(userInfoStack.getMembers());
 
 		boolean isUserFilled = false;
 		AccountDTO account = ApplicationManager.getInstance().getAccount();
@@ -117,7 +117,8 @@ public class NavigationPane extends SectionStack {
 					@Override
 					public void execute(Object data) {
 						defineUserInfoStack();
-						userInfoStack.redraw();
+//						userInfoStack.redraw();
+						userInfoStack.getParentElement().redraw();
 					}
 				});
 				controller.getWindow().draw();
