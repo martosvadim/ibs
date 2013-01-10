@@ -58,10 +58,9 @@ public class Masthead extends HLayout {
 				IAuthServiceAsync.Util.getInstance().logout(login, new AppCallback<Void>() {
 					@Override
 					public void onSuccess(Void aVoid) {
-
+                        JS.goToLoginPage();
 					}
 				});
-				JS.goToLoginPage();
 			}
 		});
 

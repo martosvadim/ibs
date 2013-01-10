@@ -61,7 +61,6 @@ public class AuthServiceImpl implements IAuthService {
 	public void logout(final String login) throws IbsServiceException{
 		ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, "");
         ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR, false);
-		Logger.getLogger(this.getClass()).debug(String.format("Выполнен выход пользователем %s", login));
 	}
 
 	@Override
