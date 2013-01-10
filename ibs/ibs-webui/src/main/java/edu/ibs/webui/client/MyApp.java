@@ -2,6 +2,7 @@ package edu.ibs.webui.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.Widget;
+import com.smartgwt.client.types.Side;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
@@ -16,6 +17,8 @@ import com.smartgwt.client.widgets.form.fields.LinkItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
+import com.smartgwt.client.widgets.tab.Tab;
+import com.smartgwt.client.widgets.tab.TabSet;
 import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
@@ -296,6 +299,7 @@ public class MyApp implements EntryPoint {
 
 			VLayout links = new VLayout();
 			links.setWidth("20%");
+			links.setMargin(10);
 			final String adminLinkStyleName = "label-link-admin";
 
 			Label addUser = new Label("Добавить пользователя");
@@ -365,7 +369,22 @@ public class MyApp implements EntryPoint {
 			currenciesLayout.setMargin(20);
 			currenciesLayout.addMember(currenciesGrid);
 
-			adminContentLayout.addMember(new CardRequestsGrid());
+			final TabSet topTabSet = new TabSet();
+			topTabSet.setTabBarPosition(Side.BOTTOM);
+			topTabSet.setWidth100();
+			topTabSet.setHeight100();
+
+			Tab tTab1 = new Tab("Заявки", "icons/16/contacts.png");
+			tTab1.setPane(new CardRequestsGrid());
+
+			Tab tTab2 = new Tab("Счета", "icons/16/datamanagement.png");
+			tTab2.setPane(new CurrenciesGrid());
+
+			topTabSet.addTab(tTab1);
+			topTabSet.addTab(tTab2);
+
+//			adminContentLayout.addMember(new CardRequestsGrid());
+			adminContentLayout.addMember(topTabSet);
 
 			HLayout view = new HLayout();
 			view.addMember(links);
