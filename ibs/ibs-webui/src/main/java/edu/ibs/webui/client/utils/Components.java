@@ -43,9 +43,6 @@ public class Components {
     }
 
     public static GenericController getTextItem() {
-        TextItem textItem = new TextItem();
-        textItem.setShowTitle(false);
-        textItem.setWidth("100%");
         return new GenericController() {
             /**
              * Поле для воода если контрол редактируемый
@@ -66,6 +63,7 @@ public class Components {
                 if (isEnabled()) {
                     textItem.setShowTitle(false);
                     textItem.setWidth("*");
+					textItem.setLength(64);
                     textItem.addChangedHandler(new ChangedHandler() {
                         public void onChanged(final ChangedEvent changedEvent) {
                             fireOnChange(null);

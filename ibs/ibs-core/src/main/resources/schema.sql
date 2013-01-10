@@ -19,7 +19,7 @@ create table User
 	description varchar(255)
 )engine InnoDB;
 
-insert into User (id, passportNumber, firstName, lastName, description) values(1, '1', 'skip', 'skip', 'Bank');
+insert into User (id, passportNumber, firstName, lastName, zipCode, description) values(1, '1', 'skip', 'skip', 0, 'Bank');
 
 create table Account
 (

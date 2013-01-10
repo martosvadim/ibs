@@ -51,8 +51,7 @@ public class CardsDataSource extends GwtRpcDataSource {
 		};
 
 		UserDTO userDTO = ApplicationManager.getInstance().getAccount().getUser();
-		if (userDTO != null && userDTO.getId() > 0) {
-			service.getCardBooks(userDTO, callback);
-		}
+		service.getCardBooks(userDTO, callback);
+
 	}
 }

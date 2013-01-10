@@ -55,15 +55,17 @@ public class PaymentServiceImpl implements IPaymentService {
 
     @Override
     public List<CardBookDTO> getCardBooks(final UserDTO userDto) throws IbsServiceException {
-        User user = new User(userDto);
         List<CardBookDTO> list = new LinkedList<CardBookDTO>();
-        try {
-            for (CardBook cardBook : getUserLogic().getCardBooks(user)) {
-                list.add(EntityTransformer.transformCardBook(cardBook));
-            }
-        } catch (Throwable t) {
-            throw new IbsServiceException("Ошибка при получении списка карт.");
-        }
+		if (userDto != null && userDto.getId() > 0) {
+			User user = new User(userDto);
+			try {
+				for (CardBook cardBook : getUserLogic().getCardBooks(user)) {
+					list.add(EntityTransformer.transformCardBook(cardBook));
+				}
+			} catch (Throwable t) {
+				throw new IbsServiceException("Ошибка при получении списка карт.");
+			}
+		}
         return list;
     }
 
@@ -178,7 +180,12 @@ public class PaymentServiceImpl implements IPaymentService {
 	public BankBookDTO getBankBook(AccountDTO accountDTO, long id) throws IbsServiceException {
 		try {
 			BankBook bankBook = adminLogic.getBankBook(new Account(accountDTO), id);
+			if (bankBook == null || id == 1) {
+				throw new IbsServiceException("Счёт не существует.");
+			}
 			return EntityTransformer.transformBankBook(bankBook);
+		} catch (IbsServiceException e) {
+			throw e;
 		} catch (Throwable t) {
 			throw new IbsServiceException("Ошибка при получении банковского счёта.");
 		}
