@@ -38,7 +38,9 @@ public final class EntityTransformer {
 			dto.setPhone1(user.getPhone1());
 			dto.setPhone2(user.getPhone2());
 			dto.setPhone3(user.getPhone3());
-			dto.setZipCode(user.getZipCode());
+			if (user.getZipCode() != null) {
+				dto.setZipCode(user.getZipCode());
+			}
 		}
 		return dto;
 	}

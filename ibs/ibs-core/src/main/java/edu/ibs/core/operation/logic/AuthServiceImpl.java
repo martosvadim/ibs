@@ -116,10 +116,14 @@ public class AuthServiceImpl implements IAuthService {
 		if (firstName != null && firstName.length() > 0 && lastName != null && lastName.length() > 0
 				&& passportNumber != null && passportNumber.length() > 0) {
 			try {
+				User user = new User(firstName, lastName, passportNumber);
+				accountDTO.setUser(EntityTransformer.transformUser(user));
 				Account acc = new Account(accountDTO);
-				acc.setUser(new User(firstName, lastName, passportNumber));
 				userLogic.update(acc);
 				userDTO = EntityTransformer.transformUser(acc.getUser());
+			} catch (IllegalArgumentException e) {
+				throw new IbsServiceException(
+						"Неверный номер паспорта. Должно быть заполнено 2 латинских буквы и 7 цифр без пробелов.");
 			} catch (Throwable e) {
 				throw new IbsServiceException("Не удалось обновить информацию о пользователе.");
 			}
