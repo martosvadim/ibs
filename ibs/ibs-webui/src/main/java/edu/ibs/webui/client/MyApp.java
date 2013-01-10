@@ -18,6 +18,7 @@ import com.smartgwt.client.widgets.layout.VStack;
 import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
+import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.admin.AddMoneyController;
 import edu.ibs.webui.client.admin.CreateBankBookController;
 import edu.ibs.webui.client.admin.CreateNewUserController;
@@ -333,6 +334,22 @@ public class MyApp implements EntryPoint {
 			};
 			addMoney.addClickHandler(addMoneyClickHandler);
 			links.addMember(addMoney);
+
+			Label refreshCurrencies = new Label("Обновить курсы валют");
+			refreshCurrencies.setStyleName(adminLinkStyleName);
+			final ClickHandler rcCH = new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent clickEvent) {
+					IPaymentServiceAsync.Util.getInstance().refreshCurrencies(new AppCallback<Void>() {
+						@Override
+						public void onSuccess(Void aVoid) {
+							SC.say("Курсы валют обновлены.");
+						}
+					});
+				}
+			};
+			refreshCurrencies.addClickHandler(rcCH);
+			links.addMember(refreshCurrencies);
 
 			VLayout adminContentLayout = new VLayout();
 			adminContentLayout.setWidth100();

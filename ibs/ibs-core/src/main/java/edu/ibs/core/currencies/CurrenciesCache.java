@@ -1,36 +1,41 @@
 package edu.ibs.core.currencies;
 
+import edu.ibs.core.entity.Currency;
+import edu.ibs.core.operation.AdminOperations;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.soap.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  * User: EgoshinME
- * Date: 08.01.13
- * Time: 11:43
+ * Date: 10.01.13
+ * Time: 13:19
  */
-public class CurrenciesServlet extends HttpServlet {
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		processRequest(req, resp);
+public class CurrenciesCache {
+
+	private List<Currency> list = new ArrayList<Currency>();
+
+	private AdminOperations adminLogic;
+
+	public CurrenciesCache() {
+
 	}
 
-	private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
+	public void fillCurrencies() {
+		SOAPConnectionFactory sfc = null;
 		try {
-			resp.setContentType("text/html; charset=UTF-8");
-			resp.setCharacterEncoding("UTF-8");
-			SOAPConnectionFactory sfc = SOAPConnectionFactory.newInstance();
+			sfc = SOAPConnectionFactory.newInstance();
 			SOAPConnection connection = sfc.createConnection();
 
 			MessageFactory mf = MessageFactory.newInstance();
@@ -66,21 +71,44 @@ public class CurrenciesServlet extends HttpServlet {
 				for (org.dom4j.Node node : list) {
 					String rate = node.selectSingleNode("Cur_OfficialRate").getText();
 					String abbr = node.selectSingleNode("Cur_Abbreviation").getText();
-					String name = new String(node.selectSingleNode("Cur_QuotName").getText().getBytes(), "UTF-8");
 
-					String print = name + " \t" + abbr + " \t" + rate;
-					System.out.println(print);
-					resp.getWriter().println(print + "<br/>");
+					if (abbr != null) {
+						for (Currency c : getList()) {
+							if (abbr.equals(c.getName())) {
+								c.setFactor(Float.parseFloat(rate));
+								c.setLastUpdated(System.currentTimeMillis());
+							}
+						}
+					}
 				}
+				adminLogic.update(getList());
 			}
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		} catch (SOAPException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (MalformedURLException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (DocumentException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (IOException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
 	}
 
-	@Override
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		processRequest(req, resp);
+	public AdminOperations getAdminLogic() {
+		return adminLogic;
+	}
+
+	public void setAdminLogic(AdminOperations adminLogic) {
+		this.adminLogic = adminLogic;
+	}
+
+	public List<Currency> getList() {
+		return list;
+	}
+
+	public void setList(List<Currency> list) {
+		this.list = list;
 	}
 }

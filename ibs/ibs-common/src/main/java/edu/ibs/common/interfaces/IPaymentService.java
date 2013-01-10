@@ -26,4 +26,5 @@ public interface IPaymentService extends RemoteService {
 	void declineCardRequest(CardRequestDTO dto, String reason) throws IbsServiceException;
 	Boolean addMoney(BankBookDTO bankBookDTO, Double amount) throws IbsServiceException;
 	BankBookDTO getBankBook(AccountDTO accountDTO, long id) throws IbsServiceException;
+	void refreshCurrencies() throws IbsServiceException;
 }

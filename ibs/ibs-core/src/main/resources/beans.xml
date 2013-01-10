@@ -23,6 +23,7 @@
     <bean id="payService" class="edu.ibs.core.operation.logic.PaymentServiceImpl">
         <property name="adminLogic" ref="adminLogic"/>
         <property name="userLogic" ref="userLogic" />
+        <property name="currenciesCache" ref="currenciesCache"/>
     </bean>
 
     <bean id="authController" class="edu.ibs.core.gwt.GWTServiceWrapper">
@@ -33,6 +34,10 @@
     <bean id="payController" class="edu.ibs.core.gwt.GWTServiceWrapper">
         <property name="service" ref="payService" />
         <property name="serviceInterfaces" value="edu.ibs.common.interfaces.IPaymentService" />
+    </bean>
+
+    <bean id="currenciesCache" class="edu.ibs.core.currencies.CurrenciesCache">
+        <property name="adminLogic" ref="adminLogic"/>
     </bean>
 
 </beans>

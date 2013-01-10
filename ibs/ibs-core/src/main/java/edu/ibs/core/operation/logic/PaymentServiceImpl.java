@@ -6,6 +6,7 @@ import edu.ibs.common.exceptions.IbsServiceException;
 import edu.ibs.common.interfaces.IPaymentService;
 import edu.ibs.core.controller.exception.FreezedException;
 import edu.ibs.core.controller.exception.NotEnoughMoneyException;
+import edu.ibs.core.currencies.CurrenciesCache;
 import edu.ibs.core.entity.*;
 import edu.ibs.core.gwt.EntityTransformer;
 import edu.ibs.core.operation.AdminOperations;
@@ -24,6 +25,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private UserOperations userLogic;
 	private AdminOperations adminLogic;
+	private CurrenciesCache currenciesCache;
 
 	@Override
 	public BankBookDTO createBankBook(String userId, CurrencyDTO currencyDTO) throws IbsServiceException {
@@ -208,6 +210,16 @@ public class PaymentServiceImpl implements IPaymentService {
 		}
 	}
 
+	@Override
+	public void refreshCurrencies() throws IbsServiceException {
+		try	{
+			getCurrenciesCache().setList(adminLogic.getCurrencies());
+			getCurrenciesCache().fillCurrencies();
+		} catch (Throwable t) {
+			throw new IbsServiceException("Не удалось обновить курсы валют.");
+		}
+	}
+
 	public UserOperations getUserLogic() {
         return userLogic;
     }
@@ -223,4 +235,12 @@ public class PaymentServiceImpl implements IPaymentService {
     public void setAdminLogic(final AdminOperations adminLogic) {
         this.adminLogic = adminLogic;
     }
+
+	public CurrenciesCache getCurrenciesCache() {
+		return currenciesCache;
+	}
+
+	public void setCurrenciesCache(CurrenciesCache currenciesCache) {
+		this.currenciesCache = currenciesCache;
+	}
 }
