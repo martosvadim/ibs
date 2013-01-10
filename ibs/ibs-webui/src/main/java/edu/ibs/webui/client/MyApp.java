@@ -24,6 +24,7 @@ import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.admin.AddMoneyController;
+import edu.ibs.webui.client.admin.BankBooksGrid;
 import edu.ibs.webui.client.admin.CreateBankBookController;
 import edu.ibs.webui.client.admin.CreateNewUserController;
 import edu.ibs.webui.client.admin.CurrenciesGrid;
@@ -378,12 +379,11 @@ public class MyApp implements EntryPoint {
 			tTab1.setPane(new CardRequestsGrid());
 
 			Tab tTab2 = new Tab("Счета", "icons/16/datamanagement.png");
-			tTab2.setPane(new CurrenciesGrid());
+			tTab2.setPane(new BankBooksGrid());
 
 			topTabSet.addTab(tTab1);
 			topTabSet.addTab(tTab2);
 
-//			adminContentLayout.addMember(new CardRequestsGrid());
 			adminContentLayout.addMember(topTabSet);
 
 			HLayout view = new HLayout();

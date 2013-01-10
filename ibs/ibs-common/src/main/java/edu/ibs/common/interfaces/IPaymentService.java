@@ -28,4 +28,5 @@ public interface IPaymentService extends RemoteService {
 	BankBookDTO getBankBook(AccountDTO accountDTO, long id) throws IbsServiceException;
 	void refreshCurrencies() throws IbsServiceException;
     UserDTO getUser(String email) throws IbsServiceException;
+    List<CardBookDTO> getContragentList() throws IbsServiceException;
 }

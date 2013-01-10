@@ -233,6 +233,19 @@ public class PaymentServiceImpl implements IPaymentService {
         return userDTO;
     }
 
+    @Override
+    public List<CardBookDTO> getContragentList() throws IbsServiceException {
+        List<CardBookDTO> list = new ArrayList<CardBookDTO>();
+        try {
+            for (CardBook cardBook : adminLogic.getContragentList()) {
+                list.add(EntityTransformer.transformCardBook(cardBook));
+            }
+        } catch (Throwable t) {
+            throw new IbsServiceException("Ошибка получения списка контрагентов.");
+        }
+        return list;
+    }
+
     public UserOperations getUserLogic() {
         return userLogic;
     }
