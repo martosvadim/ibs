@@ -47,6 +47,8 @@ public class MyApp implements EntryPoint {
 
         com.google.gwt.user.client.Window.enableScrolling(false);
         com.google.gwt.user.client.Window.setMargin("0px");
+		JS.setCookie(IS_ADMIN_COOKIE, Boolean.FALSE.toString());
+		JS.setCookie(LOGIN_COOKIE_NAME, "");
 
         bg.setWidth100();
         bg.setHeight100();

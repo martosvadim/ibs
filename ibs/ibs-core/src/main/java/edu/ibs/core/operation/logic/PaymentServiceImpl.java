@@ -28,14 +28,20 @@ public class PaymentServiceImpl implements IPaymentService {
 	public BankBookDTO createBankBook(String userId) throws IbsServiceException {
 		BankBookDTO dto = null;
 		try {
-			//todo Разобраться, откуда брать валюту и пользователя
-			UserDTO userDTO = new UserDTO();
-			userDTO.setId(Long.parseLong(userId));
-			User user = new User(userDTO);
-			Currency currency = adminLogic.getCurrencies().get(0);
-			Money money = new Money(0, currency);
-			BankBook bankBook = adminLogic.create(user, money);
-			dto = EntityTransformer.transformBankBook(bankBook);
+			//todo Разобраться, откуда брать валюту
+			if (userId != null && userId.length() > 0) {
+				User user = adminLogic.getUser(Long.parseLong(userId));
+				if (user != null) {
+					Currency currency = adminLogic.getCurrencies().get(0);
+					Money money = new Money(0, currency);
+					BankBook bankBook = adminLogic.create(user, money);
+					dto = EntityTransformer.transformBankBook(bankBook);
+				} else {
+					throw new IbsServiceException("Введите существующий идентификатор.");
+				}
+			}
+		} catch (IbsServiceException e) {
+			throw e;
 		} catch (Throwable t) {
 			throw new IbsServiceException("Не удалось создать банковский счёт.");
 		}
