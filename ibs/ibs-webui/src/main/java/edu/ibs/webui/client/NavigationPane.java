@@ -129,8 +129,13 @@ public class NavigationPane extends SectionStack {
 		return getLink("Заявка на карту", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
-				CardRequestController controller = new CardRequestController();
-				controller.getWindow().draw();
+				UserDTO userDTO = ApplicationManager.getInstance().getAccount().getUser();
+				if (userDTO != null && userDTO.getId() > 0l) {
+					CardRequestController controller = new CardRequestController();
+					controller.getWindow().draw();
+				} else {
+					SC.say("Заполните информацию о пользователе.");
+				}
 			}
 		});
 	}
