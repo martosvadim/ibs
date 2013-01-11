@@ -1,9 +1,9 @@
 package edu.ibs.core;
 
-import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.enums.Fraction;
-import edu.ibs.core.controller.CSUIDJpaController;
-import edu.ibs.core.entity.*;
+import edu.ibs.core.controller.SpecifiedJpaController;
+import edu.ibs.core.entity.Currency;
+import edu.ibs.core.gwt.EntityTransformer;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
@@ -17,11 +17,11 @@ public class App {
 	}
 
 	public static void main(String[] args) throws Exception {
-		CSUIDJpaController jpa = new CSUIDJpaController();
-		User u = new User("Вадим", "Мартос", "AB1953782");
-        jpa.insert(u);
-        User u1 = jpa.select(u.getClass(), u.getId());
-        System.out.println(u1.getFirstName());
-        jpa.delete(u.getClass(), u.getId());
+		SpecifiedJpaController c = SpecifiedJpaController.instance();
+		Currency cu = c.getCurrency("USD");
+		System.out.println(String.valueOf(cu.getFactor()));
+		System.out.println(String.valueOf((double)cu.getFloatFactor()));
+		System.out.println(String.valueOf(EntityTransformer.transformCurrency(cu).getFactor()));
+		System.out.println(String.valueOf(EntityTransformer.transformCurrency(new Currency("", cu.getFloatFactor(), Fraction.TWO)).getFactor()));
 	}
 }

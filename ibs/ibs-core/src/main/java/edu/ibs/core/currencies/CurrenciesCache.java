@@ -73,9 +73,8 @@ public class CurrenciesCache {
 					if (abbr != null) {
 						for (Currency c : getList()) {
 							if (abbr.equals(c.getName())) {
-								BigDecimal bd = new BigDecimal(rate).divide(new BigDecimal(c.getFraction().multiply()));
 //								c.setFactor(Float.parseFloat(rate) / c.getFraction().multiply());
-								c.setFactor(bd.floatValue());
+								c.setFactor(new BigDecimal(rate).divide(new BigDecimal(c.getFraction().multiply())).floatValue());
 								c.setLastUpdated(System.currentTimeMillis());
 							}
 						}
