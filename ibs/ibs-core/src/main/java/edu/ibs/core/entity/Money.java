@@ -54,7 +54,10 @@ public class Money implements Comparable<Money>, Comparator<Money>, Serializable
 		int f = Integer.parseInt(fraction);
 		int digits = (int) Math.log10(curr.getFraction().multiply());
 		int fractionLen = fraction.length();
-		if (fractionLen > digits && f != 0) {
+		if (f == 0) {
+			fractionLen = 0;
+		}
+		if (fractionLen > digits) {
 			throw new IllegalArgumentException(String.format("Fraction [.%s] is too long, expeced %s digits", fraction, digits));
 		} else {
 			if (fractionLen < digits) {
