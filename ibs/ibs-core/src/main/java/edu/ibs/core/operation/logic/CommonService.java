@@ -21,12 +21,12 @@ import org.apache.log4j.Logger;
  * @author Vadim Martos
  */
 public final class CommonService implements UserOperations, AdminOperations {
-
+    
     public static final String VALID_EMAIL_REGEXP = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(VALID_EMAIL_REGEXP);
     private final SpecifiedJpaController dataSource = SpecifiedJpaController.instance();
     private final Logger log = Logger.getLogger(CommonService.class);
-
+    
     @Override
     public void update(Account acc) {
         if (dataSource.exist(Account.class, acc.getId())) {
@@ -42,12 +42,12 @@ public final class CommonService implements UserOperations, AdminOperations {
             throw new IllegalArgumentException("Account does not exists");
         }
     }
-
+    
     @Override
     public List<BankBook> getBankBooks(User user) {
         return dataSource.getBankBooksOf(user);
     }
-
+    
     @Override
     public List<CardBook> getCardBooks(User user) {
         if (user == null) {
@@ -55,7 +55,7 @@ public final class CommonService implements UserOperations, AdminOperations {
         }
         return dataSource.getCardBooksOf(user);
     }
-
+    
     @Override
     public List<CardBook> getCardBooks(User user, BankBook book, CardBookType type) {
         if (user == null || book == null || type == null) {
@@ -63,7 +63,7 @@ public final class CommonService implements UserOperations, AdminOperations {
         }
         return dataSource.getCardBooksOf(user, book, type);
     }
-
+    
     @Override
     public List<CardBook> getCardBooks(User user, BankBook book) {
         if (user == null || book == null) {
@@ -71,7 +71,7 @@ public final class CommonService implements UserOperations, AdminOperations {
         }
         return dataSource.getCardBooksOf(user, book);
     }
-
+    
     @Override
     public List<CardBook> getCardBooks(User user, CardBookType type) {
         if (user == null || type == null) {
@@ -79,7 +79,7 @@ public final class CommonService implements UserOperations, AdminOperations {
         }
         return dataSource.getCardBooksOf(user, type);
     }
-
+    
     @Override
     public List<CardBook> getCardBooks(BankBook bankBook) {
         if (bankBook == null) {
@@ -87,7 +87,7 @@ public final class CommonService implements UserOperations, AdminOperations {
         }
         return dataSource.getCardBooksOf(bankBook);
     }
-
+    
     @Override
     public List<CardBook> getCardBooks(BankBook bankBook, CardBookType type) {
         if (bankBook == null || type == null) {
@@ -95,7 +95,7 @@ public final class CommonService implements UserOperations, AdminOperations {
         }
         return dataSource.getCardBooksOf(bankBook, type);
     }
-
+    
     @Override
     public void update(CardBook cardBook) {
         if (!dataSource.exist(cardBook.getClass(), cardBook.getId())) {
@@ -103,7 +103,7 @@ public final class CommonService implements UserOperations, AdminOperations {
         }
         dataSource.update(cardBook);
     }
-
+    
     @Override
     public void reassign(CardBook cardBook, String toUserWithEmail) {
         if (!isValid(toUserWithEmail)) {
@@ -118,12 +118,12 @@ public final class CommonService implements UserOperations, AdminOperations {
             dataSource.update(cardBook);
         }
     }
-
+    
     @Override
     public boolean checkIfReassignmentIsAvailable(String toUserWithEmail) {
         return dataSource.userExists(toUserWithEmail);
     }
-
+    
     @Override
     public Transaction pay(CardBook from, long toCardBookID, Money money, TransactionType type) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
         if (!dataSource.exist(money.currency().getClass(), money.currency().getId())) {
@@ -132,7 +132,7 @@ public final class CommonService implements UserOperations, AdminOperations {
         CardBook to = dataSource.select(CardBook.class, toCardBookID);
         return dataSource.pay(from, to, money, type);
     }
-
+    
     @Override
     public Transaction pay(SavedPayment savedPayment, Money money) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
         CardBook from = savedPayment.getTransaction().getFrom();
@@ -143,69 +143,69 @@ public final class CommonService implements UserOperations, AdminOperations {
         }
         return dataSource.pay(from, to, money, type);
     }
-
+    
     @Override
     public SavedPayment savePayment(Transaction transaction, User owner) {
         SavedPayment sp = new SavedPayment(transaction, owner);
         dataSource.insert(sp);
         return sp;
     }
-
+    
     @Override
     public List<SavedPayment> getSavedPayments(User user) {
         return dataSource.getSavedPayments(user);
     }
-
+    
     @Override
     public List<Transaction> getAllHistory(User user, TransactionType type) {
         return dataSource.getTrAllHistory(user, type, null, null);
     }
-
+    
     @Override
     public List<Transaction> getAllHistory(User user, TransactionType type, Date from, Date to) {
         return dataSource.getTrAllHistory(user, type, from, to);
     }
-
+    
     @Override
     public List<Transaction> getHistoryIncome(User user, TransactionType type) {
         return dataSource.getTrInHistory(user, type, null, null);
     }
-
+    
     @Override
     public List<Transaction> getHistoryIncome(User user, TransactionType type, Date from, Date to) {
         return dataSource.getTrInHistory(user, type, from, to);
     }
-
+    
     @Override
     public List<Transaction> getHistoryOutcome(User user, TransactionType type) {
         return dataSource.getTrOutHistory(user, type, null, null);
     }
-
+    
     @Override
     public List<Transaction> getHistoryOutcome(User user, TransactionType type, Date from, Date to) {
         return dataSource.getTrOutHistory(user, type, from, to);
     }
-
+    
     @Override
     public void delete(SavedPayment payment) {
         dataSource.delete(payment.getClass(), payment.getId());
     }
-
+    
     @Override
     public boolean isValid(String email) {
         return EMAIL_PATTERN.matcher(email).matches();
     }
-
+    
     @Override
     public Account login(String email, String passwd) {
         return dataSource.getUserAccount(email, passwd);
     }
-
+    
     @Override
     public Account register(String email, String passwd) {
         return createAccount(AccountRole.USER, email, passwd);
     }
-
+    
     @Override
     public boolean isFree(String email) {
         if (isValid(email)) {
@@ -214,22 +214,22 @@ public final class CommonService implements UserOperations, AdminOperations {
             return false;
         }
     }
-
+    
     @Override
     public Currency getCurrency(String name) {
         return dataSource.getCurrency(name);
     }
-
+    
     @Override
     public List<Currency> getCurrencies() {
         return dataSource.selectAll(Currency.class);
     }
-
+    
     @Override
     public List<CreditPlan> getCreditPlans() {
         return dataSource.getActualCreditPlans();
     }
-
+    
     @Override
     public Account createAccount(AccountRole role, String email, String passwd) {
         if (isValid(email)) {
@@ -244,7 +244,7 @@ public final class CommonService implements UserOperations, AdminOperations {
             throw new IllegalArgumentException(String.format("Invalid email %s", email));
         }
     }
-
+    
     @Override
     public BankBook createBankBook(User user, Money money) {
         if (!dataSource.exist(user.getClass(), user.getId())) {
@@ -256,14 +256,14 @@ public final class CommonService implements UserOperations, AdminOperations {
         BankBook bankBook = new BankBook(user, money);
         dataSource.insert(bankBook);
         return bankBook;
-
+        
     }
-
+    
     @Override
     public CardBook createDebitCardBook(User user, BankBook bankBook) {
         return dataSource.createCardBook(user, bankBook, null);
     }
-
+    
     @Override
     public CardBook createCreditCardBook(User user, BankBook bankBook, CreditPlan credit) {
         if (credit == null) {
@@ -271,13 +271,13 @@ public final class CommonService implements UserOperations, AdminOperations {
         }
         return dataSource.createCardBook(user, bankBook, credit);
     }
-
+    
     @Override
     public boolean addMoney(BankBook bankBook, Money money) throws IllegalArgumentException, FreezedException {
         dataSource.addMoney(bankBook, money);
         return true;
     }
-
+    
     @Override
     public CreditPlan createCreditPlan(String name, Money limit, Period period, int periodMultiply, int percent) {
         if (!dataSource.exist(limit.currency().getClass(), limit.currency().getId())) {
@@ -287,27 +287,27 @@ public final class CommonService implements UserOperations, AdminOperations {
         dataSource.insert(plan);
         return plan;
     }
-
+    
     @Override
     public void delete(User user) {
         dataSource.delete(user.getClass(), user.getId());
     }
-
+    
     @Override
     public void update(List<Currency> currencies) {
         dataSource.batchUpdate(currencies);
     }
-
+    
     @Override
     public void rollback(Transaction transaction) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
         dataSource.rollback(transaction);
     }
-
+    
     @Override
     public List<CardRequest> getAllRequests() {
         return getRequests(null, null);
     }
-
+    
     @Override
     public List<CardRequest> getRequests(Date from, Date to) {
         if ((from == null && to != null) || (from != null && to == null)) {
@@ -315,27 +315,27 @@ public final class CommonService implements UserOperations, AdminOperations {
         }
         return dataSource.getCardRequests(from, to);
     }
-
+    
     @Override
     public CreditPlan getCreditPlan(String name) {
         return dataSource.getCreditPlan(name);
     }
-
+    
     @Override
     public boolean bankBookExists(long id) {
         return dataSource.exist(BankBook.class, id);
     }
-
+    
     @Override
     public boolean cardBookExists(long id) {
         return dataSource.exist(CardBook.class, id);
     }
-
+    
     @Override
     public CardRequest requestDebitCard(User user, BankBook bankBook) throws IllegalArgumentException {
         return dataSource.requestCard(user, bankBook, null);
     }
-
+    
     @Override
     public CardRequest requestCreditCard(User user, BankBook bankBook, CreditPlan plan) throws IllegalArgumentException {
         if (plan == null) {
@@ -343,22 +343,22 @@ public final class CommonService implements UserOperations, AdminOperations {
         }
         return dataSource.requestCard(user, bankBook, plan);
     }
-
+    
     @Override
     public List<CardRequest> getCardRequestsOf(User user, boolean watched) {
         return dataSource.getCardRequestsOf(user, watched);
     }
-
+    
     @Override
     public CardBook approve(CardRequest request) {
         return dataSource.processCardRequest(request, true, null);
     }
-
+    
     @Override
     public void decline(CardRequest request, String reason) {
         dataSource.processCardRequest(request, false, reason);
     }
-
+    
     @Override
     public BankBook getBankBook(Account user, long id) {
         user = dataSource.select(user.getClass(), user.getId());
@@ -371,80 +371,89 @@ public final class CommonService implements UserOperations, AdminOperations {
             throw new IllegalArgumentException(String.format("User %s doesn't own bank book %s", user, book));
         }
     }
-
+    
     @Override
     public User getUser(long id) {
         return dataSource.select(User.class, id);
     }
-
+    
     @Override
     public List<CreditPlan> getCreditPlansFor(Currency curr) {
         return dataSource.getCreditPlansFor(curr);
     }
-
+    
     @Override
     public void freeze(CreditPlan plan) {
         plan.setFreezed(true);
         dataSource.update(plan);
     }
-
+    
     @Override
     public void unfreeze(CreditPlan plan) {
         plan.setFreezed(false);
         dataSource.update(plan);
     }
-
+    
     @Override
     public void freeze(CardBook book) {
         book.setFreezed(true);
         dataSource.update(book);
     }
-
+    
     @Override
     public void unfreeze(CardBook book) {
         book.setFreezed(false);
         dataSource.update(book);
     }
-
+    
     @Override
     public void freeze(BankBook book) {
         book.setFreezed(true);
         dataSource.update(book);
     }
-
+    
     @Override
     public void unfreeze(BankBook book) {
         book.setFreezed(false);
         dataSource.update(book);
     }
-
+    
     @Override
     public Autopay createAutopay(CardBook from, CardBook to, Money money, long period) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     @Override
     public Autopay createAutopay(Transaction tr, Money money, long period) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     @Override
     public Autopay createAutopay(Transaction tr, long period) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     @Override
     public Autopay createAutopay(SavedPayment payment, Money money, long period) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     @Override
     public Autopay createAutopay(SavedPayment payment, long period) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     @Override
     public List<Autopay> getAutopaysOf(User owner) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    @Override
+    public User getUser(String email) {
+        if (!isValid(email)) {
+            throw new IllegalArgumentException(String.format("Email %s is not valid", email));
+        } else {
+            return dataSource.getUserByEmail(email);
+        }
     }
 }
