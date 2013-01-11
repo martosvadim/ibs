@@ -56,16 +56,17 @@ public class CardRequestController extends GenericWindowController {
         }
 
 		List<VocDTO<String, String>> types = new LinkedList<VocDTO<String, String>>();
-		for (CardBookType type : CardBookType.values()) {
+//		for (CardBookType type : CardBookType.values()) {
 			VocDTO<String, String> vocDTO = new VocDTO<String, String>();
-            vocDTO.setId(type.toString());
-			if (CardBookType.DEBIT.equals(type)) {
-				vocDTO.setValue("Дебетная");
-			} else if (CardBookType.CREDIT.equals(type)) {
-				vocDTO.setValue("Кредитная");
-			}
+            vocDTO.setId(CardBookType.DEBIT.toString());
+//			if (CardBookType.DEBIT.equals(type)) {
+//				vocDTO.setValue("Дебетная");
+//			} else if (CardBookType.CREDIT.equals(type)) {
+//				vocDTO.setValue("Кредитная");
+//			}
+            vocDTO.setValue("Дебетная");
 			types.add(vocDTO);
-		}
+//		}
 		cardTypeControl.bind(types);
 
 		final IButton createButton = new IButton("Отправить");

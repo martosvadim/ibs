@@ -34,10 +34,10 @@ public class ContextAreaListGrid extends ListGrid {
         ListGridField cardNumberField = new ListGridField("cardbook.id", "Номер", 100);
         ListGridField currencyField = new ListGridField("currency.name", "Валюта", 100);
         ListGridField balanceField = new ListGridField("bankbook.balance", "Остаток", 140);
-        ListGridField infoField = new ListGridField("date.expire", "Дополнительно", 180);
+//        ListGridField infoField = new ListGridField("date.expire", "Дополнительно", 180);
         ListGridField emptyField = new ListGridField("emptyField", " ");
         this.setFields(new ListGridField[]{iconField, cardTypeField, cardNumberField, currencyField,
-                balanceField, infoField, emptyField});
+                balanceField, emptyField});
 		this.setDataSource(new CardsDataSource());
     }
 

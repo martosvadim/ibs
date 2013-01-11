@@ -5,6 +5,7 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import edu.ibs.common.dto.CardBookDTO;
+import edu.ibs.common.dto.TransactionType;
 import edu.ibs.common.dto.VocDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.utils.AppCallback;
@@ -67,7 +68,7 @@ public class MakeTransferController extends GenericWindowController {
 							payButton.setDisabled(true);
 
 							IPaymentServiceAsync.Util.getInstance().pay(getCardBookDTO(), reciepientId, amountDouble,
-									new AppCallback<Void>() {
+                                    TransactionType.PAYMENT, new AppCallback<Void>() {
 										@Override
 										public void onFailure(Throwable t) {
 											super.onFailure(t);

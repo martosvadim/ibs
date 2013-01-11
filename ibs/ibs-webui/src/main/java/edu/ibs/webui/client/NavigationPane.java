@@ -160,7 +160,7 @@ public class NavigationPane extends SectionStack {
 	}
 
 	private Canvas getAddPaymentLink() {
-		return getLink("Добавить", new ClickHandler() {
+		return getLink("Оплатить", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
                 MakeTransferController controller = new MakeTransferController();
