@@ -56,6 +56,7 @@ public class NavigationPane extends SectionStack {
         section1.setExpanded(true);
 		VStack stack1 = new VStack();
 		stack1.addMember(getAddPaymentLink());
+        stack1.addMember(getAddTransferLink());
 		stack1.addMember(getFindPaymentLink());
 		section1.setItems(stack1);
 
@@ -162,6 +163,30 @@ public class NavigationPane extends SectionStack {
 		return getLink("Добавить", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
+                MakeTransferController controller = new MakeTransferController();
+				ListGridRecord record = getAccountView().getContextAreaListGrid().getSelectedRecord();
+				CardBookDTO cardBookDTO = null;
+				if (record != null) {
+					try {
+						cardBookDTO = (CardBookDTO) record.getAttributeAsObject("dto");
+					} catch (Throwable t) {
+
+					}
+				}
+				if (cardBookDTO != null) {
+					controller.setCardBookDTO(cardBookDTO);
+					controller.getWindow().draw();
+				} else {
+					SC.say("Выберите карту для совершения оплаты.");
+				}
+			}
+		});
+	}
+
+    private Canvas getAddTransferLink() {
+		return getLink("Перевод", new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
 				AddPaymentController controller = new AddPaymentController();
 				ListGridRecord record = getAccountView().getContextAreaListGrid().getSelectedRecord();
 				CardBookDTO cardBookDTO = null;
@@ -183,7 +208,7 @@ public class NavigationPane extends SectionStack {
 	}
 
 	private Canvas getFindPaymentLink() {
-		return getLink("Оплатить", new ClickHandler() {
+		return getLink("Сохраненные", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				//todo Показать форму с платежами

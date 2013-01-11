@@ -2,33 +2,57 @@ package edu.ibs.webui.client.controller;
 
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import edu.ibs.common.dto.CardBookDTO;
+import edu.ibs.common.dto.VocDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
- * User: EgoshinME
- * Date: 09.01.13
- * Time: 13:12
+ * User: Максим
+ * Date: 11.01.13
+ * Time: 2:48
  */
-public class AddPaymentController extends GenericWindowController {
-	private final GenericController reciepient = Components.getTextItem();
+public class MakeTransferController extends GenericWindowController {
+
 	private final GenericController amount = Components.getTextItem();
+    private GenericController reciepient = Components.getComboBoxControll();
 
-	private CardBookDTO cardBookDTO = null;
+	private CardBookDTO cardBookDTO;
+    private List<CardBookDTO> contragents = new ArrayList<CardBookDTO>();
 
-	public AddPaymentController() {
-		getWindow().setTitle("Перевод средств");
-		final IButton payButton = new IButton("Перевести");
+	public MakeTransferController() {
+		getWindow().setTitle("Оплата");
+		final IButton payButton = new IButton("Оплатить");
 		payButton.setWidth(80);
+
+        IPaymentServiceAsync.Util.getInstance().getContragentList(new AppCallback<List<CardBookDTO>>() {
+            @Override
+            public void onSuccess(List<CardBookDTO> cardBookDTOs) {
+                if (cardBookDTOs != null && cardBookDTOs.size() > 0) {
+                    contragents = cardBookDTOs;
+                    List<VocDTO<String, String>> bindList = new LinkedList<VocDTO<String, String>>();
+                    for (CardBookDTO dto : cardBookDTOs) {
+                        VocDTO<String, String> vocDTO = new VocDTO<String, String>(
+                                    String.valueOf(dto.getId()), String.valueOf(dto.getBankBook().getDescription()));
+                        bindList.add(vocDTO);
+                    }
+                    reciepient.bind(bindList);
+                }
+            }
+        });
+
 		payButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 			@Override
 			public void onClick(com.smartgwt.client.widgets.events.ClickEvent clickEvent) {
-				final String reciepientId = ((String) reciepient.unbind());
+                VocDTO<String, String> recVoc = ((VocDTO<String, String>) reciepient.unbind());
+				final String reciepientId = recVoc.getId();
 				final String amountTxt = ((String) amount.unbind());
 				if (reciepientId == null || "".equals(reciepientId) || reciepientId.length() == 0) {
 					SC.warn("Получатель не заполнен. ");
@@ -53,7 +77,7 @@ public class AddPaymentController extends GenericWindowController {
 										@Override
 										public void onSuccess(Void aVoid) {
 											payButton.setDisabled(false);
-											SC.say("Перевод успешно проведён");
+											SC.say("Платёж успешно проведён");
                                             getWindow().hide();
 										}
 									});
