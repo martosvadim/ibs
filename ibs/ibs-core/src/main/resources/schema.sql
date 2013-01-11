@@ -1,5 +1,5 @@
 drop database if exists ibs;
-create database ibs character set utf8 collate utf8_general_ci;
+create database ibs DEFAULT CHARACTER SET utf8;
 use ibs;
 
 create table User
@@ -7,7 +7,7 @@ create table User
 	id bigint primary key auto_increment,
 	passportNumber varchar(255) unique not null,
 	passportScan blob,
-	firstName varchar(255) character set utf8 collate utf8_general_ci not null,
+	firstName varchar(255),
 	lastName varchar(255) not null,
 	freezed boolean not null default 0,
 	address varchar(255),
