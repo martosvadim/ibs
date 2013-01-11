@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
@@ -601,5 +603,48 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 				em.close();
 			}
 		}
+	}
+
+	public List<Autopay> getAutopaysOf(User user) {
+		//todo return autopays of user here
+		return null;
+	}
+
+	public List<Autopay> getAutopaysToPay() {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Autopay> query = cb.createQuery(Autopay.class);
+			Root<Autopay> autopay = query.from(Autopay.class);
+			Expression<Long> lastPayed = autopay.get("lastPayed");
+			Expression<Long> period = autopay.get("period");
+			query.select(autopay).where(cb.ge(cb.sum(lastPayed, period), System.currentTimeMillis()));
+			return em.createQuery(query).getResultList();
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
+	public List<Transaction> autopay() {
+		List<Autopay> autopays = getAutopaysToPay();
+		List<Transaction> transactions = new ArrayList<Transaction>(autopays.size());
+		for (Autopay pay : autopays) {
+			try {
+				Transaction tr = pay(pay.getFrom(), pay.getTo(), pay.getMoney(), TransactionType.PAYMENT);
+				pay.setLastPayed(System.currentTimeMillis());
+				this.update(pay);
+				transactions.add(tr);
+			} catch (IllegalArgumentException ex) {
+				Logger.getLogger(SpecifiedJpaController.class.getName()).log(Level.SEVERE, null, ex);
+			} catch (FreezedException ex) {
+				Logger.getLogger(SpecifiedJpaController.class.getName()).log(Level.SEVERE, null, ex);
+			} catch (NotEnoughMoneyException ex) {
+				Logger.getLogger(SpecifiedJpaController.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+		return transactions;
 	}
 }

@@ -11,6 +11,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -18,18 +20,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * User: EgoshinME
- * Date: 10.01.13
- * Time: 13:19
+ * User: EgoshinME Date: 10.01.13 Time: 13:19
  */
 public class CurrenciesCache {
 
 	private List<Currency> list = new ArrayList<Currency>();
-
 	private AdminOperations adminLogic;
 
 	public CurrenciesCache() {
-
 	}
 
 	public void fillCurrencies() {
@@ -44,12 +42,12 @@ public class CurrenciesCache {
 			MimeHeaders mimeHeader = sm.getMimeHeaders();
 			mimeHeader.setHeader("SOAPAction", "http://www.nbrb.by/ExRatesDaily");
 
-			SOAPPart soapPart= sm.getSOAPPart();
+			SOAPPart soapPart = sm.getSOAPPart();
 
 			SOAPEnvelope envelope = soapPart.getEnvelope();
-			envelope.addNamespaceDeclaration("SOAP-ENC","http://schemas.xmlsoap.org/soap/encoding/");
-			envelope.addNamespaceDeclaration("xsd","http://www.w3.org/2001/XMLSchema") ;
-			envelope.addNamespaceDeclaration("xsi","http://www.w3.org/2001/XMLSchema-instance-instance");
+			envelope.addNamespaceDeclaration("SOAP-ENC", "http://schemas.xmlsoap.org/soap/encoding/");
+			envelope.addNamespaceDeclaration("xsd", "http://www.w3.org/2001/XMLSchema");
+			envelope.addNamespaceDeclaration("xsi", "http://www.w3.org/2001/XMLSchema-instance-instance");
 			envelope.getHeader().detachNode();
 
 
@@ -75,7 +73,9 @@ public class CurrenciesCache {
 					if (abbr != null) {
 						for (Currency c : getList()) {
 							if (abbr.equals(c.getName())) {
-								c.setFactor(Float.parseFloat(rate));
+								BigDecimal bd = new BigDecimal(rate).divide(new BigDecimal(c.getFraction().multiply()), 2 * c.getFraction().multiply(), RoundingMode.DOWN);
+//								c.setFactor(Float.parseFloat(rate) / c.getFraction().multiply());
+								c.setFactor(bd.floatValue());
 								c.setLastUpdated(System.currentTimeMillis());
 							}
 						}

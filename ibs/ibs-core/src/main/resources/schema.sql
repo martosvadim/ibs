@@ -174,8 +174,8 @@ insert into User (id, passportNumber, firstName, lastName, description) values (
 insert into Account(id, email, role, password) values (1, 'root@noreply.edu', 'ADMIN', 'root');
 
 insert into Currency (id, name, factor, fraction, lastUpdated) values(1, 'BR', 1, 'ZERO', UNIX_TIMESTAMP());
-insert into Currency (id, name, factor, fraction, lastUpdated) values(2, 'EUR', 10120.4, 'TWO', UNIX_TIMESTAMP());
-insert into Currency (id, name, factor, fraction, lastUpdated) values(3, 'USD', 8560.5, 'TWO', UNIX_TIMESTAMP());
+insert into Currency (id, name, factor, fraction, lastUpdated) values(2, 'EUR', 101.204, 'TWO', UNIX_TIMESTAMP());
+insert into Currency (id, name, factor, fraction, lastUpdated) values(3, 'USD', 85.605, 'TWO', UNIX_TIMESTAMP());
 
 insert into BankBook(id, ownerID, currencyID, balance, description) values(1, 1, 1, 1000000000, 'Внутренный банк-счет кредитов');
 insert into BankBook(id, ownerID, currencyID, balance, description) values(2, 2, 1, 0, 'Платежный счет услуг МТС');

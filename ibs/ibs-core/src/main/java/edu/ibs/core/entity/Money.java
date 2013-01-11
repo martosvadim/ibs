@@ -49,6 +49,22 @@ public class Money implements Comparable<Money>, Comparator<Money>, Serializable
 		this.currency = currency;
 	}
 
+	public static Money parseMoney(String integer, String fraction, Currency curr) throws IllegalArgumentException, NumberFormatException {
+		long l = Long.parseLong(integer);
+		int f = Integer.parseInt(fraction);
+		int digits = curr.getFraction().multiply() % 10;
+		int fractionLen = fraction.length();
+		if (fractionLen > digits) {
+			throw new IllegalArgumentException(String.format("Fraction [.%s] is too long, expeced %s digits", fraction, digits));
+		} else {
+			if (fractionLen < digits) {
+				int mul = (digits - fractionLen) * 10;
+				f *= mul;
+			}
+			return new Money(l, f, curr);
+		}
+	}
+
 	public long integer() {
 		return amount.longValue() / currency.getFraction().multiply();
 	}
