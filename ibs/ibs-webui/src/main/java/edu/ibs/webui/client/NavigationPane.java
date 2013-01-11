@@ -145,7 +145,22 @@ public class NavigationPane extends SectionStack {
 		return getLink("Выписка по карте", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
+                HistoryController controller = new HistoryController();
+                ListGridRecord record = getAccountView().getContextAreaListGrid().getSelectedRecord();
+				CardBookDTO cardBookDTO = null;
+				if (record != null) {
+					try {
+						cardBookDTO = (CardBookDTO) record.getAttributeAsObject("dto");
+					} catch (Throwable t) {
 
+					}
+				}
+				if (cardBookDTO != null) {
+					controller.setCardBookDTO(cardBookDTO);
+					controller.getWindow().draw();
+				} else {
+					SC.say("Выберите карту для совершения оплаты.");
+				}
 			}
 		});
 	}

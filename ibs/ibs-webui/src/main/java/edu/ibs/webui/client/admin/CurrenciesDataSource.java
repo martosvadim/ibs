@@ -1,5 +1,6 @@
 package edu.ibs.webui.client.admin;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
@@ -34,7 +35,14 @@ public class CurrenciesDataSource extends GwtRpcDataSource {
 						CurrencyDTO dto = list.get(i);
 						ListGridRecord record = new ListGridRecord();
 						record.setAttribute("abbr", dto.getName());
-						record.setAttribute("factor", String.valueOf(dto.getFactor()));
+                        String s = new String(String.valueOf(dto.getFactor()));
+						record.setAttribute("factor", s);
+                        GWT.log(String.valueOf(dto.getFactor()));
+                        GWT.log(new Float(dto.getFactor()).toString());
+                        GWT.log(record.getAttribute("factor"));
+                        s.trim();
+//                        GWT.log(record.getAttributeAsFloat("factor").toString());
+//                        GWT.log(String.valueOf(record.getAttributeAsFloat("factor").floatValue()));
 						if (dto.getLastUpdated() > getLastUpdateTime()) {
 							setLastUpdateTime(dto.getLastUpdated());
 						}
