@@ -12,6 +12,7 @@ import edu.ibs.core.gwt.EntityTransformer;
 import edu.ibs.core.operation.AdminOperations;
 import edu.ibs.core.operation.UserOperations;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -185,8 +186,9 @@ public class PaymentServiceImpl implements IPaymentService {
 
 	private Money parseMoney(Float amount, Currency currency) throws IbsServiceException {
         try {
+            BigDecimal bd = new BigDecimal(amount.toString());
             long part1 = amount.longValue();
-            String part2Str = String.valueOf(amount - part1);
+            String part2Str = bd.subtract(new BigDecimal(part1)).toString();
             int index = part2Str.indexOf('.');
             if (index == 0) {
                 index = part2Str.indexOf(',');
@@ -252,7 +254,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     public List<TransactionDTO> getHistory(UserDTO userDto, TransactionType tt) throws IbsServiceException {
         try {
-            List<Transaction> list = userLogic.getAllHistory(new User(userDto), tt);
+            List<Transaction> list = userLogic.getAllHistory(new User(userDto));
             List<TransactionDTO> ret = new ArrayList<TransactionDTO>();
             for (Transaction t : list) {
                 ret.add(EntityTransformer.transformTransaction(t));

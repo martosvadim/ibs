@@ -86,7 +86,7 @@ public class Money implements Comparable<Money>, Comparator<Money>, Serializable
 		return amount.multiply(currency.getFactor());
 	}
 
-	long balance() {
+	public long balance() {
 		return amount.longValue();
 	}
 

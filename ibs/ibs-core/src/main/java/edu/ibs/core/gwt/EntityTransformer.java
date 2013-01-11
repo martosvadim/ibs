@@ -3,6 +3,8 @@ package edu.ibs.core.gwt;
 import edu.ibs.common.dto.*;
 import edu.ibs.core.entity.*;
 
+import java.math.BigDecimal;
+
 /**
  * User: EgoshinME Date: 17.12.12 Time: 6:19
  */
@@ -88,7 +90,7 @@ public final class EntityTransformer {
         MoneyDTO dto = new MoneyDTO();
         if (money != null) {
             dto.setCurrency(transformCurrency(money.currency()));
-            //todo Как конвертировать?
+            dto.setAmount(new BigDecimal(money.balance()));
         }
         return dto;
     }

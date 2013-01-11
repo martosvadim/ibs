@@ -11,6 +11,8 @@ import edu.ibs.webui.client.ApplicationManager;
 import edu.ibs.webui.client.ds.GwtRpcDataSource;
 import edu.ibs.webui.client.utils.AppCallback;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +37,9 @@ public class HistoryDataSource extends GwtRpcDataSource {
 						ListGridRecord record = new ListGridRecord();
 						record.setAttribute("from", dto.getFrom().getBankBook().getId());
 						record.setAttribute("to", dto.getTo().getBankBook().getId());
-						record.setAttribute("amount", dto.getMoney());
+						record.setAttribute("amount",
+                                dto.getMoney().getAmount().divide(new BigDecimal(dto.getMoney().getCurrency().getFraction().multiply()))
+                                        + " " + dto.getMoney().getCurrency().getName());
 						record.setAttribute("date", new Date(dto.getDate()));
 						listGridRecords[i] = record;
 					}
