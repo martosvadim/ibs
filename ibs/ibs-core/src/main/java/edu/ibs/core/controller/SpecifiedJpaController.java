@@ -220,6 +220,25 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
+	public List<Transaction> getAllHistory(User owner) {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			CriteriaBuilder builder = em.getCriteriaBuilder();
+			CriteriaQuery<Transaction> criteria = builder.createQuery(Transaction.class);
+			Root<Transaction> transaction = criteria.from(Transaction.class);
+			Path<CardBook> fromCB = transaction.get("from");
+			Path<CardBook> toCB = transaction.get("to");
+			Predicate where = builder.or(builder.equal(fromCB.get("owner"), owner), builder.equal(toCB.get("owner"), owner));
+			criteria.select(transaction).where(where);
+			return em.createQuery(criteria).getResultList();
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
 	private List<Transaction> getTransactionHistory(User owner, TransactionType type, boolean from, boolean to, Date start, Date end) {
 		EntityManager em = null;
 		try {
@@ -241,7 +260,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 					: start == null && end != null ? builder.lessThanOrEqualTo(date, end)
 					: start != null && end == null ? builder.greaterThanOrEqualTo(date, start) : fake);
 			//god mode -> off
-			criteria.multiselect(transaction, toCB, fromCB).where(where);
+			criteria.select(transaction).where(where);
 			return em.createQuery(criteria).getResultList();
 		} finally {
 			if (em != null) {

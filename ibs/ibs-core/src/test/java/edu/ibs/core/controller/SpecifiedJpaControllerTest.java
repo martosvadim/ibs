@@ -2,9 +2,13 @@ package edu.ibs.core.controller;
 
 import edu.ibs.common.dto.TransactionType;
 import edu.ibs.common.enums.Fraction;
+import edu.ibs.core.controller.exception.FreezedException;
 import edu.ibs.core.controller.exception.NotEnoughMoneyException;
 import edu.ibs.core.entity.*;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.junit.Assert.*;
 import org.junit.*;
 
@@ -122,5 +126,28 @@ public class SpecifiedJpaControllerTest {
 		List<CardBook> contragents = controller.getContragentList();
 		assertNotNull(contragents);
 		assertEquals(SpecifiedJpaController.CONTRAGENT_CARD_BOOK_IDS.length, contragents.size());
+	}
+
+	@Test
+	public void historyTest() {
+		Transaction tr = null;
+		try {
+			Date d1 = new Date();
+			tr = controller.pay(to, to, new Money(0, to.getBankBook().getCurrency()), TransactionType.PAYMENT);
+			Date d2 = new Date();
+			List<Transaction> transactions = controller.getAllHistory(user);
+			assertNotNull(transactions);
+			assertEquals(1, transactions.size());
+		} catch (IllegalArgumentException ex) {
+			Logger.getLogger(SpecifiedJpaControllerTest.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (FreezedException ex) {
+			Logger.getLogger(SpecifiedJpaControllerTest.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (NotEnoughMoneyException ex) {
+			Logger.getLogger(SpecifiedJpaControllerTest.class.getName()).log(Level.SEVERE, null, ex);
+		} finally {
+			if (tr != null) {
+				controller.delete(tr.getClass(), tr.getId());
+			}
+		}
 	}
 }

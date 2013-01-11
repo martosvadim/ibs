@@ -461,4 +461,9 @@ public final class CommonService implements UserOperations, AdminOperations {
 	public List<CardBook> getContragentList() {
 		return dataSource.getContragentList();
 	}
+
+	@Override
+	public List<Transaction> getAllHistory(User user) {
+		return dataSource.getAllHistory(user);
+	}
 }

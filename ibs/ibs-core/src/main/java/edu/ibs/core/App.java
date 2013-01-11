@@ -1,9 +1,7 @@
 package edu.ibs.core;
 
-import edu.ibs.common.enums.Fraction;
-import edu.ibs.core.controller.SpecifiedJpaController;
-import edu.ibs.core.entity.Currency;
-import edu.ibs.core.gwt.EntityTransformer;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
@@ -17,11 +15,12 @@ public class App {
 	}
 
 	public static void main(String[] args) throws Exception {
-		SpecifiedJpaController c = SpecifiedJpaController.instance();
-		Currency cu = c.getCurrency("USD");
-		System.out.println(String.valueOf(cu.getFactor()));
-		System.out.println(String.valueOf((double)cu.getFloatFactor()));
-		System.out.println(String.valueOf(EntityTransformer.transformCurrency(cu).getFactor()));
-		System.out.println(String.valueOf(EntityTransformer.transformCurrency(new Currency("", cu.getFloatFactor(), Fraction.TWO)).getFactor()));
+		float f = 8.60f;
+		System.out.println(f);
+		double d = (double) f;
+		System.out.println(d);
+		BigDecimal bd = new BigDecimal(d);
+		System.out.println(bd.floatValue());
+		System.out.println(bd.toPlainString());
 	}
 }
