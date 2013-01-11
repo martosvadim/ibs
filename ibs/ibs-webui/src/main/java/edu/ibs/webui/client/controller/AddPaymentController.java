@@ -21,6 +21,7 @@ public class AddPaymentController extends GenericWindowController {
 	private final GenericController amount = Components.getTextItem();
 
 	private CardBookDTO cardBookDTO = null;
+    private IAction<Object> closeAction= null;
 
 	public AddPaymentController() {
 		getWindow().setTitle("Перевод средств");
@@ -55,6 +56,9 @@ public class AddPaymentController extends GenericWindowController {
 										public void onSuccess(Void aVoid) {
 											payButton.setDisabled(false);
 											SC.say("Перевод успешно проведён");
+                                            if (closeAction != null) {
+                                                closeAction.execute(null);
+                                            }
                                             getWindow().hide();
 										}
 									});
@@ -92,4 +96,12 @@ public class AddPaymentController extends GenericWindowController {
 	public void setCardBookDTO(CardBookDTO cardBookDTO) {
 		this.cardBookDTO = cardBookDTO;
 	}
+
+    public IAction<Object> getCloseAction() {
+        return closeAction;
+    }
+
+    public void setCloseAction(IAction<Object> closeAction) {
+        this.closeAction = closeAction;
+    }
 }

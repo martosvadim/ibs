@@ -52,7 +52,7 @@ public class Money implements Comparable<Money>, Comparator<Money>, Serializable
 	public static Money parseMoney(String integer, String fraction, Currency curr) throws IllegalArgumentException, NumberFormatException {
 		long l = Long.parseLong(integer);
 		int f = Integer.parseInt(fraction);
-		int digits = curr.getFraction().multiply() % 10;
+		int digits = (int) Math.log10(curr.getFraction().multiply());
 		int fractionLen = fraction.length();
 		if (fractionLen > digits) {
 			throw new IllegalArgumentException(String.format("Fraction [.%s] is too long, expeced %s digits", fraction, digits));

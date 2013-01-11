@@ -164,6 +164,13 @@ public class NavigationPane extends SectionStack {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
                 MakeTransferController controller = new MakeTransferController();
+                controller.setCloseAction(new IAction<Object>() {
+                    @Override
+                    public void execute(Object data) {
+                        getAccountView().getContextAreaListGrid().invalidateCache();
+                        getAccountView().getContextAreaListGrid().fetchData();
+                    }
+                });
 				ListGridRecord record = getAccountView().getContextAreaListGrid().getSelectedRecord();
 				CardBookDTO cardBookDTO = null;
 				if (record != null) {
@@ -188,6 +195,13 @@ public class NavigationPane extends SectionStack {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				AddPaymentController controller = new AddPaymentController();
+                controller.setCloseAction(new IAction<Object>() {
+                    @Override
+                    public void execute(Object data) {
+                        getAccountView().getContextAreaListGrid().invalidateCache();
+                        getAccountView().getContextAreaListGrid().fetchData();
+                    }
+                });
 				ListGridRecord record = getAccountView().getContextAreaListGrid().getSelectedRecord();
 				CardBookDTO cardBookDTO = null;
 				if (record != null) {

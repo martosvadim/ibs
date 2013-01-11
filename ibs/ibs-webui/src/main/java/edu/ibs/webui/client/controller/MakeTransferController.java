@@ -22,6 +22,8 @@ import java.util.List;
  */
 public class MakeTransferController extends GenericWindowController {
 
+    private IAction<Object> closeAction = null;
+
 	private final GenericController amount = Components.getTextItem();
     private GenericController reciepient = Components.getComboBoxControll();
 
@@ -79,6 +81,9 @@ public class MakeTransferController extends GenericWindowController {
 										public void onSuccess(Void aVoid) {
 											payButton.setDisabled(false);
 											SC.say("Платёж успешно проведён");
+                                            if (closeAction != null) {
+                                                closeAction.execute(null);
+                                            }
                                             getWindow().hide();
 										}
 									});
@@ -116,4 +121,12 @@ public class MakeTransferController extends GenericWindowController {
 	public void setCardBookDTO(CardBookDTO cardBookDTO) {
 		this.cardBookDTO = cardBookDTO;
 	}
+
+    public IAction<Object> getCloseAction() {
+        return closeAction;
+    }
+
+    public void setCloseAction(IAction<Object> closeAction) {
+        this.closeAction = closeAction;
+    }
 }

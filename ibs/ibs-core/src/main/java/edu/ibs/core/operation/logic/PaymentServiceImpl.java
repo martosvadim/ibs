@@ -183,16 +183,20 @@ public class PaymentServiceImpl implements IPaymentService {
 		return false;
 	}
 
-	private Money parseMoney(Double amount, Currency currency) {
-		long part1 = amount.longValue();
-		String part2Str = String.valueOf(amount - part1);
-		int index = part2Str.indexOf('.');
-		if (index == 0) {
-			index = part2Str.indexOf(',');
-		}
-		part2Str = part2Str.substring(index + 1);
-		int part2 = Integer.valueOf(part2Str);
-		return new Money(part1, part2, currency);
+	private Money parseMoney(Double amount, Currency currency) throws IbsServiceException {
+        try {
+            long part1 = amount.longValue();
+            String part2Str = String.valueOf(amount - part1);
+            int index = part2Str.indexOf('.');
+            if (index == 0) {
+                index = part2Str.indexOf(',');
+            }
+            part2Str = part2Str.substring(index + 1);
+//            int part2 = Integer.valueOf(part2Str);
+            return Money.parseMoney(String.valueOf(part1), part2Str, currency);
+        } catch (Throwable t) {
+            throw new IbsServiceException("Неверный формат суммы.");
+        }
 	}
 
 	@Override
