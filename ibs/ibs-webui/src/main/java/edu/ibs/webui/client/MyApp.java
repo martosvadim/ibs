@@ -225,7 +225,6 @@ public class MyApp implements EntryPoint {
                                             } else {
 												JS.setCookie(IS_ADMIN_COOKIE, Boolean.FALSE.toString());
 											}
-											SC.say("Вы залогинились, ", s.getEmail() + "!");
                                             ApplicationManager.getInstance().setAccount(s);
 											loginWindow.hide();
 											bg.addChild(getMainLayoutForRole());
