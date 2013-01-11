@@ -417,4 +417,34 @@ public final class CommonService implements UserOperations, AdminOperations {
         book.setFreezed(false);
         dataSource.update(book);
     }
+
+    @Override
+    public Autopay createAutopay(CardBook from, CardBook to, Money money, long period) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Autopay createAutopay(Transaction tr, Money money, long period) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Autopay createAutopay(Transaction tr, long period) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Autopay createAutopay(SavedPayment payment, Money money, long period) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Autopay createAutopay(SavedPayment payment, long period) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<Autopay> getAutopaysOf(User owner) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

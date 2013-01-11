@@ -1,6 +1,5 @@
-charset utf8;
 drop database if exists ibs;
-create database ibs;
+create database ibs character set utf8 collate utf8_general_ci;
 use ibs;
 
 create table User
@@ -8,7 +7,7 @@ create table User
 	id bigint primary key auto_increment,
 	passportNumber varchar(255) unique not null,
 	passportScan blob,
-	firstName varchar(255) not null,
+	firstName varchar(255) character set utf8 collate utf8_general_ci not null,
 	lastName varchar(255) not null,
 	freezed boolean not null default 0,
 	address varchar(255),
@@ -131,11 +130,17 @@ create table Transaction
 create table Autopay
 (
 	id bigint primary key auto_increment,
-	currencyID bigint not null,
 	amount bigint not null default 0,	
-	period enum('DAY', 'WEEK', 'MONTH', 'YEAR') not null default 'month',
-	periodMultiply int not null default 1,
+	period bigint not null default 0,
+    lastPayed bigint not null default 0,
+	currencyID bigint not null,
+	fromCardBookID bigint not null,
+	toCardBookID bigint not null,
 	INDEX currencyIndex (currencyID),
+    INDEX cardBook1Index (fromCardBookID),
+    INDEX cardBook2Index (toCardBookID),
+	FOREIGN KEY (fromCardBookID) REFERENCES CardBook(id) on delete cascade on update cascade,
+	FOREIGN KEY (toCardBookID) REFERENCES CardBook(id) on delete cascade on update cascade,
 	FOREIGN KEY (currencyID) REFERENCES Currency(id) on delete cascade on update cascade
 )engine InnoDB;
 
