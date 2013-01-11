@@ -2,6 +2,7 @@ package edu.ibs.core;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
@@ -15,12 +16,6 @@ public class App {
 	}
 
 	public static void main(String[] args) throws Exception {
-		float f = 8.60f;
-		System.out.println(f);
-		double d = (double) f;
-		System.out.println(d);
-		BigDecimal bd = new BigDecimal(d);
-		System.out.println(bd.floatValue());
-		System.out.println(bd.toPlainString());
+		System.err.print(new Date().toString());
 	}
 }

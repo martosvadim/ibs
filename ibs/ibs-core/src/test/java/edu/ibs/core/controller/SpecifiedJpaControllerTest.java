@@ -136,6 +136,7 @@ public class SpecifiedJpaControllerTest {
 			tr = controller.pay(to, to, new Money(0, to.getBankBook().getCurrency()), TransactionType.PAYMENT);
 			Date d2 = new Date();
 			List<Transaction> transactions = controller.getAllHistory(user);
+//			List<Transaction> transactions = controller.getTrAllHistory(user, TransactionType.PAYMENT, null, null);
 			assertNotNull(transactions);
 			assertEquals(1, transactions.size());
 		} catch (IllegalArgumentException ex) {
