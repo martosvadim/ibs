@@ -55,27 +55,32 @@ public class AddMoneyController extends GenericWindowController {
 					SC.warn("Номер банковского счета не заполнен.");
 				} else {
 					checkBtn.setDisabled(true);
-					long id = Long.valueOf(bankBookIdText);
-					IPaymentServiceAsync.Util.getInstance().getBankBook(ApplicationManager.getInstance().getAccount(),
-							id, new AppCallback<BankBookDTO>() {
-						@Override
-						public void onFailure(Throwable t) {
-							super.onFailure(t);
-							checkBtn.setDisabled(false);
-						}
-
-						@Override
-						public void onSuccess(BankBookDTO bankBookDTO) {
-							checkBtn.setDisabled(false);
-							if (bankBookDTO != null && bankBookDTO.getId() > 0) {
-								setBankBookDTO(bankBookDTO);
-								nextBtn.setDisabled(false);
-								checked = true;
-							} else {
-								nextBtn.setDisabled(true);
+					try {
+						long id = Long.valueOf(bankBookIdText);
+						IPaymentServiceAsync.Util.getInstance().getBankBook(ApplicationManager.getInstance().getAccount(),
+								id, new AppCallback<BankBookDTO>() {
+							@Override
+							public void onFailure(Throwable t) {
+								super.onFailure(t);
+								checkBtn.setDisabled(false);
 							}
-						}
-					});
+
+							@Override
+							public void onSuccess(BankBookDTO bankBookDTO) {
+								checkBtn.setDisabled(false);
+								if (bankBookDTO != null && bankBookDTO.getId() > 0) {
+									setBankBookDTO(bankBookDTO);
+									nextBtn.setDisabled(false);
+									checked = true;
+								} else {
+									nextBtn.setDisabled(true);
+								}
+							}
+						});
+					} catch (NumberFormatException e) {
+						SC.say("Введите числовой номер банковского счёта.");
+						checkBtn.setDisabled(false);
+					}
 				}
 			}
 		});
