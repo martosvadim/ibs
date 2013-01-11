@@ -63,13 +63,13 @@ public class MakeTransferController extends GenericWindowController {
 					SC.warn("Сумма не заполнена.");
 				} else {
 					try {
-						Double amountDouble = Double.parseDouble(amountTxt);
-						if (amountDouble <= 0d) {
+						Float amountFloat = Float.parseFloat(amountTxt);
+						if (amountFloat <= 0f) {
 							SC.warn("Введите положительное значение.");
 						} else {
 							payButton.setDisabled(true);
 
-							IPaymentServiceAsync.Util.getInstance().pay(getCardBookDTO(), reciepientId, amountDouble,
+							IPaymentServiceAsync.Util.getInstance().pay(getCardBookDTO(), reciepientId, amountFloat,
                                     TransactionType.PAYMENT, new AppCallback<Void>() {
 										@Override
 										public void onFailure(Throwable t) {

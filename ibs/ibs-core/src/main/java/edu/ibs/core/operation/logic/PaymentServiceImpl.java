@@ -51,7 +51,7 @@ public class PaymentServiceImpl implements IPaymentService {
 	}
 
 	@Override
-	public void pay(CardBookDTO from, String toId, Double amount, TransactionType ttype) throws IbsServiceException {
+	public void pay(CardBookDTO from, String toId, Float amount, TransactionType ttype) throws IbsServiceException {
 
 		try {
 			Money money = parseMoney(amount, new Currency(from.getBankBook().getCurrency()));
@@ -168,7 +168,7 @@ public class PaymentServiceImpl implements IPaymentService {
 	}
 
 	@Override
-	public Boolean addMoney(BankBookDTO bankBookDTO, Double amount) throws IbsServiceException {
+	public Boolean addMoney(BankBookDTO bankBookDTO, Float amount) throws IbsServiceException {
 		if (bankBookDTO != null && bankBookDTO.getId() != 0) {
 			try {
 				BankBook bankBook = new BankBook(bankBookDTO);
@@ -183,7 +183,7 @@ public class PaymentServiceImpl implements IPaymentService {
 		return false;
 	}
 
-	private Money parseMoney(Double amount, Currency currency) throws IbsServiceException {
+	private Money parseMoney(Float amount, Currency currency) throws IbsServiceException {
         try {
             long part1 = amount.longValue();
             String part2Str = String.valueOf(amount - part1);

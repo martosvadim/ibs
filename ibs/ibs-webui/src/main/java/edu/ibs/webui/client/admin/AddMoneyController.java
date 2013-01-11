@@ -96,12 +96,12 @@ public class AddMoneyController extends GenericWindowController {
 					SC.warn("Сумма не заполнена.");
 				} else {
 					try {
-						Double amountDouble = Double.parseDouble(amountTxt);
-						if (amountDouble <= 0d) {
+						Float amountFloat = Float.parseFloat(amountTxt);
+						if (amountFloat <= 0f) {
 							SC.warn("Введите положительное значение.");
 						} else {
 							addMoneyBtn.setDisabled(true);
-							IPaymentServiceAsync.Util.getInstance().addMoney(getBankBookDTO(), amountDouble,
+							IPaymentServiceAsync.Util.getInstance().addMoney(getBankBookDTO(), amountFloat,
 									new AppCallback<Boolean>() {
 
 								@Override
