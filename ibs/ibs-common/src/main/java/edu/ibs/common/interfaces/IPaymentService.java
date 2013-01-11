@@ -16,7 +16,7 @@ import java.util.List;
 @RemoteServiceRelativePath("pay.rpc")
 public interface IPaymentService extends RemoteService {
 	BankBookDTO createBankBook(UserDTO userDTO, CurrencyDTO currencyDTO) throws IbsServiceException;
-	void pay(CardBookDTO from, String toId, Double money, TransactionType ttype) throws IbsServiceException;
+	void pay(CardBookDTO from, String toId, Float money, TransactionType ttype) throws IbsServiceException;
     List<CardBookDTO> getCardBooks(UserDTO user) throws IbsServiceException;
 	List<CurrencyDTO> getCurrencies() throws IbsServiceException;
 	void requestCard(UserDTO userDTO, String bankBookId, CardBookType cardBookType) throws IbsServiceException;
@@ -24,7 +24,7 @@ public interface IPaymentService extends RemoteService {
 	List<CardRequestDTO> getCardRequests() throws IbsServiceException;
 	CardBookDTO approveCardRequest(CardRequestDTO dto) throws IbsServiceException;
 	void declineCardRequest(CardRequestDTO dto, String reason) throws IbsServiceException;
-	Boolean addMoney(BankBookDTO bankBookDTO, Double amount) throws IbsServiceException;
+	Boolean addMoney(BankBookDTO bankBookDTO, Float amount) throws IbsServiceException;
 	BankBookDTO getBankBook(AccountDTO accountDTO, long id) throws IbsServiceException;
 	void refreshCurrencies() throws IbsServiceException;
     UserDTO getUser(String email) throws IbsServiceException;
