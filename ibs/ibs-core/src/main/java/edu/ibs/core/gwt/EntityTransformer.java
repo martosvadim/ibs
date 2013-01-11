@@ -136,4 +136,19 @@ public final class EntityTransformer {
         }
         return dto;
     }
+
+    public static TransactionDTO transformTransaction(Transaction t) {
+        TransactionDTO dto = new TransactionDTO();
+        if (t != null) {
+            dto.setId(t.getId());
+            dto.setDate(t.getDate());
+            dto.setAmount(t.getMoney().toString());
+            dto.setCurrency(transformCurrency(t.getMoney().currency()));
+            dto.setMoney(transformMoney(t.getMoney()));
+            dto.setType(t.getType());
+            dto.setFrom(transformCardBook(t.getFrom()));
+            dto.setTo(transformCardBook(t.getTo()));
+        }
+        return dto;
+    }
 }

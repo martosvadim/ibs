@@ -35,14 +35,7 @@ public class CurrenciesDataSource extends GwtRpcDataSource {
 						CurrencyDTO dto = list.get(i);
 						ListGridRecord record = new ListGridRecord();
 						record.setAttribute("abbr", dto.getName());
-                        String s = new String(String.valueOf(dto.getFactor()));
-						record.setAttribute("factor", s);
-                        GWT.log(String.valueOf(dto.getFactor()));
-                        GWT.log(new Float(dto.getFactor()).toString());
-                        GWT.log(record.getAttribute("factor"));
-                        s.trim();
-//                        GWT.log(record.getAttributeAsFloat("factor").toString());
-//                        GWT.log(String.valueOf(record.getAttributeAsFloat("factor").floatValue()));
+						record.setAttribute("factor", dto.getFactor());
 						if (dto.getLastUpdated() > getLastUpdateTime()) {
 							setLastUpdateTime(dto.getLastUpdated());
 						}

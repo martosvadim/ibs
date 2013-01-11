@@ -250,6 +250,19 @@ public class PaymentServiceImpl implements IPaymentService {
         return list;
     }
 
+    public List<TransactionDTO> getHistory(UserDTO userDto, TransactionType tt) throws IbsServiceException {
+        try {
+            List<Transaction> list = userLogic.getAllHistory(new User(userDto), tt);
+            List<TransactionDTO> ret = new ArrayList<TransactionDTO>();
+            for (Transaction t : list) {
+                ret.add(EntityTransformer.transformTransaction(t));
+            }
+            return ret;
+        } catch (Throwable t) {
+            throw new IbsServiceException("Ошибка при получении выписки.");
+        }
+    }
+
     public UserOperations getUserLogic() {
         return userLogic;
     }

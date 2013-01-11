@@ -57,7 +57,7 @@ public class NavigationPane extends SectionStack {
 		VStack stack1 = new VStack();
 		stack1.addMember(getAddPaymentLink());
         stack1.addMember(getAddTransferLink());
-		stack1.addMember(getFindPaymentLink());
+//		stack1.addMember(getFindPaymentLink());
 		section1.setItems(stack1);
 
         SectionStackSection section2 = new SectionStackSection("Карты");
@@ -65,7 +65,7 @@ public class NavigationPane extends SectionStack {
 		VStack stack2 = new VStack();
 		stack2.addMember(getAddCardLink());
 		stack2.addMember(getBankStatementLink());
-		stack2.addMember(getAutoPaymentLink());
+//		stack2.addMember(getAutoPaymentLink());
 		section2.setItems(stack2);
 
         userInfoSection.setExpanded(true);
@@ -159,7 +159,7 @@ public class NavigationPane extends SectionStack {
 					controller.setCardBookDTO(cardBookDTO);
 					controller.getWindow().draw();
 				} else {
-					SC.say("Выберите карту для совершения оплаты.");
+					SC.say("Выберите карту.");
 				}
 			}
 		});

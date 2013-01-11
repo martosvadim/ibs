@@ -7,12 +7,13 @@ package edu.ibs.common.dto;
  */
 public class TransactionDTO implements IBaseDTO {
 	private long id;
-	private long amount;
+	private String amount;
 	private TransactionType type;
 	private CurrencyDTO currency;
 	private CardBookDTO to;
 	private CardBookDTO from;
 	private MoneyDTO money;
+    private long date;
 
 	public long getId() {
 		return id;
@@ -22,11 +23,11 @@ public class TransactionDTO implements IBaseDTO {
 		this.id = id;
 	}
 
-	public long getAmount() {
+	public String getAmount() {
 		return amount;
 	}
 
-	public void setAmount(long amount) {
+	public void setAmount(String amount) {
 		this.amount = amount;
 	}
 
@@ -69,4 +70,12 @@ public class TransactionDTO implements IBaseDTO {
 	public void setMoney(MoneyDTO money) {
 		this.money = money;
 	}
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
 }
