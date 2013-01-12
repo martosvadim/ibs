@@ -11,6 +11,7 @@ import edu.ibs.webui.client.ApplicationManager;
 import edu.ibs.webui.client.ds.GwtRpcDataSource;
 import edu.ibs.webui.client.utils.AppCallback;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,6 +44,7 @@ public class CardsDataSource extends GwtRpcDataSource {
 						record.setAttribute("currency.name", dto.getBankBook().getCurrency().getName());
 						record.setAttribute("dto", dto);
 						record.setAttribute("icon", "information");
+                        record.setAttribute("date.expire", new Date(dto.getDateExpire()));
 						listGridRecords[i] = record;
 					}
 					response.setData(listGridRecords);
