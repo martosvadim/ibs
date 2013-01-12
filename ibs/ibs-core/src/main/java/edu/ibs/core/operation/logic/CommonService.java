@@ -440,10 +440,10 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public List<Transaction> getAllHistory(User user, Date from, Date to) {
-		if (from.after(to)) {
+		if (to.compareTo(from) < 0) {
 			throw new IllegalArgumentException(String.format("Date from [%s] is after date to [%s]", from, to));
 		}
-		return dataSource.geеAllHistory(user, from, to);
+		return dataSource.getAllHistory(user, from, to);
 	}
 
 	@Override

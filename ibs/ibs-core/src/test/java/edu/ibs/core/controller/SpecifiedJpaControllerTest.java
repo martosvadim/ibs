@@ -39,7 +39,7 @@ public class SpecifiedJpaControllerTest {
 
 	@Before
 	public void setUp() {
-		user = new User("test", "user", "MP1452752");
+		user = new User("Тест", "Пользователь", "MP1452752");
 		controller.insert(user);
 		usd = new Currency("usd-test", 1.5f, Fraction.TWO);
 		controller.insert(usd);
@@ -136,9 +136,17 @@ public class SpecifiedJpaControllerTest {
 			tr = controller.pay(to, to, new Money(0, to.getBankBook().getCurrency()), TransactionType.PAYMENT);
 			Date d2 = new Date();
 			List<Transaction> transactions = controller.getAllHistory(user);
-//			List<Transaction> transactions = controller.getTrAllHistory(user, TransactionType.PAYMENT, null, null);
 			assertNotNull(transactions);
 			assertEquals(1, transactions.size());
+			transactions = controller.getAllHistory(user, d1, d2);
+			assertNotNull(transactions);
+			assertEquals(1, transactions.size());
+			transactions = controller.getAllHistory(user, new Date(0L), d1);
+			assertNotNull(transactions);
+			assertEquals(0, transactions.size());
+			transactions = controller.getAllHistory(user, d2, d1);
+			assertNotNull(transactions);
+			assertEquals(0, transactions.size());
 		} catch (IllegalArgumentException ex) {
 			Logger.getLogger(SpecifiedJpaControllerTest.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (FreezedException ex) {

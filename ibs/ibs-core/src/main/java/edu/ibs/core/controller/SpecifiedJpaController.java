@@ -257,7 +257,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	public List<Transaction> geеAllHistory(User owner, Date from, Date to) {
+	public List<Transaction> getAllHistory(User owner, Date from, Date to) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
