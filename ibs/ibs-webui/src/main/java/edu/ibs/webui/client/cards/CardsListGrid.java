@@ -1,11 +1,14 @@
 package edu.ibs.webui.client.cards;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.SelectionStyle;
+import com.smartgwt.client.widgets.grid.CellFormatter;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
 import edu.ibs.webui.client.utils.Components;
 
 /**
@@ -36,8 +39,16 @@ public class CardsListGrid extends ListGrid {
         ListGridField cardNumberField = new ListGridField("cardbook.id", "Номер");
         ListGridField currencyField = new ListGridField("currency.name", "Валюта", 50);
         ListGridField balanceField = new ListGridField("bankbook.balance", "Остаток");
-//        ListGridField infoField = new ListGridField("date.expire", "Дополнительно", 180);
-        this.setFields(new ListGridField[]{iconField, bankBookId, cardTypeField, cardNumberField, currencyField,
+        ListGridField infoField = new ListGridField("date.expire", "Срок действия карты", 180);
+        infoField.setType(ListGridFieldType.DATE);
+        infoField.setCellFormatter(new CellFormatter() {
+            @Override
+            public String format(Object arg0, ListGridRecord arg1, int arg2, int arg3) {
+                DateTimeFormat fmt = DateTimeFormat.getFormat("dd.MM.yyyy hh:mm");
+                return fmt.format(arg1.getAttributeAsDate("date.expire"));
+            }
+        });
+        this.setFields(new ListGridField[]{iconField, bankBookId, cardTypeField, cardNumberField, currencyField, infoField,
                 balanceField});
 		this.setDataSource(new CardsDataSource());
     }
