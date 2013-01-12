@@ -149,6 +149,24 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
+	public User getUserByPassportNumber(String passport) {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			CriteriaQuery<User> criteria = em.getCriteriaBuilder().createQuery(User.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			Root<User> acc = criteria.from(User.class);
+			Expression<String> passportExpr = acc.get("passportNumber");
+			criteria.select(acc).where(cb.equal(passportExpr, passport));
+			Iterator<User> it = em.createQuery(criteria).setMaxResults(1).getResultList().iterator();
+			return it.hasNext() ? it.next() : null;
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
 	private Account getAccByEmail(String email) {
 		EntityManager em = null;
 		try {
@@ -239,7 +257,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	private List<Transaction> getTransactionHistory(User owner, TransactionType type, boolean from, boolean to, Date start, Date end) {
+	public List<Transaction> geеAllHistory(User owner, Date from, Date to) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
@@ -248,18 +266,11 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 			Root<Transaction> transaction = criteria.from(Transaction.class);
 			Path<CardBook> fromCB = transaction.get("from");
 			Path<CardBook> toCB = transaction.get("to");
-			Path<Date> date = transaction.get("date");
-			Predicate fake = builder.equal(builder.literal(Boolean.TRUE), Boolean.TRUE);
-			//god mode -> on
+			Path<Long> date = transaction.get("date");
 			Predicate where = builder.and(
-					builder.equal(transaction.get("type"), type),
-					builder.or(
-					to ? builder.equal(toCB.get("owner"), owner) : fake,
-					from ? builder.equal(fromCB.get("owner"), owner) : fake),
-					start != null && end != null ? builder.between(date, start, end)
-					: start == null && end != null ? builder.lessThanOrEqualTo(date, end)
-					: start != null && end == null ? builder.greaterThanOrEqualTo(date, start) : fake);
-			//god mode -> off
+					builder.or(builder.equal(fromCB.get("owner"), owner), builder.equal(toCB.get("owner"), owner)),
+					builder.ge(date, from.getTime()),
+					builder.le(date, to.getTime()));
 			criteria.select(transaction).where(where);
 			return em.createQuery(criteria).getResultList();
 		} finally {
@@ -269,18 +280,35 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	public List<Transaction> getTrOutHistory(User owner, TransactionType type, Date from, Date to) {
-		return getTransactionHistory(owner, type, true, false, from, to);
-	}
-
-	public List<Transaction> getTrInHistory(User owner, TransactionType type, Date from, Date to) {
-		return getTransactionHistory(owner, type, false, true, from, to);
-	}
-
-	public List<Transaction> getTrAllHistory(User owner, TransactionType type, Date from, Date to) {
-		return getTransactionHistory(owner, type, true, true, from, to);
-	}
-
+//	private List<Transaction> getTransactionHistory(User owner, TransactionType type, boolean from, boolean to, Date start, Date end) {
+//		EntityManager em = null;
+//		try {
+//			em = createEntityManager();
+//			CriteriaBuilder builder = em.getCriteriaBuilder();
+//			CriteriaQuery<Transaction> criteria = builder.createQuery(Transaction.class);
+//			Root<Transaction> transaction = criteria.from(Transaction.class);
+//			Path<CardBook> fromCB = transaction.get("from");
+//			Path<CardBook> toCB = transaction.get("to");
+//			Path<Date> date = transaction.get("date");
+//			Predicate fake = builder.equal(builder.literal(Boolean.TRUE), Boolean.TRUE);
+//			//god mode -> on
+//			Predicate where = builder.and(
+//					builder.equal(transaction.get("type"), type),
+//					builder.or(
+//					to ? builder.equal(toCB.get("owner"), owner) : fake,
+//					from ? builder.equal(fromCB.get("owner"), owner) : fake),
+//					start != null && end != null ? builder.between(date, start, end)
+//					: start == null && end != null ? builder.lessThanOrEqualTo(date, end)
+//					: start != null && end == null ? builder.greaterThanOrEqualTo(date, start) : fake);
+//			//god mode -> off
+//			criteria.select(transaction).where(where);
+//			return em.createQuery(criteria).getResultList();
+//		} finally {
+//			if (em != null) {
+//				em.close();
+//			}
+//		}
+//	}
 	public List<BankBook> getBankBooksOf(User owner) {
 		EntityManager em = null;
 		try {

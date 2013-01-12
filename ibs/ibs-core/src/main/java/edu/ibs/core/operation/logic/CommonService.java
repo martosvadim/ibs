@@ -440,7 +440,10 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public List<Transaction> getAllHistory(User user, Date from, Date to) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		if (from.after(to)) {
+			throw new IllegalArgumentException(String.format("Date from [%s] is after date to [%s]", from, to));
+		}
+		return dataSource.geеAllHistory(user, from, to);
 	}
 
 	@Override
@@ -450,7 +453,11 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public User getUserByPassport(String passportNumber) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		if (!User.validatePassportNumber(passportNumber)) {
+			throw new IllegalArgumentException(String.format("Passport number %s is not valid", passportNumber));
+		} else {
+			return dataSource.getUserByPassportNumber(passportNumber);
+		}
 	}
 
 	@Override
