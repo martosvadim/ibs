@@ -89,13 +89,26 @@ create table CardBook
 	type enum('DEBIT', 'CREDIT') not null default 'DEBIT',
 	dateExpire bigint not null default 0,
 	freezed boolean not null default 0,
-	pin int not null,
+	pin int not null, 
 	INDEX creditIndex (creditID),
 	INDEX bankBookIndex (bankBookID),
 	INDEX ownerIndex (ownerID),
 	FOREIGN KEY (creditID) REFERENCES Credit(id) on delete restrict on update cascade,
 	FOREIGN KEY (ownerID) REFERENCES User(id) on delete restrict on update cascade,
 	FOREIGN KEY (bankBookID) REFERENCES BankBook(id) on delete restrict on update cascade
+)engine InnoDB;
+
+create table Providers
+(
+	id bigint primary key auto_increment,
+	cardBookID bigint not null,
+	field1 enum('PHONE', 'NAME', 'ADDRESS') default null,
+	field2 enum('PHONE', 'NAME', 'ADDRESS') default null,
+	field3 enum('PHONE', 'NAME', 'ADDRESS') default null,
+	field4 enum('PHONE', 'NAME', 'ADDRESS') default null,
+	field5 enum('PHONE', 'NAME', 'ADDRESS') default null,
+	INDEX cardBookIndex (cardBookID),
+	FOREIGN KEY (cardBookID) REFERENCES CardBook(id) on delete cascade on update cascade
 )engine InnoDB;
 
 create table Transaction
@@ -107,6 +120,7 @@ create table Transaction
 	amount bigint not null,
 	date bigint not null default 0,
 	type enum('PAYMENT', 'TRANSFER') not null,
+	description varchar(255),
 	INDEX fromCBIndex (fromCardBookID),
 	INDEX toCBIndex (toCardBookID),
 	INDEX currencyIndex (currencyID),
@@ -120,13 +134,13 @@ create table Autopay
 	id bigint primary key auto_increment,
 	amount bigint not null default 0,	
 	period bigint not null default 0,
-    lastPayed bigint not null default 0,
+        lastPayed bigint not null default 0,
 	currencyID bigint not null,
 	fromCardBookID bigint not null,
 	toCardBookID bigint not null,
 	INDEX currencyIndex (currencyID),
-    INDEX cardBook1Index (fromCardBookID),
-    INDEX cardBook2Index (toCardBookID),
+        INDEX cardBook1Index (fromCardBookID),
+        INDEX cardBook2Index (toCardBookID),
 	FOREIGN KEY (fromCardBookID) REFERENCES CardBook(id) on delete cascade on update cascade,
 	FOREIGN KEY (toCardBookID) REFERENCES CardBook(id) on delete cascade on update cascade,
 	FOREIGN KEY (currencyID) REFERENCES Currency(id) on delete cascade on update cascade

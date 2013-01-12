@@ -43,6 +43,8 @@ public class Transaction implements Serializable, AbstractEntity {
 	private CardBook from;
 	@Transient
 	private Money money;
+	@Column(name = "description")
+	private String description;
 
 	public Transaction() {
 	}
@@ -87,6 +89,14 @@ public class Transaction implements Serializable, AbstractEntity {
 
 	public long getDate() {
 		return date;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@Override

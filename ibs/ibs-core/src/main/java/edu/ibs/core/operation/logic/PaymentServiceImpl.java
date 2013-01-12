@@ -243,8 +243,8 @@ public class PaymentServiceImpl implements IPaymentService {
     public List<CardBookDTO> getContragentList() throws IbsServiceException {
         List<CardBookDTO> list = new ArrayList<CardBookDTO>();
         try {
-            for (CardBook cardBook : adminLogic.getContragentList()) {
-                list.add(EntityTransformer.transformCardBook(cardBook));
+            for (Provider provider : adminLogic.getProviderList()) {
+                list.add(EntityTransformer.transformCardBook(provider.getCard()));
             }
         } catch (Throwable t) {
             throw new IbsServiceException("Ошибка получения списка контрагентов.");

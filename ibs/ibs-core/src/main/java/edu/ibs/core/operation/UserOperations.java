@@ -47,17 +47,7 @@ public interface UserOperations extends CommonOperations {
 
 	public List<Transaction> getAllHistory(User user);
 
-	public List<Transaction> getAllHistory(User user, TransactionType type);
-
-	public List<Transaction> getAllHistory(User user, TransactionType type, Date from, Date to);
-
-	public List<Transaction> getHistoryIncome(User user, TransactionType type);
-
-	public List<Transaction> getHistoryIncome(User user, TransactionType type, Date from, Date to);
-
-	public List<Transaction> getHistoryOutcome(User user, TransactionType type);
-
-	public List<Transaction> getHistoryOutcome(User user, TransactionType type, Date from, Date to);
+	public List<Transaction> getAllHistory(User user, Date from, Date to);
 
 	public void delete(SavedPayment payment);
 

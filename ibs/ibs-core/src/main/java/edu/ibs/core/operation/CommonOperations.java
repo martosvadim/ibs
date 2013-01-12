@@ -34,5 +34,5 @@ public interface CommonOperations {
 
 	public boolean cardBookExists(long id);
 	
-	public List<CardBook> getContragentList();
+	public List<Provider> getProviderList();
 }

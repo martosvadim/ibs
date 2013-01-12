@@ -4,6 +4,7 @@ import edu.ibs.common.dto.TransactionType;
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.enums.CardBookType;
 import edu.ibs.common.enums.Period;
+import edu.ibs.common.enums.ProviderField;
 import edu.ibs.core.controller.SpecifiedJpaController;
 import edu.ibs.core.controller.exception.FreezedException;
 import edu.ibs.core.controller.exception.NotEnoughMoneyException;
@@ -154,36 +155,6 @@ public final class CommonService implements UserOperations, AdminOperations {
 	@Override
 	public List<SavedPayment> getSavedPayments(User user) {
 		return dataSource.getSavedPayments(user);
-	}
-
-	@Override
-	public List<Transaction> getAllHistory(User user, TransactionType type) {
-		return dataSource.getTrAllHistory(user, type, null, null);
-	}
-
-	@Override
-	public List<Transaction> getAllHistory(User user, TransactionType type, Date from, Date to) {
-		return dataSource.getTrAllHistory(user, type, from, to);
-	}
-
-	@Override
-	public List<Transaction> getHistoryIncome(User user, TransactionType type) {
-		return dataSource.getTrInHistory(user, type, null, null);
-	}
-
-	@Override
-	public List<Transaction> getHistoryIncome(User user, TransactionType type, Date from, Date to) {
-		return dataSource.getTrInHistory(user, type, from, to);
-	}
-
-	@Override
-	public List<Transaction> getHistoryOutcome(User user, TransactionType type) {
-		return dataSource.getTrOutHistory(user, type, null, null);
-	}
-
-	@Override
-	public List<Transaction> getHistoryOutcome(User user, TransactionType type, Date from, Date to) {
-		return dataSource.getTrOutHistory(user, type, from, to);
 	}
 
 	@Override
@@ -458,12 +429,32 @@ public final class CommonService implements UserOperations, AdminOperations {
 	}
 
 	@Override
-	public List<CardBook> getContragentList() {
-		return dataSource.getContragentList();
+	public List<Provider> getProviderList() {
+		return dataSource.selectAll(Provider.class);
 	}
 
 	@Override
 	public List<Transaction> getAllHistory(User user) {
 		return dataSource.getAllHistory(user);
+	}
+
+	@Override
+	public List<Transaction> getAllHistory(User user, Date from, Date to) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void update(User user) {
+		dataSource.update(user);
+	}
+
+	@Override
+	public User getUserByPassport(String passportNumber) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public Provider createProvider(String company, String bookDescription, Currency currency, ProviderField... fields) {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 }
