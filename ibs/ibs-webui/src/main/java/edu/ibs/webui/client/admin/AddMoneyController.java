@@ -120,6 +120,7 @@ public class AddMoneyController extends GenericWindowController {
 									addMoneyBtn.setDisabled(false);
 									if (aBoolean) {
 										SC.say("Счёт пополнен.");
+                                        getWindow().hide();
 									}
 								}
 							});
