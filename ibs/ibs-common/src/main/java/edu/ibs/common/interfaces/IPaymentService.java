@@ -6,6 +6,7 @@ import edu.ibs.common.dto.*;
 import edu.ibs.common.enums.CardBookType;
 import edu.ibs.common.exceptions.IbsServiceException;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,4 +31,5 @@ public interface IPaymentService extends RemoteService {
     UserDTO getUser(String email) throws IbsServiceException;
     List<CardBookDTO> getContragentList() throws IbsServiceException;
     List<TransactionDTO> getHistory(UserDTO userDto, TransactionType tt) throws IbsServiceException;
+    List<TransactionDTO> getHistory(UserDTO userDto, Date from, Date to) throws IbsServiceException;
 }

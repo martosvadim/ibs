@@ -135,7 +135,7 @@ public class NavigationPane extends SectionStack {
 					CardRequestController controller = new CardRequestController();
 					controller.getWindow().draw();
 				} else {
-					SC.say("Заполните информацию о пользователе.");
+					SC.say("Заполните информацию<br/> о пользователе.");
 				}
 			}
 		});
@@ -145,7 +145,7 @@ public class NavigationPane extends SectionStack {
 		return getLink("Выписка по карте", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
-                HistoryController controller = new HistoryController();
+                MainHistoryController controller = new MainHistoryController();
                 ListGridRecord record = getAccountView().getContextAreaListGrid().getSelectedRecord();
 				CardBookDTO cardBookDTO = null;
 				if (record != null) {
@@ -199,7 +199,7 @@ public class NavigationPane extends SectionStack {
 					controller.setCardBookDTO(cardBookDTO);
 					controller.getWindow().draw();
 				} else {
-					SC.say("Выберите карту для совершения оплаты.");
+					SC.say("Выберите карту.");
 				}
 			}
 		});
@@ -230,7 +230,7 @@ public class NavigationPane extends SectionStack {
 					controller.setCardBookDTO(cardBookDTO);
 					controller.getWindow().draw();
 				} else {
-					SC.say("Выберите карту для совершения оплаты.");
+					SC.say("Выберите карту.");
 				}
 			}
 		});

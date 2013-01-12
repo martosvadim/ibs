@@ -14,6 +14,7 @@ import edu.ibs.core.operation.UserOperations;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -255,6 +256,19 @@ public class PaymentServiceImpl implements IPaymentService {
     public List<TransactionDTO> getHistory(UserDTO userDto, TransactionType tt) throws IbsServiceException {
         try {
             List<Transaction> list = userLogic.getAllHistory(new User(userDto));
+            List<TransactionDTO> ret = new ArrayList<TransactionDTO>();
+            for (Transaction t : list) {
+                ret.add(EntityTransformer.transformTransaction(t));
+            }
+            return ret;
+        } catch (Throwable t) {
+            throw new IbsServiceException("Ошибка при получении выписки.");
+        }
+    }
+
+    public List<TransactionDTO> getHistory(UserDTO userDto, Date from, Date to) throws IbsServiceException {
+        try {
+            List<Transaction> list = userLogic.getAllHistory(new User(userDto), from, to);
             List<TransactionDTO> ret = new ArrayList<TransactionDTO>();
             for (Transaction t : list) {
                 ret.add(EntityTransformer.transformTransaction(t));
