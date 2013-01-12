@@ -2,7 +2,7 @@ package edu.ibs.webui.client;
 
 import com.google.gwt.core.client.GWT;
 import com.smartgwt.client.widgets.layout.VLayout;
-import edu.ibs.webui.client.cards.ContextAreaListGrid;
+import edu.ibs.webui.client.cards.CardsListGrid;
 
 /**
  * User: Максим
@@ -11,7 +11,7 @@ import edu.ibs.webui.client.cards.ContextAreaListGrid;
  */
 public class AccountView extends VLayout {
 
-	private ContextAreaListGrid contextAreaListGrid;
+	private CardsListGrid contextAreaListGrid;
 
     public AccountView() {
         super();
@@ -21,9 +21,9 @@ public class AccountView extends VLayout {
         this.addMember(getContextAreaListGrid());
     }
 
-	public ContextAreaListGrid getContextAreaListGrid() {
+	public CardsListGrid getContextAreaListGrid() {
 		if (contextAreaListGrid == null) {
-			contextAreaListGrid = new ContextAreaListGrid();
+			contextAreaListGrid = new CardsListGrid();
 		}
 		return contextAreaListGrid;
 	}
