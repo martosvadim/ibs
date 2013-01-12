@@ -98,7 +98,7 @@ create table CardBook
 	FOREIGN KEY (bankBookID) REFERENCES BankBook(id) on delete restrict on update cascade
 )engine InnoDB;
 
-create table Providers
+create table Provider
 (
 	id bigint primary key auto_increment,
 	cardBookID bigint not null,

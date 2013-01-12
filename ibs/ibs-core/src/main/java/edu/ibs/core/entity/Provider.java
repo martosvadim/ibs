@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Vadim Martos
  */
 @Entity
-@Table(name = "Transaction")
+@Table(name = "Provider")
 @XmlRootElement
 public class Provider implements Serializable, AbstractEntity {
 	
