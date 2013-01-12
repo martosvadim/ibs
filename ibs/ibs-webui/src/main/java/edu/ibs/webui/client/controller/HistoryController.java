@@ -16,6 +16,7 @@ import edu.ibs.webui.client.utils.Components;
  */
 public class HistoryController extends GenericWindowController {
     private CardBookDTO cardBookDto;
+    private HistoryDataSource dataSource = new HistoryDataSource();
 
     public HistoryController() {
         getWindow().setCanDrag(true);
@@ -36,11 +37,15 @@ public class HistoryController extends GenericWindowController {
             }
         });
         lg.setFields(new ListGridField[] {fromF, toF, amountF, whenF});
-        lg.setDataSource(new HistoryDataSource());
+        lg.setDataSource(dataSource);
         getWindow().addItem(lg);
     }
 
     public void setCardBookDTO(CardBookDTO cardBookDTO) {
         this.cardBookDto = cardBookDTO;
+    }
+
+    public HistoryDataSource getDataSource() {
+        return dataSource;
     }
 }

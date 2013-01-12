@@ -22,10 +22,13 @@ import java.util.List;
  * Time: 6:18
  */
 public class HistoryDataSource extends GwtRpcDataSource {
+
+    private Date from, to;
     private IPaymentServiceAsync service = IPaymentServiceAsync.Util.getInstance();
+
     @Override
 	public void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
-        service.getHistory(ApplicationManager.getInstance().getAccount().getUser(), TransactionType.PAYMENT, new AppCallback<List<TransactionDTO>>() {
+        service.getHistory(ApplicationManager.getInstance().getAccount().getUser(), from, to, new AppCallback<List<TransactionDTO>>() {
             @Override
             public void onSuccess(List<TransactionDTO> list) {
                 int size = 0;
@@ -41,6 +44,7 @@ public class HistoryDataSource extends GwtRpcDataSource {
                                 dto.getMoney().getAmount().divide(new BigDecimal(dto.getMoney().getCurrency().getFraction().multiply()))
                                         + " " + dto.getMoney().getCurrency().getName());
 						record.setAttribute("date", new Date(dto.getDate()));
+                        //todo add desc
 						listGridRecords[i] = record;
 					}
 					response.setData(listGridRecords);
@@ -49,5 +53,13 @@ public class HistoryDataSource extends GwtRpcDataSource {
 				processResponse(requestId, response);
 			}
         });
+    }
+
+    public void setFrom(Date from) {
+        this.from = from;
+    }
+
+    public void setTo(Date to) {
+        this.to = to;
     }
 }
