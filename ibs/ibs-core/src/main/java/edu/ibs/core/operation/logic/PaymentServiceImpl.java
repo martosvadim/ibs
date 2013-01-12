@@ -268,8 +268,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     public List<TransactionDTO> getHistory(UserDTO userDto, Date from, Date to) throws IbsServiceException {
         try {
-            //todo
-            List<Transaction> list = userLogic.getAllHistory(new User(userDto));
+            List<Transaction> list = userLogic.getAllHistory(new User(userDto), from, to);
             List<TransactionDTO> ret = new ArrayList<TransactionDTO>();
             for (Transaction t : list) {
                 ret.add(EntityTransformer.transformTransaction(t));

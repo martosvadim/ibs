@@ -49,7 +49,7 @@ public class CardRequestsGrid extends ListGrid {
 					}
 				}
 			}
-		});
+		});approveActionField.setCanFilter(false);
 		ListGridField declineActionField = Components.getIconGridField("decline", "Удалить заявку на карт-счет",
 				"toolbar/delete.png", new RecordClickHandler() {
 			@Override

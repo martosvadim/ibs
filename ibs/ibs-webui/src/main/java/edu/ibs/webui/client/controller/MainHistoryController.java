@@ -1,10 +1,12 @@
 package edu.ibs.webui.client.controller;
 
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.DateItem;
+import com.smartgwt.client.widgets.form.validator.CustomValidator;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import edu.ibs.common.dto.CardBookDTO;
@@ -23,6 +25,7 @@ public class MainHistoryController extends GenericWindowController {
 
     final DateItem fromDate = new DateItem();
     final DateItem toDate = new DateItem();
+    final DynamicForm form = new DynamicForm();
 
     public MainHistoryController() {
         getWindow().setTitle("Выписка по карте");
@@ -33,19 +36,22 @@ public class MainHistoryController extends GenericWindowController {
 			public void onClick(final ClickEvent clickEvent) {
                 Date from = fromDate.getValueAsDate();
                 Date to = toDate.getValueAsDate();
-                HistoryController controller = new HistoryController();
-                controller.setCardBookDTO(getCardBookDTO());
-                controller.getDataSource().setFrom(from);
-                controller.getDataSource().setFrom(to);
-                controller.getWindow().draw();
+                if (to.compareTo(from) >= 0) {
+                    HistoryController controller = new HistoryController();
+                    controller.setCardBookDTO(getCardBookDTO());
+                    controller.getDataSource().setFrom(from);
+                    controller.getDataSource().setFrom(to);
+                    controller.getWindow().draw();
+                } else {
+                    SC.warn("Дата, до которой выполнять фильтрацию, должна быть меньше начальной даты.");
+                }
             }
         });
         VLayout layoutForm = new VLayout();
 		layoutForm.setWidth100();
 		layoutForm.setHeight100();
 
-        final DynamicForm form = new DynamicForm();
-        form.setWidth(260);
+        form.setWidth(280);
         fromDate.setName("fromDate");
         fromDate.setTitle("От");
         toDate.setName("toDate");

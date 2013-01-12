@@ -150,6 +150,7 @@ public final class EntityTransformer {
             dto.setType(t.getType());
             dto.setFrom(transformCardBook(t.getFrom()));
             dto.setTo(transformCardBook(t.getTo()));
+            dto.setDesc(t.getDescription());
         }
         return dto;
     }

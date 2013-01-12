@@ -135,7 +135,7 @@ public class NavigationPane extends SectionStack {
 					CardRequestController controller = new CardRequestController();
 					controller.getWindow().draw();
 				} else {
-					SC.say("Заполните информацию о пользователе.");
+					SC.say("Заполните информацию<br/> о пользователе.");
 				}
 			}
 		});
@@ -199,7 +199,7 @@ public class NavigationPane extends SectionStack {
 					controller.setCardBookDTO(cardBookDTO);
 					controller.getWindow().draw();
 				} else {
-					SC.say("Выберите карту для совершения оплаты.");
+					SC.say("Выберите карту.");
 				}
 			}
 		});
@@ -230,7 +230,7 @@ public class NavigationPane extends SectionStack {
 					controller.setCardBookDTO(cardBookDTO);
 					controller.getWindow().draw();
 				} else {
-					SC.say("Выберите карту для совершения оплаты.");
+					SC.say("Выберите карту.");
 				}
 			}
 		});

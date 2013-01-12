@@ -14,8 +14,9 @@ public class TransactionDTO implements IBaseDTO {
 	private CardBookDTO from;
 	private MoneyDTO money;
     private long date;
+    private String desc;
 
-	public long getId() {
+    public long getId() {
 		return id;
 	}
 
@@ -77,5 +78,13 @@ public class TransactionDTO implements IBaseDTO {
 
     public void setDate(long date) {
         this.date = date;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public String getDesc() {
+        return desc;
     }
 }

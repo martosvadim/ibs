@@ -3,16 +3,13 @@ package edu.ibs.webui.client.controller;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import edu.ibs.common.dto.CardRequestDTO;
 import edu.ibs.common.dto.TransactionDTO;
-import edu.ibs.common.dto.TransactionType;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.ApplicationManager;
 import edu.ibs.webui.client.ds.GwtRpcDataSource;
 import edu.ibs.webui.client.utils.AppCallback;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +41,7 @@ public class HistoryDataSource extends GwtRpcDataSource {
                                 dto.getMoney().getAmount().divide(new BigDecimal(dto.getMoney().getCurrency().getFraction().multiply()))
                                         + " " + dto.getMoney().getCurrency().getName());
 						record.setAttribute("date", new Date(dto.getDate()));
-                        //todo add desc
+                        record.setAttribute("desc", dto.getDesc());
 						listGridRecords[i] = record;
 					}
 					response.setData(listGridRecords);
