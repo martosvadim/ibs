@@ -25,6 +25,7 @@ public class FillUserInfoController extends GenericWindowController {
 	public FillUserInfoController() {
 		getWindow().setTitle("Информация о пользователе");
 		final GenericController firstName = Components.getTextItem();
+
 		final GenericController lastName = Components.getTextItem();
 		final GenericController passportNumber = Components.getTextItem();
 		IButton createButton = new IButton("Сохранить");

@@ -21,11 +21,12 @@ public class CardRequestsGrid extends ListGrid {
 		super();
 		Components.prepareGrid(this);
 		this.setShowAllRecords(true);
+        this.setShowFilterEditor(true);
 
-		ListGridField idField = new ListGridField("id", "ID", 320);
-		ListGridField userField = new ListGridField("user", "Пользователь", 100);
-		ListGridField cardBookTypeField = new ListGridField("cardbooktype", "Тип", 100);
-		ListGridField bankBookIdField = new ListGridField("bankbookid", "Банковский счет", 100);
+		ListGridField idField = new ListGridField("id", "ID", 50);
+		ListGridField userField = new ListGridField("user", "Пользователь");
+		ListGridField cardBookTypeField = new ListGridField("cardbooktype", "Тип", 50);
+		ListGridField bankBookIdField = new ListGridField("bankbookid", "Банковский счет");
 		ListGridField approveActionField = Components.getIconGridField("approve", "Создать карт-счет",
 				"toolbar/assign.png", new RecordClickHandler() {
 			@Override
@@ -69,9 +70,8 @@ public class CardRequestsGrid extends ListGrid {
 				}
 			}
 		});
-		ListGridField emptyField = new ListGridField("emptyField", " ");
 		this.setFields(new ListGridField[]{idField, userField, cardBookTypeField, bankBookIdField, approveActionField,
-				declineActionField, emptyField});
+				declineActionField});
 		this.setDataSource(new CardRequestDataSource());
 	}
 

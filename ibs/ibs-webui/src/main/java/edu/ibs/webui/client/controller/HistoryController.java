@@ -18,6 +18,7 @@ public class HistoryController extends GenericWindowController {
     private CardBookDTO cardBookDto;
 
     public HistoryController() {
+        getWindow().setCanDrag(true);
         getWindow().setTitle("Выписка по карте");
         getWindow().setWidth100();
         getWindow().setHeight100();
