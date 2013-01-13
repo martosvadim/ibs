@@ -81,14 +81,12 @@ public class MakeTransferController extends GenericWindowController {
                     }
                     for (ProviderField field : dto.getFieldList()) {
                         GenericController controller = Components.getTextItem();
-                        Canvas providerFieldView = Components.addTitle(field.toString(), controller.getView());
+                        Canvas providerFieldView = Components.addTitle(getProviderFieldTitle(field), controller.getView());
                         providerFieldsLayout.addMember(providerFieldView);
                         fieldsMap.put(field, controller);
                         providerFieldViews.add(providerFieldView);
                     }
-//                    if (providerFieldsLayout.getParent() != null) {
-//                        ((Canvas) providerFieldsLayout.getParent()).redraw();
-//                    }
+
                     providerFieldsLayout.redraw();
                 }
 
@@ -120,7 +118,7 @@ public class MakeTransferController extends GenericWindowController {
                                 }
 
                                 IPaymentServiceAsync.Util.getInstance().pay(getCardBookDTO(), reciepientId, amountFloat,
-                                        TransactionType.PAYMENT, new AppCallback<Void>() {
+                                        TransactionType.PAYMENT, description, new AppCallback<Void>() {
                                             @Override
                                             public void onFailure(Throwable t) {
                                                 super.onFailure(t);
@@ -169,6 +167,23 @@ public class MakeTransferController extends GenericWindowController {
 
 		getWindow().addItem(view);
 	}
+
+    private String getProviderFieldTitle(ProviderField field) {
+        switch (field) {
+            case BOOK:
+                return "Счёт";
+            case PHONE:
+                return "№ телефона";
+            case ADDRESS:
+                return "Адрес";
+            case NAME:
+                return "Имя";
+            case PASSPORT:
+                return "№ пасспорта";
+            default:
+                return "";
+        }
+    }
 
     private boolean validateFields() {
         for (ProviderField field : fieldsMap.keySet()) {

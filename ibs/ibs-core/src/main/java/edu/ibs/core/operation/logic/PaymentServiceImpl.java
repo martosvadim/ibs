@@ -50,13 +50,17 @@ public class PaymentServiceImpl implements IPaymentService {
 		return dto;
 	}
 
+    	@Override
+	public void pay(CardBookDTO from, String toId, Float amount, TransactionType ttype) throws IbsServiceException {
+        pay(from, toId, amount, ttype, null);
+    }
+
 	@Override
 	public void pay(CardBookDTO from, String toId, Float amount, TransactionType ttype, String desc) throws IbsServiceException {
 
 		try {
 			Money money = parseMoney(amount, new Currency(from.getBankBook().getCurrency()));
-			//todo fill transaction description here
-			userLogic.pay(new CardBook(from), Long.parseLong(toId), money, ttype, null);
+			userLogic.pay(new CardBook(from), Long.parseLong(toId), money, ttype, desc);
 		} catch (FreezedException e) {
 			throw new IbsServiceException("Счёт заморожен.");
 		} catch (NotEnoughMoneyException e) {

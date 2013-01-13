@@ -17,6 +17,7 @@ import java.util.List;
 @RemoteServiceRelativePath("pay.rpc")
 public interface IPaymentService extends RemoteService {
 	BankBookDTO createBankBook(UserDTO userDTO, CurrencyDTO currencyDTO) throws IbsServiceException;
+    void pay(CardBookDTO from, String toId, Float money, TransactionType ttype) throws IbsServiceException;
 	void pay(CardBookDTO from, String toId, Float money, TransactionType ttype, String desc) throws IbsServiceException;
     List<CardBookDTO> getCardBooks(UserDTO user) throws IbsServiceException;
 	List<CurrencyDTO> getCurrencies() throws IbsServiceException;
