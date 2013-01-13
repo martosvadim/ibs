@@ -37,9 +37,9 @@ public class CommonServiceTest {
 
 	@Before
 	public void setUp() {
-		u1 = new User("ТестовыйА", "ПользовательА", "MP3452165");
+		u1 = new User("Тестовыйа", "Пользовательа", "MP3452165");
 		controller.insert(u1);
-		u2 = new User("ТестовыйБ", "ПользовательБ", "MP5125634");
+		u2 = new User("Тестовыйб", "Пользовательб", "MP5125634");
 		controller.insert(u2);
 
 		acc1 = new Account("test1@gmail.com", "test1", AccountRole.USER);
@@ -146,7 +146,7 @@ public class CommonServiceTest {
 		try {
 			acc = service.register(email, pass);
 			assertNull(acc.getUser());
-			u = new User("ТестовыйС", "ПользовательС", "AB4356432");
+			u = new User("Тестовыйс", "Пользовательс", "AB4356432");
 			acc.setUser(u);
 			service.update(acc);
 			Account a1 = service.login(email, pass);
