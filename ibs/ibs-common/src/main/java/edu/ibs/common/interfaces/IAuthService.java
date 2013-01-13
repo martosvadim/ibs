@@ -30,6 +30,6 @@ public interface IAuthService extends RemoteService {
 
 	UserDTO getUserByPassport(String passportNumber) throws IbsServiceException;
 	
-	void createProvider(String providerName, String bookDescription, String currency,
-                        List<ProviderField> providerFields) throws IbsServiceException;
+	void createProvider(String providerName, String bookDescription, List<ProviderField> providerFields)
+            throws IbsServiceException;
 }
