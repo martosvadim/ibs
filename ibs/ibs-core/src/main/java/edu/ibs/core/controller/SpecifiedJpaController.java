@@ -79,6 +79,10 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 				em.getTransaction().rollback();
 				throw new FreezedException(String.format("Карт-счет %s заморожен", to));
 			} else if (from.getBankBook().isFreezed()) {
+				em.getTransaction().rollback();
+				throw new FreezedException(String.format("Банк-счет %s заморожен", from.getBankBook()));
+			} else if (to.getBankBook().isFreezed()) {
+				em.getTransaction().rollback();
 				throw new FreezedException(String.format("Банк-счет %s заморожен", to.getBankBook()));
 			} else {
 				MoneyEntity fromEntity = forTypeOf(from, em);
@@ -402,6 +406,11 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 	}
 
 	public void addMoney(BankBook bankBook, Money money) throws IllegalArgumentException, FreezedException {
+		if (bankBook == null) {
+			throw new IllegalArgumentException("Банковский счет не существует");
+		} else if (money == null) {
+			throw new IllegalArgumentException("Денежные средства для оплаты не введены");
+		}
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
@@ -409,13 +418,13 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 			bankBook = em.find(bankBook.getClass(), bankBook.getId(), LockModeType.PESSIMISTIC_WRITE);
 			if (bankBook == null) {
 				em.getTransaction().rollback();
-				throw new IllegalArgumentException("BankBook with does not exists");
+				throw new IllegalArgumentException("Банковский счет не существует");
 			} else if (em.find(bankBook.getCurrency().getClass(), bankBook.getCurrency().getId()) == null) {
 				em.getTransaction().rollback();
-				throw new IllegalArgumentException("Currency with does not exists");
+				throw new IllegalArgumentException("Данной валюты не существует");
 			} else if (bankBook.isFreezed()) {
 				em.getTransaction().rollback();
-				throw new FreezedException(String.format("BankBook %s is freezed", bankBook));
+				throw new FreezedException(String.format("Банк-счет %s заморожен", bankBook));
 			} else {
 				bankBook.add(money);
 				em.getTransaction().commit();
