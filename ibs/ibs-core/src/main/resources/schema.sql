@@ -7,7 +7,7 @@ create table User
 	id bigint primary key auto_increment,
 	passportNumber varchar(255) unique not null,
 	passportScan blob,
-	firstName varchar(255),
+	firstName varchar(255) not null,
 	lastName varchar(255) not null,
 	freezed boolean not null default 0,
 	address varchar(255),

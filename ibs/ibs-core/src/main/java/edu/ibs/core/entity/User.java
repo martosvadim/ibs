@@ -97,6 +97,7 @@ public class User implements Serializable, AbstractEntity {
 		setPhone3(dto.getPhone3());
 		setPassportScan(dto.getPassportScan());
 		setZipCode(dto.getZipCode());
+		this.freezed = dto.isFreezed();
 		this.id = dto.getId();
 	}
 
@@ -132,6 +133,15 @@ public class User implements Serializable, AbstractEntity {
 		return freezed;
 	}
 
+	public void freeze() {
+		this.freezed = true;
+	}
+
+	public void unfreeze() {
+		this.freezed = false;
+	}
+
+	@Override
 	public long getId() {
 		return id;
 	}

@@ -59,6 +59,10 @@ public interface AdminOperations extends CommonOperations {
 
 	public void unfreeze(BankBook book);
 
+	public void freeze(User user);
+
+	public void unfreeze(User user);
+
 	public void update(User user);
 
 	public Provider createProvider(String company, String bookDescription, Currency currency, ProviderField... fields);

@@ -59,6 +59,7 @@ public class BankBook implements Serializable, AbstractEntity, MoneyEntity {
 
 	public BankBook(BankBookDTO bankBookDTO) {
 		this(new User(bankBookDTO.getOwner()), new Money(0, new Currency(bankBookDTO.getCurrency())));
+		this.freezed = bankBookDTO.isFreezed();
 		this.id = bankBookDTO.getId();
 	}
 

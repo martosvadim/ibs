@@ -70,6 +70,7 @@ public class CardBook implements Serializable, AbstractEntity {
 
 	public CardBook(CardBookDTO from) {
 		this(new BankBook(from.getBankBook()));
+		this.freezed = from.isFreezed();
 		this.id = from.getId();
 	}
 

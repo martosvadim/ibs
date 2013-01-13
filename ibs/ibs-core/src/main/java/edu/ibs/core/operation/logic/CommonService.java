@@ -399,6 +399,18 @@ public final class CommonService implements UserOperations, AdminOperations {
 	}
 
 	@Override
+	public void freeze(User user) {
+		user.freeze();
+		dataSource.update(user);
+	}
+
+	@Override
+	public void unfreeze(User user) {
+		user.unfreeze();
+		dataSource.update(user);
+	}
+
+	@Override
 	public Autopay createAutopay(CardBook from, CardBook to, Money money, long period) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
