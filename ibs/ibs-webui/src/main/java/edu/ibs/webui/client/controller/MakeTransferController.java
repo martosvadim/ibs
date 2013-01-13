@@ -113,7 +113,8 @@ public class MakeTransferController extends GenericWindowController {
 
 								String description = "";
 								for (ProviderField field : fieldsMap.keySet()) {
-									description += String.format("%s: %s; ", field.toString(), fieldsMap.get(field).unbind());;
+									String str = field.toString() + ": " + fieldsMap.get(field).unbind() + "; ";
+									description += str;
 								}
 
 								IPaymentServiceAsync.Util.getInstance().pay(getCardBookDTO(), reciepientId, amountFloat,
