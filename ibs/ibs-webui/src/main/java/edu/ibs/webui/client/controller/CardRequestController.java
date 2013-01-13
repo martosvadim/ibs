@@ -1,7 +1,9 @@
 package edu.ibs.webui.client.controller;
 
 import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -15,8 +17,10 @@ import edu.ibs.webui.client.ApplicationManager;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: EgoshinME
@@ -28,8 +32,26 @@ public class CardRequestController extends GenericWindowController {
     private GenericController bankBookControl = Components.getComboBoxControll();
     private GenericController cardTypeControl = Components.getComboBoxControll();
 
+    private VLayout bankBookInfoLayout = new VLayout();
+    private Map<String, BankBookDTO> bankBookMap = new HashMap<String, BankBookDTO>();
+
 	public CardRequestController() {
 		getWindow().setTitle("Заявка на карт-счёт");
+
+        bankBookControl.addOnChange(new IAction() {
+            @Override
+            public void execute(Object data) {
+                String bankBookIdTxt = ((VocDTO<String, String>) bankBookControl.unbind()).getId();
+                BankBookDTO dto = bankBookMap.get(bankBookIdTxt);
+                bankBookInfoLayout.setVisible(true);
+                for (Canvas c : bankBookInfoLayout.getChildren()) {
+                    bankBookInfoLayout.removeChild(c);
+                }
+                bankBookInfoLayout.addMember(Components.addTitle("Валюта", new Label(dto.getCurrency().getName())));
+                bankBookInfoLayout.addMember(Components.addTitle("Баланс", new Label(dto.getBalance())));
+                bankBookInfoLayout.redraw();
+            }
+        });
 
         UserDTO userDTO = ApplicationManager.getInstance().getAccount().getUser();
         if (userDTO != null) {
@@ -39,6 +61,7 @@ public class CardRequestController extends GenericWindowController {
                     if (bankBookDTOs != null && bankBookDTOs.size() > 0) {
                         List<VocDTO<String, String>> bindList = new LinkedList<VocDTO<String, String>>();
                         for (BankBookDTO dto : bankBookDTOs) {
+                            bankBookMap.put(String.valueOf(dto.getId()), dto);
                             VocDTO<String, String> vocDTO = new VocDTO<String, String>(
                                     String.valueOf(dto.getId()), String.valueOf(dto.getId()));
                             bindList.add(vocDTO);
@@ -109,6 +132,8 @@ public class CardRequestController extends GenericWindowController {
 
 		layoutForm.addMember(Components.addTitle("№ банковского счёта", bankBookControl.getView()));
 		layoutForm.addMember(Components.addTitle("Тип карты", cardTypeControl.getView()));
+        layoutForm.addMember(bankBookInfoLayout);
+        bankBookInfoLayout.setVisible(false);
 
 		HLayout buttons = new HLayout();
 		buttons.addMember(createButton);
