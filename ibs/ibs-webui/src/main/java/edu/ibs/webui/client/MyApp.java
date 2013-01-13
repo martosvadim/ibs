@@ -347,11 +347,11 @@ public class MyApp implements EntryPoint {
 
 			VLayout links = new VLayout();
 			links.setWidth("20%");
-			links.setMargin(10);
 			final String adminLinkStyleName = "label-link-admin";
 
 			Label addUser = new Label("Добавить пользователя");
 			addUser.setStyleName(adminLinkStyleName);
+            addUser.setHeight(60);
 			final ClickHandler addUserClickHandler = new ClickHandler() {
 
 				@Override
@@ -365,6 +365,7 @@ public class MyApp implements EntryPoint {
 
 			Label editUser = new Label("Редактировать данные пользователя");
 			editUser.setStyleName(adminLinkStyleName);
+            editUser.setHeight(60);
 			final ClickHandler editUserClickHandler = new ClickHandler() {
 
 				@Override
@@ -376,12 +377,9 @@ public class MyApp implements EntryPoint {
 			editUser.addClickHandler(editUserClickHandler);
 			links.addMember(editUser);
 
-//			Label deleteUser = new Label("Удалить пользователя");
-//			deleteUser.setStyleName(adminLinkStyleName);
-//			links.addMember(deleteUser);
-
 			Label createBankBook = new Label("Создать банковский счёт");
 			createBankBook.setStyleName(adminLinkStyleName);
+            createBankBook.setHeight(60);
 			final ClickHandler createBankBookClickHandler = new ClickHandler() {
 
 				@Override
@@ -395,6 +393,7 @@ public class MyApp implements EntryPoint {
 
 			Label addMoney = new Label("Пополнить счёт");
 			addMoney.setStyleName(adminLinkStyleName);
+            addMoney.setHeight(60);
 			final ClickHandler addMoneyClickHandler = new ClickHandler() {
 
 				@Override
@@ -409,6 +408,7 @@ public class MyApp implements EntryPoint {
 
             Label addServiceProvider = new Label("Зарегистрировать нового поставщика услуг");
             addServiceProvider.setStyleName(adminLinkStyleName);
+            addServiceProvider.setHeight(60);
             final ClickHandler addServiceProviderClickHandler = new ClickHandler() {
 
                 @Override
@@ -423,6 +423,7 @@ public class MyApp implements EntryPoint {
 
 			Label refreshCurrencies = new Label("Обновить курсы валют");
 			refreshCurrencies.setStyleName(adminLinkStyleName);
+            refreshCurrencies.setHeight(60);
 			final ClickHandler rcCH = new ClickHandler() {
 
 				@Override

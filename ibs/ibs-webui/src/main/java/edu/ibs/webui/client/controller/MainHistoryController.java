@@ -37,6 +37,7 @@ public class MainHistoryController extends GenericWindowController {
                 Date from = fromDate.getValueAsDate();
                 Date to = toDate.getValueAsDate();
                 if (to.compareTo(from) >= 0) {
+                    getWindow().hide();
                     HistoryController controller = new HistoryController();
                     controller.setCardBookDTO(getCardBookDTO());
                     controller.getDataSource().setFrom(from);

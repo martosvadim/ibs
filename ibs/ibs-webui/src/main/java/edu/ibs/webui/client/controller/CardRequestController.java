@@ -47,7 +47,6 @@ public class CardRequestController extends GenericWindowController {
                 for (Canvas c : bankBookInfoLayout.getChildren()) {
                     bankBookInfoLayout.removeChild(c);
                 }
-                bankBookInfoLayout.addMember(Components.addTitle("Валюта", new Label(dto.getCurrency().getName())));
                 bankBookInfoLayout.addMember(Components.addTitle("Баланс", new Label(dto.getBalance())));
                 bankBookInfoLayout.redraw();
             }
