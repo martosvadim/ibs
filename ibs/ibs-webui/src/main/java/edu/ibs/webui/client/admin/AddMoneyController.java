@@ -6,6 +6,8 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import edu.ibs.common.dto.BankBookDTO;
@@ -69,6 +71,9 @@ public class AddMoneyController extends GenericWindowController {
 							public void onSuccess(BankBookDTO bankBookDTO) {
 								checkBtn.setDisabled(false);
 								if (bankBookDTO != null && bankBookDTO.getId() > 0) {
+                                    DynamicForm form = ((DynamicForm)amountControl.getView());
+                                    ((TextItem) form.getFields()[0]).setShowHintInField(true);
+                                    form.getFields()[0].setHint(Components.getCurrencyHint(bankBookDTO.getCurrency()));
 									setBankBookDTO(bankBookDTO);
 									nextBtn.setDisabled(false);
 									checked = true;

@@ -2,6 +2,8 @@ package edu.ibs.webui.client.controller;
 
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import edu.ibs.common.dto.CardBookDTO;
@@ -120,6 +122,9 @@ public class MakeTransferController extends GenericWindowController {
 
 	public void setCardBookDTO(CardBookDTO cardBookDTO) {
 		this.cardBookDTO = cardBookDTO;
+        DynamicForm form = ((DynamicForm)amount.getView());
+        ((TextItem) form.getFields()[0]).setShowHintInField(true);
+        form.getFields()[0].setHint(Components.getCurrencyHint(cardBookDTO.getBankBook().getCurrency()));
 	}
 
     public IAction<Object> getCloseAction() {
