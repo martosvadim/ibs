@@ -3,11 +3,10 @@ package edu.ibs.common.dto;
 import edu.ibs.common.enums.CardBookType;
 
 /**
- * User: EgoshinME
- * Date: 17.12.12
- * Time: 5:19
+ * User: EgoshinME Date: 17.12.12 Time: 5:19
  */
 public class CardBookDTO implements IBaseDTO {
+
 	private long id;
 	private CardBookType type;
 	private long dateExpire;
@@ -70,5 +69,10 @@ public class CardBookDTO implements IBaseDTO {
 
 	public void setCredit(CreditDTO credit) {
 		this.credit = credit;
+	}
+
+	@Override
+	public String toString() {
+		return "Карт-счет № " + id;
 	}
 }

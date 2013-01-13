@@ -138,13 +138,13 @@ public class SpecifiedJpaControllerTest {
 			List<Transaction> transactions = controller.getAllHistory(user);
 			assertNotNull(transactions);
 			assertEquals(1, transactions.size());
-			transactions = controller.getAllHistory(user, d1, d2);
+			transactions = controller.getAllHistory(user, to, d1, d2);
 			assertNotNull(transactions);
 			assertEquals(1, transactions.size());
-			transactions = controller.getAllHistory(user, new Date(0L), d1);
+			transactions = controller.getAllHistory(user, to, new Date(0L), d1);
 			assertNotNull(transactions);
 			assertEquals(0, transactions.size());
-			transactions = controller.getAllHistory(user, d2, d1);
+			transactions = controller.getAllHistory(user, to, d2, d1);
 			assertNotNull(transactions);
 			assertEquals(0, transactions.size());
 		} catch (IllegalArgumentException ex) {

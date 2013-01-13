@@ -274,7 +274,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	public List<Transaction> getAllHistory(User owner, Date from, Date to) {
+	public List<Transaction> getAllHistory(User owner, CardBook card, Date from, Date to) {
 		EntityManager em = null;
 		try {
 			em = createEntityManager();
@@ -286,6 +286,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 			Path<Long> date = transaction.get("date");
 			Predicate where = builder.and(
 					builder.or(builder.equal(fromCB.get("owner"), owner), builder.equal(toCB.get("owner"), owner)),
+					builder.equal(fromCB, card),
 					builder.ge(date, from.getTime()),
 					builder.le(date, to.getTime()));
 			criteria.select(transaction).where(where);

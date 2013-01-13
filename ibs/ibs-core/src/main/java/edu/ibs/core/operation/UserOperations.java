@@ -49,7 +49,7 @@ public interface UserOperations extends CommonOperations {
 
 	public List<Transaction> getAllHistory(User user);
 
-	public List<Transaction> getAllHistory(User user, Date from, Date to);
+	public List<Transaction> getAllHistory(User user, CardBook card, Date from, Date to);
 
 	public void delete(SavedPayment payment);
 
