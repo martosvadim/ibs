@@ -401,6 +401,21 @@ public class MyApp implements EntryPoint {
 			addMoney.addClickHandler(addMoneyClickHandler);
 			links.addMember(addMoney);
 
+
+            Label addServiceProvider = new Label("Зарегистрировать нового поставщика услуг");
+            addServiceProvider.setStyleName(adminLinkStyleName);
+            final ClickHandler addServiceProviderClickHandler = new ClickHandler() {
+
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    AddServiceProviderController controller = new AddServiceProviderController();
+                    controller.getWindow().draw();
+                }
+            };
+            addServiceProvider.addClickHandler(addServiceProviderClickHandler);
+            links.addMember(addServiceProvider);
+
+
 			Label refreshCurrencies = new Label("Обновить курсы валют");
 			refreshCurrencies.setStyleName(adminLinkStyleName);
 			final ClickHandler rcCH = new ClickHandler() {
