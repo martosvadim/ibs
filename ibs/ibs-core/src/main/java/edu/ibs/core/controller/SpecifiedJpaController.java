@@ -78,6 +78,8 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 			} else if (to.isFreezed()) {
 				em.getTransaction().rollback();
 				throw new FreezedException(String.format("Карт-счет %s заморожен", to));
+			} else if (from.getBankBook().isFreezed()) {
+				throw new FreezedException(String.format("Банк-счет %s заморожен", to.getBankBook()));
 			} else {
 				MoneyEntity fromEntity = forTypeOf(from, em);
 				MoneyEntity toEntity = forTypeOf(to, em);
@@ -731,6 +733,23 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 			}
 			em.getTransaction().commit();
 			return provider;
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
+	public boolean isBookOfProvider(CardBook book) {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Provider> query = cb.createQuery(Provider.class);
+			Root<Provider> provider = query.from(Provider.class);
+			Expression<Long> bookID = provider.get("card");
+			query.select(provider).where(cb.equal(bookID, book.getId()));
+			return !em.createQuery(query).setMaxResults(1).getResultList().isEmpty();
 		} finally {
 			if (em != null) {
 				em.close();

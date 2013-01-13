@@ -134,6 +134,8 @@ public final class CommonService implements UserOperations, AdminOperations {
 		CardBook to = dataSource.select(CardBook.class, toCardBookID);
 		if (to == null) {
 			throw new IllegalArgumentException(String.format("Карт-счета с номером %s не существует", toCardBookID));
+		} else if (dataSource.isBookOfProvider(to) && type.equals(TransactionType.TRANSFER)) {
+			throw new IllegalArgumentException(String.format("Карт-счет %s является счетом поставщика услуг, невозможно выполнить перевод", to));
 		}
 		return dataSource.pay(from, to, money, type, description);
 	}
@@ -143,6 +145,9 @@ public final class CommonService implements UserOperations, AdminOperations {
 		CardBook from = savedPayment.getTransaction().getFrom();
 		CardBook to = savedPayment.getTransaction().getTo();
 		TransactionType type = savedPayment.getTransaction().getType();
+		if (dataSource.isBookOfProvider(to) && type.equals(TransactionType.TRANSFER)) {
+			throw new IllegalArgumentException(String.format("Карт-счет %s является счетом поставщика услуг, невозможно выполнить перевод", to));
+		}
 		if (!dataSource.exist(money.currency().getClass(), money.currency().getId())) {
 			throw new IllegalArgumentException("Данной валюты не существует");
 		}

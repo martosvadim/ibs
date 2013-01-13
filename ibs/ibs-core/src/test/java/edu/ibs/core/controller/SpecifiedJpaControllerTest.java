@@ -159,4 +159,19 @@ public class SpecifiedJpaControllerTest {
 			}
 		}
 	}
+
+	@Test
+	public void isBookOfProviderTest() {
+		Provider p = null;
+		try {
+			p = new Provider(from);
+			controller.insert(p);
+			assertFalse(controller.isBookOfProvider(to));
+			assertTrue(controller.isBookOfProvider(from));
+		} finally {
+			if (p != null && p.getId() > 0) {
+				controller.delete(p.getClass(), p.getId());
+			}
+		}
+	}
 }
