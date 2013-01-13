@@ -169,33 +169,33 @@ public class MakeTransferController extends GenericWindowController {
 		getWindow().addItem(view);
 	}
 
-	private String getProviderFieldTitle(ProviderField field) {
-		switch (field) {
-			case BOOK:
-				return "Счёт";
-			case PHONE:
-				return "№ телефона";
-			case ADDRESS:
-				return "Адрес";
-			case NAME:
-				return "Имя";
-			case PASSPORT:
-				return "№ пасспорта";
-			default:
-				return "";
-		}
-	}
+    public static String getProviderFieldTitle(ProviderField field) {
+        switch (field) {
+            case BOOK:
+                return "Счёт";
+            case PHONE:
+                return "№ телефона";
+            case ADDRESS:
+                return "Адрес";
+            case NAME:
+                return "Имя";
+            case PASSPORT:
+                return "№ пасспорта";
+            default:
+                return "";
+        }
+    }
 
-	private boolean validateFields() {
-		for (ProviderField field : fieldsMap.keySet()) {
-			GenericController controller = fieldsMap.get(field);
-			if (!field.validate((String) controller.unbind())) {
-				SC.say(field.validPattern());
-				return false;
-			}
-		}
-		return true;
-	}
+    private boolean validateFields() {
+        for (ProviderField field : fieldsMap.keySet()) {
+            GenericController controller = fieldsMap.get(field);
+            if (!field.validate((String) controller.unbind())) {
+                SC.say(field.validPattern());
+                return false;
+            }
+        }
+        return true;
+    }
 
 	public CardBookDTO getCardBookDTO() {
 		return cardBookDTO;
