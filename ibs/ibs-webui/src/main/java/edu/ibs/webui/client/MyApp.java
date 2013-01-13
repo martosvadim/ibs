@@ -19,8 +19,10 @@ import com.smartgwt.client.widgets.layout.VStack;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import edu.ibs.common.dto.AccountDTO;
+import edu.ibs.common.dto.BankBookDTO;
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
+import edu.ibs.common.interfaces.IPaymentService;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.admin.*;
 import edu.ibs.webui.client.cards.CardRequestsGrid;
@@ -30,6 +32,8 @@ import edu.ibs.webui.client.controller.IAction;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 import edu.ibs.webui.client.utils.JS;
+
+import java.util.List;
 
 public class MyApp implements EntryPoint {
 
@@ -288,6 +292,12 @@ public class MyApp implements EntryPoint {
 		} else {
 			AccountDTO acc = ApplicationManager.getInstance().getAccount();
 			if (acc != null && acc.getUser() != null && acc.getUser().getId() > 0) {
+                IPaymentServiceAsync.Util.getInstance().getBankBooks(acc.getUser(), new AppCallback<List<BankBookDTO>>() {
+                    @Override
+                    public void onSuccess(List<BankBookDTO> bankBookDTOs) {
+                        ApplicationManager.getInstance().setBankBookDTOList(bankBookDTOs);
+                    }
+                });
 				return getMainLayout();
 			} else {
 				final FillUserInfoController controller = new FillUserInfoController();

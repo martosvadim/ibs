@@ -1,6 +1,9 @@
 package edu.ibs.webui.client;
 
 import edu.ibs.common.dto.AccountDTO;
+import edu.ibs.common.dto.BankBookDTO;
+
+import java.util.List;
 
 /**
  * User: Максим
@@ -10,6 +13,7 @@ import edu.ibs.common.dto.AccountDTO;
 public final class ApplicationManager {
     private static ApplicationManager instance;
     private AccountDTO account;
+    private List<BankBookDTO> bankBookDTOList;
 
     private ApplicationManager() {
 
@@ -28,5 +32,13 @@ public final class ApplicationManager {
 
     public void setAccount(final AccountDTO account) {
         this.account = account;
+    }
+
+    public List<BankBookDTO> getBankBookDTOList() {
+        return bankBookDTOList;
+    }
+
+    public void setBankBookDTOList(List<BankBookDTO> bankBookDTOList) {
+        this.bankBookDTOList = bankBookDTOList;
     }
 }

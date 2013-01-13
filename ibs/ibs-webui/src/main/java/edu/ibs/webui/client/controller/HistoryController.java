@@ -33,7 +33,7 @@ public class HistoryController extends GenericWindowController {
         whenF.setCellFormatter(new CellFormatter() {
             @Override
             public String format(Object arg0, ListGridRecord arg1, int arg2, int arg3) {
-                DateTimeFormat fmt = DateTimeFormat.getFormat("dd.MM.yyyy hh:mm");
+                DateTimeFormat fmt = DateTimeFormat.getFormat("dd.MM.yyyy HH:mm");
                 return fmt.format(arg1.getAttributeAsDate("date"));
             }
         });

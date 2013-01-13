@@ -27,12 +27,15 @@ import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 import edu.ibs.common.dto.AccountDTO;
+import edu.ibs.common.dto.BankBookDTO;
 import edu.ibs.common.dto.CardBookDTO;
 import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.controller.*;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
+
+import java.util.List;
 
 
 public class NavigationPane extends SectionStack {
@@ -43,8 +46,10 @@ public class NavigationPane extends SectionStack {
 	private VStack userInfoStack = new VStack();
 	private SectionStackSection userInfoSection = new SectionStackSection("Настройки");
 	private AccountView accountView;
+    private SectionStackSection section1;
+    private SectionStackSection section2;
 
-	public NavigationPane() {
+    public NavigationPane() {
         super();
         GWT.log("init NavigationPane()...", null);
         this.setWidth(WEST_WIDTH);
@@ -52,15 +57,14 @@ public class NavigationPane extends SectionStack {
         this.setShowExpandControls(false);
         this.setAnimateSections(true);
 
-        SectionStackSection section1 = new SectionStackSection("Платежи");
+        section1 = new SectionStackSection("Платежи");
         section1.setExpanded(true);
 		VStack stack1 = new VStack();
 		stack1.addMember(getAddPaymentLink());
         stack1.addMember(getAddTransferLink());
-//		stack1.addMember(getFindPaymentLink());
 		section1.setItems(stack1);
 
-        SectionStackSection section2 = new SectionStackSection("Карты");
+        section2 = new SectionStackSection("Карты");
         section2.setExpanded(true);
 		VStack stack2 = new VStack();
 		stack2.addMember(getAddCardLink());
@@ -72,12 +76,41 @@ public class NavigationPane extends SectionStack {
 		defineUserInfoStack();
 		userInfoSection.setItems(userInfoStack);
 
+        if (userHasBankBooks()) {
+            addSectionsForPayment();
+        } else {
+            UserDTO userDTO = ApplicationManager.getInstance().getAccount().getUser();
+            IPaymentServiceAsync.Util.getInstance().getBankBooks(userDTO, new AppCallback<List<BankBookDTO>>() {
+                @Override
+                public void onSuccess(List<BankBookDTO> bankBookDTOs) {
+                    ApplicationManager.getInstance().setBankBookDTOList(bankBookDTOs);
+                    if (userHasBankBooks()) {
+                        addSectionsForPayment();
+                    } else {
+                        addSectionsWithoutBankBook();
+                        SC.warn("Обратитесь к администратору для создания банковского счёта.");
+                    }
+                }
+
+
+
+            });
+        }
+    }
+
+    private void addSectionsWithoutBankBook() {
+        this.addSection(userInfoSection);
+        this.redraw();
+    }
+
+    private void addSectionsForPayment() {
         this.addSection(section1);
         this.addSection(section2);
         this.addSection(userInfoSection);
+        this.redraw();
     }
 
-	private void defineUserInfoStack() {
+    private void defineUserInfoStack() {
 
 		userInfoStack.removeMembers(userInfoStack.getMembers());
 
@@ -277,5 +310,10 @@ public class NavigationPane extends SectionStack {
 	public AccountView getAccountView() {
 		return accountView;
 	}
+
+    public boolean userHasBankBooks() {
+        List<BankBookDTO> list = ApplicationManager.getInstance().getBankBookDTOList();
+        return list != null && list.size() > 0;
+    }
 }
 
