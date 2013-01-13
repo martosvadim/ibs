@@ -41,11 +41,16 @@ public class CardsListGrid extends ListGrid {
         ListGridField balanceField = new ListGridField("bankbook.balance", "Остаток");
         ListGridField infoField = new ListGridField("date.expire", "Срок действия карты", 180);
         infoField.setType(ListGridFieldType.DATE);
+        infoField.setCanFilter(false);
         infoField.setCellFormatter(new CellFormatter() {
             @Override
             public String format(Object arg0, ListGridRecord arg1, int arg2, int arg3) {
-                DateTimeFormat fmt = DateTimeFormat.getFormat("dd.MM.yyyy hh:mm");
-                return fmt.format(arg1.getAttributeAsDate("date.expire"));
+                DateTimeFormat fmt = DateTimeFormat.getFormat("dd.MM.yyyy");
+                if (arg1.getAttributeAsDate("date.expire") != null) {
+                    return fmt.format(arg1.getAttributeAsDate("date.expire"));
+                } else {
+                    return "";
+                }
             }
         });
         this.setFields(new ListGridField[]{iconField, bankBookId, cardTypeField, cardNumberField, currencyField, infoField,

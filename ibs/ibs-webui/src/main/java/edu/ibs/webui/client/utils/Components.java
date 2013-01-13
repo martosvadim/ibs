@@ -18,6 +18,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.tree.TreeGridField;
+import edu.ibs.common.dto.CurrencyDTO;
 import edu.ibs.common.dto.VocDTO;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.controller.SelectController;
@@ -423,5 +424,19 @@ public class Components {
         window.setWidth(310);
         window.setHeight(200);
         return window;
+    }
+
+    public static String getCurrencyHint(final CurrencyDTO dto) {
+        String hint = "0";
+        if (dto != null && dto.getFraction() != null) {
+            int digits = (int) Math.log10(dto.getFraction().multiply());
+            if (digits > 0) {
+                hint += ".";
+                for (int i = 0; i < digits; i++) {
+                    hint += "0";
+                }
+            }
+        }
+        return hint;
     }
 }
