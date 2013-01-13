@@ -14,6 +14,7 @@ import edu.ibs.core.operation.UserOperations;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -270,7 +271,12 @@ public class PaymentServiceImpl implements IPaymentService {
 
 	public List<TransactionDTO> getHistory(UserDTO userDto, Date from, Date to) throws IbsServiceException {
 		try {
-			List<Transaction> list = userLogic.getAllHistory(new User(userDto), from, to);
+            Calendar c = Calendar.getInstance();
+            c.setTime(to);
+            c.set(Calendar.HOUR_OF_DAY, 23);
+            c.set(Calendar.MINUTE, 59);
+            c.set(Calendar.SECOND, 59);
+			List<Transaction> list = userLogic.getAllHistory(new User(userDto), from, c.getTime());
 			List<TransactionDTO> ret = new ArrayList<TransactionDTO>();
 			for (Transaction t : list) {
 				ret.add(EntityTransformer.transformTransaction(t));

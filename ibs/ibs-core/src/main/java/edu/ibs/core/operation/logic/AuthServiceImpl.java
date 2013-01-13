@@ -120,8 +120,7 @@ public class AuthServiceImpl implements IAuthService {
 				userLogic.update(acc);
 				userDTO = EntityTransformer.transformUser(acc.getUser());
 			} catch (IllegalArgumentException e) {
-				throw new IbsServiceException(
-						"Неверный номер паспорта. Должно быть заполнено 2 латинских буквы и 7 цифр без пробелов.");
+				throw new IbsServiceException(e.getLocalizedMessage());
 			} catch (Throwable e) {
 				throw new IbsServiceException("Не удалось заполнить информацию о пользователе.");
 			}
@@ -133,6 +132,8 @@ public class AuthServiceImpl implements IAuthService {
 	public UserDTO updateUser(UserDTO dto) throws IbsServiceException {
 		try {
 			adminLogic.update(new User(dto));
+        } catch (IllegalArgumentException e) {
+            throw new IbsServiceException(e.getLocalizedMessage());
 		} catch (Throwable e) {
 			throw new IbsServiceException("Не удалось обновить информацию о пользователе.");
 		}
