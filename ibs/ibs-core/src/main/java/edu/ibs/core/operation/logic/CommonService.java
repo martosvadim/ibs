@@ -484,4 +484,9 @@ public final class CommonService implements UserOperations, AdminOperations {
 		}
 		return dataSource.selectAll(clazz, to - from, from);
 	}
+
+	@Override
+	public <T extends AbstractEntity> int count(Class<T> clazz) {
+		return dataSource.count(clazz);
+	}
 }

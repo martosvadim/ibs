@@ -68,4 +68,6 @@ public interface AdminOperations extends CommonOperations {
 	public User getUserByPassport(String passportNumber);
 
 	public <T extends AbstractEntity> List<T> selectEntities(Class<T> clazz, int from, int to);
+
+	public <T extends AbstractEntity> int count(Class<T> clazz);
 }
