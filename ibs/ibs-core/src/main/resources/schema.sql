@@ -202,3 +202,8 @@ insert into CardBook(id, bankBookID, ownerID, type, pin) values(1, 1, 1, 'DEBIT'
 insert into CardBook(id, bankBookID, ownerID, type, pin) values(2, 2, 2, 'DEBIT', 1111);
 insert into CardBook(id, bankBookID, ownerID, type, pin) values(3, 3, 3, 'DEBIT', 1111);
 insert into CardBook(id, bankBookID, ownerID, type, pin) values(4, 4, 4, 'DEBIT', 1111);
+
+insert into Provider(id, cardBookID, field1) values(1, 1, 'BOOK');
+insert into Provider(id, cardBookID, field1) values(2, 2, 'PHONE');
+insert into Provider(id, cardBookID, field1) values(3, 3, 'PHONE');
+insert into Provider(id, cardBookID, field1) values(4, 4, 'BOOK');
