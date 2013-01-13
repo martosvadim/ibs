@@ -1,6 +1,7 @@
 package edu.ibs.webui.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.smartgwt.client.data.Criteria;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
@@ -21,10 +22,12 @@ import com.smartgwt.client.widgets.tab.TabSet;
 import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.dto.BankBookDTO;
 import edu.ibs.common.enums.AccountRole;
+import edu.ibs.common.enums.ProviderField;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.common.interfaces.IPaymentService;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.admin.*;
+import edu.ibs.webui.client.cards.CardRequestDataSource;
 import edu.ibs.webui.client.cards.CardRequestsGrid;
 import edu.ibs.webui.client.controller.FillUserInfoController;
 import edu.ibs.webui.client.controller.GenericController;
@@ -49,8 +52,10 @@ public class MyApp implements EntryPoint {
 	 */
 	private Canvas bg = new Canvas();
 	private CurrenciesGrid currenciesGrid = new CurrenciesGrid();
+    private HLayout searchByPasswordLayout;
+    private CardRequestsGrid cardRequestGrid = new CardRequestsGrid();
 
-	public void onModuleLoad() {
+    public void onModuleLoad() {
 
 		com.google.gwt.user.client.Window.enableScrolling(false);
 		com.google.gwt.user.client.Window.setMargin("0px");
@@ -451,7 +456,11 @@ public class MyApp implements EntryPoint {
 			topTabSet.setHeight100();
 
 			Tab tTab1 = new Tab("Заявки", "icons/16/contacts.png");
-			tTab1.setPane(new CardRequestsGrid());
+            VLayout pane1Layout = new VLayout();
+            pane1Layout.setMembersMargin(5);
+            pane1Layout.addMember(getSearchByPasswordLayout());
+            pane1Layout.addMember(cardRequestGrid);
+			tTab1.setPane(pane1Layout);
 
 			Tab tTab2 = new Tab("Счета", "icons/16/datamanagement.png");
 			tTab2.setPane(new BankBooksGrid());
@@ -473,6 +482,32 @@ public class MyApp implements EntryPoint {
 
 		return adminLayout;
 	}
+
+    private Canvas getSearchByPasswordLayout() {
+        if (searchByPasswordLayout == null) {
+            searchByPasswordLayout = new HLayout();
+            searchByPasswordLayout.setWidth("50%");
+            searchByPasswordLayout.setMembersMargin(5);
+            IButton searchBtn = new IButton("Поиск");
+            final GenericController searchText = Components.getTextItem();
+            searchBtn.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    String unbinded = (String) searchText.unbind();
+                    if (ProviderField.PASSPORT.validate(unbinded)) {
+                        ((CardRequestDataSource) cardRequestGrid.getDataSource()).setPasswordNumber(unbinded);
+                        cardRequestGrid.invalidateCache();
+                        cardRequestGrid.fetchData();
+                    } else {
+                        SC.say(ProviderField.PASSPORT.validPattern());
+                    }
+                }
+            });
+            searchByPasswordLayout.addMember(Components.addTitle("№ пасспорта", searchText.getView()));
+            searchByPasswordLayout.addMember(searchBtn);
+        }
+        return searchByPasswordLayout;
+    }
 
 	private Canvas getMainLayout() {
 		if (mainLayout == null) {
