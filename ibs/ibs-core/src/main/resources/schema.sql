@@ -102,11 +102,11 @@ create table Provider
 (
 	id bigint primary key auto_increment,
 	cardBookID bigint not null,
-	field1 enum('PHONE', 'NAME', 'ADDRESS', 'PASSPORT') default null,
-	field2 enum('PHONE', 'NAME', 'ADDRESS', 'PASSPORT') default null,
-	field3 enum('PHONE', 'NAME', 'ADDRESS', 'PASSPORT') default null,
-	field4 enum('PHONE', 'NAME', 'ADDRESS', 'PASSPORT') default null,
-	field5 enum('PHONE', 'NAME', 'ADDRESS', 'PASSPORT') default null,
+	field1 enum('PHONE', 'NAME', 'ADDRESS', 'PASSPORT', 'BOOK') default null,
+	field2 enum('PHONE', 'NAME', 'ADDRESS', 'PASSPORT', 'BOOK') default null,
+	field3 enum('PHONE', 'NAME', 'ADDRESS', 'PASSPORT', 'BOOK') default null,
+	field4 enum('PHONE', 'NAME', 'ADDRESS', 'PASSPORT', 'BOOK') default null,
+	field5 enum('PHONE', 'NAME', 'ADDRESS', 'PASSPORT', 'BOOK') default null,
 	INDEX cardBookIndex (cardBookID),
 	FOREIGN KEY (cardBookID) REFERENCES CardBook(id) on delete cascade on update cascade
 )engine InnoDB;

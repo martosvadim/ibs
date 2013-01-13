@@ -57,12 +57,12 @@ public class BankBook implements Serializable, AbstractEntity, MoneyEntity {
 		this(money, owner, false);
 	}
 
-    public BankBook(BankBookDTO bankBookDTO) {
-        this(new User(bankBookDTO.getOwner()), new Money(0, new Currency(bankBookDTO.getCurrency())));
-        this.id = bankBookDTO.getId();
-    }
+	public BankBook(BankBookDTO bankBookDTO) {
+		this(new User(bankBookDTO.getOwner()), new Money(0, new Currency(bankBookDTO.getCurrency())));
+		this.id = bankBookDTO.getId();
+	}
 
-    private void validateMoney() {
+	private void validateMoney() {
 		if (this.money == null) {
 			this.money = new Money(this.balance, this.currency);
 		}

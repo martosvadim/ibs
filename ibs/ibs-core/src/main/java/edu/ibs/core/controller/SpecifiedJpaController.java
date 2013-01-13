@@ -2,6 +2,7 @@ package edu.ibs.core.controller;
 
 import edu.ibs.common.dto.TransactionType;
 import edu.ibs.common.enums.CardBookType;
+import edu.ibs.common.enums.ProviderField;
 import edu.ibs.core.controller.exception.FreezedException;
 import edu.ibs.core.controller.exception.NotEnoughMoneyException;
 import edu.ibs.core.entity.*;
@@ -693,5 +694,37 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 			}
 		}
 		return transactions;
+	}
+
+	public Provider createProvider(String company, String bookDescription, Currency currency, ProviderField... fields) {
+		EntityManager em = null;
+		try {
+			em = createEntityManager();
+			em.getTransaction().begin();
+			Provider provider;
+			try {
+				User user = User.generateCompany(company);
+				em.persist(user);
+				em.flush();
+				BankBook bb = new BankBook(user, new Money(0L, currency));
+				bb.setDescription(bookDescription);
+				em.persist(bb);
+				em.flush();
+				CardBook cb = new CardBook(bb);
+				em.persist(cb);
+				em.flush();
+				provider = new Provider(cb, fields);
+				em.persist(provider);
+			} catch (RuntimeException e) {
+				em.getTransaction().rollback();
+				throw e;
+			}
+			em.getTransaction().commit();
+			return provider;
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
 	}
 }

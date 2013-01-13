@@ -63,5 +63,7 @@ public interface AdminOperations extends CommonOperations {
 
 	public Provider createProvider(String company, String bookDescription, Currency currency, ProviderField... fields);
 
+	public void deleteProvider(Provider provider);
+
 	public User getUserByPassport(String passportNumber);
 }

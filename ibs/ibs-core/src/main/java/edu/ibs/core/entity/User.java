@@ -80,6 +80,14 @@ public class User implements Serializable, AbstractEntity {
 		this.passportNumber = passportNumber;
 	}
 
+	public static User generateCompany(String company) {
+		User user = new User();
+		user.firstName = "-";
+		user.lastName = company;
+		user.passportNumber = company;
+		return user;
+	}
+
 	public User(UserDTO dto) throws IllegalArgumentException {
 		this(dto.getFirstName(), dto.getLastName(), dto.getPassportNumber());
 		setAddress(dto.getAddress());

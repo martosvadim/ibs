@@ -462,6 +462,11 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public Provider createProvider(String company, String bookDescription, Currency currency, ProviderField... fields) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return dataSource.createProvider(company, bookDescription, currency, fields);
+	}
+
+	@Override
+	public void deleteProvider(Provider provider) {
+		dataSource.delete(Provider.class, provider.getId());
 	}
 }
