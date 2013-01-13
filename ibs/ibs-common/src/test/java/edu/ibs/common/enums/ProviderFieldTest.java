@@ -53,6 +53,7 @@ public class ProviderFieldTest {
 		ProviderField name = ProviderField.NAME;
 		assertFalse(name.validate("Vadim"));
 		assertTrue(name.validate("Вадим"));
+		assertTrue(name.validate("Марто"));
 		assertTrue(name.validate("Мартос"));
 		assertFalse(name.validate("Вадим Мартос"));
 		assertTrue(name.validate("Вадим-Мартос"));

@@ -1,6 +1,7 @@
 package edu.ibs.core.entity;
 
 import edu.ibs.common.enums.ProviderField;
+import edu.ibs.common.exceptions.IbsServiceException;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "Provider")
 @XmlRootElement
 public class Provider implements Serializable, AbstractEntity {
-	
+
 	public static final int NUMBER_OF_FIELDS = 5;
 	private static final long serialVersionUID = 642421389802413412L;
 	@Id
@@ -48,10 +49,10 @@ public class Provider implements Serializable, AbstractEntity {
 	@Column(name = "field5", updatable = false)
 	@Enumerated(EnumType.STRING)
 	private ProviderField field5;
-	
+
 	public Provider() {
 	}
-	
+
 	public Provider(CardBook card, ProviderField... fields) {
 		this.card = card;
 		if (fields != null) {
@@ -77,7 +78,7 @@ public class Provider implements Serializable, AbstractEntity {
 			}
 		}
 	}
-	
+
 	public List<ProviderField> getFields() {
 		List<ProviderField> fields = new LinkedList<ProviderField>();
 		if (field1 != null) {
@@ -97,16 +98,16 @@ public class Provider implements Serializable, AbstractEntity {
 		}
 		return fields;
 	}
-	
+
 	public CardBook getCard() {
 		return card;
 	}
-	
+
 	@Override
 	public long getId() {
 		return id;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -121,14 +122,14 @@ public class Provider implements Serializable, AbstractEntity {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		int hash = 3;
 		hash = 59 * hash + (int) (this.id ^ (this.id >>> 32));
 		return hash;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Provider{" + "card=" + card + '}';

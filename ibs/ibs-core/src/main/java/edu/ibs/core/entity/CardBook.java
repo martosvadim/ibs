@@ -160,6 +160,6 @@ public class CardBook implements Serializable, AbstractEntity {
 	}
 
 	public static long generateExpireDate() {
-		return System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 365; //a year
+		return System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 365L; //a year
 	}
 }

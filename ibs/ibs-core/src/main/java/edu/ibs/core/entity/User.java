@@ -2,12 +2,11 @@ package edu.ibs.core.entity;
 
 import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.enums.ProviderField;
-
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
+import static edu.ibs.common.enums.ProviderField.*;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.regex.Pattern;
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -18,8 +17,10 @@ import java.util.regex.Pattern;
 @XmlRootElement
 public class User implements Serializable, AbstractEntity {
 
-	public static final String PASSPORT_NUMBER_REGEXP = "^[A-Z]{2}[0-9]{7}$";
-	private static final Pattern PASSPORT_NUMBER_PATTERN = Pattern.compile(PASSPORT_NUMBER_REGEXP);
+//	private static final Pattern PASSPORT_NUMBER_PATTERN = Pattern.compile(PASSPORT_NUMBER_REGEXP);
+//	private static final Pattern PHONE_STRING_PATTERN = Pattern.compile(PHONE_STRING_REGEXP);
+//	private static final Pattern NAME_STRING_PATTERN = Pattern.compile(NAME_STRING_REGEXP);
+//	private static final Pattern ADDRESS_STRING_PATTERN = Pattern.compile(ADDRESS_STRING_REGEXP);
 	private static final long serialVersionUID = 432949376663998234L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,20 +67,20 @@ public class User implements Serializable, AbstractEntity {
 
 	public User(String firstName, String lastName, String passportNumber) throws IllegalArgumentException {
 		if (!User.validatePassportNumber(passportNumber)) {
-			throw new IllegalArgumentException(String.format("Invalid passport number %s, must be: two latin letters in upper case and 7 numbers without any spaces", passportNumber));
+			throw new IllegalArgumentException(String.format("Невалидный ноер паспорта %s, %s", passportNumber, VALID_PASSPORT_MSG));
 		}
 		if (!User.validateName(firstName)) {
-			throw new IllegalArgumentException(String.format("Invalid first name %s, can contains cyrillic symbols separated by '-' once only", firstName));
+			throw new IllegalArgumentException(String.format("Невалидное имя %s, %s", firstName, VALID_NAME_MSG));
 		}
 		if (!User.validateName(lastName)) {
-			throw new IllegalArgumentException(String.format("Invalid last name %s, can contains cyrillic symbols separated by '-' once only", lastName));
+			throw new IllegalArgumentException(String.format("Невалидное имя %s, %s", lastName, VALID_NAME_MSG));
 		}
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.passportNumber = passportNumber;
 	}
 
-	public User(UserDTO dto) {
+	public User(UserDTO dto) throws IllegalArgumentException {
 		this(dto.getFirstName(), dto.getLastName(), dto.getPassportNumber());
 		setAddress(dto.getAddress());
 		setDescription(dto.getDescription());
@@ -92,10 +93,7 @@ public class User implements Serializable, AbstractEntity {
 	}
 
 	public static boolean validatePassportNumber(String passportNumber) {
-		if (passportNumber == null) {
-			return false;
-		}
-		return PASSPORT_NUMBER_PATTERN.matcher(passportNumber).matches();
+		return ProviderField.PASSPORT.validate(passportNumber);
 	}
 
 	public static boolean validateAddress(String address) {
@@ -154,15 +152,14 @@ public class User implements Serializable, AbstractEntity {
 		return phone3;
 	}
 
-	public static long getSerialVersionUID() {
-		return serialVersionUID;
-	}
-
 	public Integer getZipCode() {
 		return zipCode;
 	}
 
 	public void setAddress(String address) {
+		if (!User.validateAddress(address)) {
+			throw new IllegalArgumentException(String.format("Невалидный адрес %s, %s", address, VALID_ADDRESS_MSG));
+		}
 		this.address = address;
 	}
 
@@ -174,16 +171,25 @@ public class User implements Serializable, AbstractEntity {
 		this.passportScan = passportScan;
 	}
 
-	public void setPhone1(BigInteger phone1) {
-		this.phone1 = phone1;
+	public void setPhone1(BigInteger phone) {
+		if (phone == null || !User.validatePhone(phone.toString())) {
+			throw new IllegalArgumentException(String.format("Невалидный номер телефона %s, %s", phone, VALID_PHONE_MSG));
+		}
+		this.phone1 = phone;
 	}
 
-	public void setPhone2(BigInteger phone2) {
-		this.phone2 = phone2;
+	public void setPhone2(BigInteger phone) {
+		if (phone == null || !User.validatePhone(phone.toString())) {
+			throw new IllegalArgumentException(String.format("Невалидный номер телефона %s, %s", phone, VALID_PHONE_MSG));
+		}
+		this.phone2 = phone;
 	}
 
-	public void setPhone3(BigInteger phone3) {
-		this.phone3 = phone3;
+	public void setPhone3(BigInteger phone) {
+		if (phone == null || !User.validatePhone(phone.toString())) {
+			throw new IllegalArgumentException(String.format("Невалидный номер телефона %s, %s", phone, VALID_PHONE_MSG));
+		}
+		this.phone3 = phone;
 	}
 
 	public void setZipCode(Integer zipCode) {

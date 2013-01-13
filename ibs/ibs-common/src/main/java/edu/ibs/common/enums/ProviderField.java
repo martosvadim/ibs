@@ -1,6 +1,6 @@
 package edu.ibs.common.enums;
 
-import java.util.regex.Pattern;
+import com.google.gwt.regexp.shared.RegExp;
 
 /**
  *
@@ -12,13 +12,20 @@ public enum ProviderField {
 
 	PHONE("phone"),
 	NAME("name"),
-	ADDRESS("address");
-	private static final String PHONE_STRING_REGEXP = "^[375]{3}[0-9]{9}$";
-	private static final Pattern PHONE_STRING_PATTERN = Pattern.compile(PHONE_STRING_REGEXP);
-	private static final String NAME_STRING_REGEXP = "[а-яА-Я]{2,32}[-]{0,1}[а-яА-Я]{2,32}";
-	private static final Pattern NAME_STRING_PATTERN = Pattern.compile(NAME_STRING_REGEXP);
-	private static final String ADDRESS_STRING_REGEXP = "[\\pL0-9., -]{2,64}";
-	private static final Pattern ADDRESS_STRING_PATTERN = Pattern.compile(ADDRESS_STRING_REGEXP);
+	ADDRESS("address"),
+	PASSPORT("passport");
+	public static final String PASSPORT_NUMBER_REGEXP = "^[A-Z]{2}[0-9]{7}$";
+	public static final String PHONE_REGEXP = "^[375]{3}[0-9]{9}$";
+	public static final String NAME_REGEXP = "^[а-яА-Я]{2,32}[-]{0,1}[а-яА-Я]{2,32}$";
+	public static final String ADDRESS_REGEXP = "^[а-яА-Я0-9., -]{2,64}$";
+	public static final String VALID_PASSPORT_MSG = "номер паспорта должен содержать серия - две латинские буквы в верхнем регистре, и 7-значный номер";
+	public static final String VALID_PHONE_MSG = "номер должен начинаться с 375, далее две цифры - код оператора, далее - семизначный номер";
+	public static final String VALID_NAME_MSG = "имя может содержать любые символы кириллицы, и один дефис";
+	public static final String VALID_ADDRESS_MSG = "адрес может содержать любые символы кириллицы, цифры, пробелы, запятые и точки";
+//	private static final RegExp PASSPORT_PATTERN = RegExp.compile(PASSPORT_NUMBER_REGEXP);
+//	private static final RegExp PHONE_PATTERN = RegExp.compile(PHONE_STRING_REGEXP);
+//	private static final RegExp NAME_PATTERN = RegExp.compile(NAME_STRING_REGEXP);
+//	private static final RegExp ADDRESS_PATTERN = RegExp.compile(ADDRESS_STRING_REGEXP);
 	private String type;
 
 	private ProviderField(String type) {
@@ -28,13 +35,16 @@ public enum ProviderField {
 	public String validPattern() {
 		switch (this) {
 			case ADDRESS: {
-				return "Адрес может содержать любые символы кириллицы, цифры, пробелы, запятые и точки";
+				return VALID_ADDRESS_MSG;
 			}
 			case NAME: {
-				return "Имя может содержать любые символы кириллицы, и один дефис";
+				return VALID_NAME_MSG;
 			}
 			case PHONE: {
-				return "Номер должен начинаться с 375, далее две цифры - код оператора, далее - семизначный номер";
+				return VALID_PHONE_MSG;
+			}
+			case PASSPORT: {
+				return VALID_PASSPORT_MSG;
 			}
 			default: {
 				return "";
@@ -53,7 +63,7 @@ public enum ProviderField {
 				} else if (value.replaceAll("/s", "").isEmpty()) {
 					return false;
 				}
-				return ADDRESS_STRING_PATTERN.matcher(value).matches();
+				return RegExp.compile(ADDRESS_REGEXP).test(value);
 			}
 			case NAME: {
 				if (value.startsWith("/s")) {
@@ -61,10 +71,13 @@ public enum ProviderField {
 				} else if (value.replaceAll("/s", "").isEmpty()) {
 					return false;
 				}
-				return NAME_STRING_PATTERN.matcher(value).matches();
+				return RegExp.compile(NAME_REGEXP).test(value);
 			}
 			case PHONE: {
-				return PHONE_STRING_PATTERN.matcher(value).matches();
+				return RegExp.compile(PHONE_REGEXP).test(value);
+			}
+			case PASSPORT: {
+				return RegExp.compile(PASSPORT_NUMBER_REGEXP).test(value);
 			}
 			default: {
 				return false;
