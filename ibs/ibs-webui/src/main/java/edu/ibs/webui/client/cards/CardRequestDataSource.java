@@ -5,9 +5,11 @@ import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import edu.ibs.common.dto.CardRequestDTO;
+import edu.ibs.common.dto.SearchCriteriaDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.ds.GwtRpcDataSource;
 import edu.ibs.webui.client.utils.AppCallback;
+import edu.ibs.webui.client.utils.JS;
 
 import java.util.List;
 
@@ -25,6 +27,7 @@ public class CardRequestDataSource extends GwtRpcDataSource {
 		AsyncCallback<List<CardRequestDTO>> callback = new AppCallback<List<CardRequestDTO>>() {
 			@Override
 			public void onSuccess(List<CardRequestDTO> list) {
+//                List<SearchCriteriaDTO> listS = JS.getSearchCriterias(request);
 				int size = 0;
 				if (list != null && list.size() > 0) {
 					size = list.size();

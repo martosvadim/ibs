@@ -20,7 +20,7 @@ public class CardRequestsGrid extends ListGrid {
 	public CardRequestsGrid() {
 		super();
 		Components.prepareGrid(this);
-		this.setShowAllRecords(true);
+		this.setShowAllRecords(false);
         this.setShowFilterEditor(true);
 
 		ListGridField idField = new ListGridField("id", "ID", 50);
@@ -49,7 +49,9 @@ public class CardRequestsGrid extends ListGrid {
 					}
 				}
 			}
-		});approveActionField.setCanFilter(false);
+		});
+        approveActionField.setCanFilter(false);
+        approveActionField.setPrompt("Создать карт-счет");
 		ListGridField declineActionField = Components.getIconGridField("decline", "Удалить заявку на карт-счет",
 				"toolbar/delete.png", new RecordClickHandler() {
 			@Override
@@ -70,6 +72,8 @@ public class CardRequestsGrid extends ListGrid {
 				}
 			}
 		});
+        declineActionField.setCanFilter(false);
+        declineActionField.setPrompt("Удалить заявку на карт-счет");
 		this.setFields(new ListGridField[]{idField, userField, cardBookTypeField, bankBookIdField, approveActionField,
 				declineActionField});
 		this.setDataSource(new CardRequestDataSource());

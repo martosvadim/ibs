@@ -1,12 +1,19 @@
 package edu.ibs.webui.client.utils;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
+import com.smartgwt.client.data.DSRequest;
+import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.Canvas;
+import edu.ibs.common.dto.SearchCriteriaDTO;
+import edu.ibs.common.enums.SearchCriteriaOperation;
 import edu.ibs.webui.client.MyApp;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * JS Константы и хелперные методы
@@ -574,6 +581,22 @@ public final class JS {
         }
         return "";
     }-*/;
+
+    public static List<SearchCriteriaDTO> getSearchCriterias(final DSRequest request) {
+        List<SearchCriteriaDTO> searchCriterias = new LinkedList<SearchCriteriaDTO>();
+        JavaScriptObject data = request.getData();
+        for (String property : JSOHelper.getProperties(data)) {
+            String value = JSOHelper.getAttribute(data, property);
+            if (value != null && value.length() > 0 && !"__gwt_ObjectId".equals(property)) {
+                SearchCriteriaDTO criteriaDTO = new SearchCriteriaDTO();
+                criteriaDTO.setAttribute(property);
+                criteriaDTO.setOperation(SearchCriteriaOperation.HAS.toString());
+                criteriaDTO.setValue(value);
+                searchCriterias.add(criteriaDTO);
+            }
+        }
+        return searchCriterias;
+    }
     
 }
 
