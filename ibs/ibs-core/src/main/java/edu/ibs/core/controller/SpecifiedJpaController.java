@@ -53,6 +53,13 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 	}
 
 	public Transaction pay(CardBook from, CardBook to, Money money, TransactionType type, String description) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
+		if (from == null || to == null) {
+			throw new IllegalArgumentException("Карт счета не существует");
+		} else if (money == null) {
+			throw new IllegalArgumentException("Заполните количество денег для оплаты");
+		} else if (type == null) {
+			throw new IllegalArgumentException("Тип платежа не указан");
+		}
 		EntityManager em = null;
 		try {
 			Transaction tr = null;
