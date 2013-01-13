@@ -26,4 +26,6 @@ public interface IAuthService extends RemoteService {
 	UserDTO updateUser(UserDTO dto) throws IbsServiceException;
 
 	UserDTO getUserByPassport(String passportNumber) throws IbsServiceException;
+	
+	void createProvider(String providerName, String bookDescription, String currency, ArrayList<ProviderField> providerFields) throws IbsServiceException;
 }
