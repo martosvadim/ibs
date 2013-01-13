@@ -129,7 +129,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 	@Override
 	public Transaction pay(CardBook from, long toCardBookID, Money money, TransactionType type, String description) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
 		if (!dataSource.exist(money.currency().getClass(), money.currency().getId())) {
-			throw new IllegalArgumentException("Currency does not present in db, can't pay");
+			throw new IllegalArgumentException("Данной валюты не существует");
 		}
 		CardBook to = dataSource.select(CardBook.class, toCardBookID);
 		return dataSource.pay(from, to, money, type, description);
@@ -141,7 +141,7 @@ public final class CommonService implements UserOperations, AdminOperations {
 		CardBook to = savedPayment.getTransaction().getTo();
 		TransactionType type = savedPayment.getTransaction().getType();
 		if (!dataSource.exist(money.currency().getClass(), money.currency().getId())) {
-			throw new IllegalArgumentException("Currency does not present in db, can't pay");
+			throw new IllegalArgumentException("Данной валюты не существует");
 		}
 		return dataSource.pay(from, to, money, type, description);
 	}
@@ -488,5 +488,10 @@ public final class CommonService implements UserOperations, AdminOperations {
 	@Override
 	public <T extends AbstractEntity> int count(Class<T> clazz) {
 		return dataSource.count(clazz);
+	}
+
+	@Override
+	public boolean cardBookExist(long cardBookID) {
+		return dataSource.exist(CardBook.class, cardBookID);
 	}
 }

@@ -39,6 +39,8 @@ public interface UserOperations extends CommonOperations {
 
 	public Transaction pay(CardBook from, long toCardBookID, Money money, TransactionType type, String description) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException;
 
+	public boolean cardBookExist(long cardBookID);
+
 	public Transaction pay(SavedPayment savedPayment, Money money, String description) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException;
 
 	public SavedPayment savePayment(Transaction transaction, User owner);

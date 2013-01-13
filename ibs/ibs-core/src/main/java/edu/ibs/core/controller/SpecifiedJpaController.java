@@ -47,7 +47,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 				return em.find(BankBook.class, fromBankBook.getId(), LockModeType.PESSIMISTIC_WRITE);
 			}
 			default: {
-				throw new IllegalArgumentException(String.format("Unknown card type: %s", card.getType()));
+				throw new IllegalArgumentException(String.format("Неизвестный тип карты: %s", card.getType()));
 			}
 		}
 	}
@@ -61,25 +61,25 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 			from = em.find(from.getClass(), from.getId());
 			to = em.find(to.getClass(), to.getId());
 			if (from == null || to == null) {
-				throw new IllegalArgumentException("Card book doesn't exist");
+				throw new IllegalArgumentException("Карт счета не существует");
 			} else if (to.getType().equals(CardBookType.CREDIT)) {
 				em.getTransaction().rollback();
-				throw new IllegalArgumentException("Can't transfer money to credit card book");
+				throw new IllegalArgumentException("Нельзя переводить деньги на кредитную карту, выберите дебитную");
 			} else if (from.isFreezed()) {
 				em.getTransaction().rollback();
-				throw new FreezedException(String.format("CardBook %s is freezed", from));
+				throw new FreezedException(String.format("Карт-счет %s заморожен", from));
 			} else if (to.isFreezed()) {
 				em.getTransaction().rollback();
-				throw new FreezedException(String.format("CardBook %s is freezed", to));
+				throw new FreezedException(String.format("Карт-счет %s заморожен", to));
 			} else {
 				MoneyEntity fromEntity = forTypeOf(from, em);
 				MoneyEntity toEntity = forTypeOf(to, em);
 				if (fromEntity == null) {
 					em.getTransaction().rollback();
-					throw new IllegalArgumentException(String.format("Bad card book %s: has no payment background", from));
+					throw new IllegalArgumentException(String.format("Невалидный карт-счет %s: нет платежного средства", from));
 				} else if (toEntity == null) {
 					em.getTransaction().rollback();
-					throw new IllegalArgumentException(String.format("Bad card book %s: has no payment background", to));
+					throw new IllegalArgumentException(String.format("Невалидный карт-счет %s: нет платежного средства", to));
 				} else {
 					if (fromEntity.ge(money)) {
 						fromEntity.subtract(money);
@@ -91,7 +91,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 						em.persist(tr);
 					} else {
 						em.getTransaction().rollback();
-						throw new NotEnoughMoneyException(String.format("Not enough money at card book %s, should has at least %s", from, money));
+						throw new NotEnoughMoneyException(String.format("Недостаточно средств для счета %s, необходимо %s", from, money));
 					}
 				}
 			}

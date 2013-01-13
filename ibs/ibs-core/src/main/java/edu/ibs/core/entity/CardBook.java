@@ -152,7 +152,7 @@ public class CardBook implements Serializable, AbstractEntity {
 
 	@Override
 	public String toString() {
-		return "CardBook{" + "id=" + id + ", type=" + type + ", dateExpire=" + dateExpire + ", freezed=" + freezed + ", pin=" + pin + ", bankBook=" + bankBook + ", credit=" + credit + '}';
+		return Long.toString(getId());
 	}
 
 	public static int generatePin() {
