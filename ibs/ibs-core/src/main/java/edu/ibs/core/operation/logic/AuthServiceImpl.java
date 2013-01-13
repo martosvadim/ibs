@@ -150,6 +150,27 @@ public class AuthServiceImpl implements IAuthService {
 		}
 	}
 
+	@Override
+    public void createProvider(String providerName, String bookDescription, String currency, ArrayList<ProviderField> providerFields) throws IbsServiceException {
+        try {
+            Currency cur = new Currency();
+            if("BR".equals(currency.toUpperCase().trim())){
+                cur = adminLogic.getCurrency("BR");
+            } else if("USD".equals(currency.toUpperCase().trim())){
+                cur = adminLogic.getCurrency("USD");
+            } else if("EUR".equals(currency.toUpperCase().trim())){
+                cur = adminLogic.getCurrency("EUR");
+            } else{
+                throw new IbsServiceException("Не удалось зарегистрировать поставщика услуг. Проверьте корректность выбора валюты.");
+            }
+            ProviderField[] providerFieldsArray = new ProviderField[providerFields.size()];
+            providerFieldsArray = providerFields.toArray(providerFieldsArray);
+            adminLogic.createProvider(providerName,bookDescription, cur, providerFieldsArray);
+        } catch (Throwable e) {
+            throw new IbsServiceException("Не удалось зарегистрировать поставщика услуг.");
+        }
+    }
+	
 	private Account register(String email, String passwd) throws PersistenceException {
 		return userLogic.register(email, passwd);
 	}
