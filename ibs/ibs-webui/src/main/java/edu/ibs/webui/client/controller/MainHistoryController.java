@@ -40,7 +40,7 @@ public class MainHistoryController extends GenericWindowController {
                     HistoryController controller = new HistoryController();
                     controller.setCardBookDTO(getCardBookDTO());
                     controller.getDataSource().setFrom(from);
-                    controller.getDataSource().setFrom(to);
+                    controller.getDataSource().setTo(to);
                     controller.getWindow().draw();
                 } else {
                     SC.warn("Дата, до которой выполнять фильтрацию, должна быть меньше начальной даты.");
