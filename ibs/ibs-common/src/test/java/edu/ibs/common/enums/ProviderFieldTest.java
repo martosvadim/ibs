@@ -63,6 +63,7 @@ public class ProviderFieldTest {
 		assertFalse(name.validate(""));
 		assertFalse(name.validate(null));
 		assertFalse(name.validate("-вадим"));
+		assertFalse(name.validate("вадим"));
 		assertFalse(name.validate("!вадим"));
 		assertFalse(name.validate("-------"));
 		assertFalse(name.validate("Vaдим"));
