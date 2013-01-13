@@ -157,7 +157,7 @@ public class User implements Serializable, AbstractEntity {
 	}
 
 	public void setAddress(String address) {
-		if (!User.validateAddress(address)) {
+		if (address != null && !User.validateAddress(address)) {
 			throw new IllegalArgumentException(String.format("Невалидный адрес %s, %s", address, VALID_ADDRESS_MSG));
 		}
 		this.address = address;
@@ -172,21 +172,21 @@ public class User implements Serializable, AbstractEntity {
 	}
 
 	public void setPhone1(BigInteger phone) {
-		if (phone == null || !User.validatePhone(phone.toString())) {
+		if (phone != null && !User.validatePhone(phone.toString())) {
 			throw new IllegalArgumentException(String.format("Невалидный номер телефона %s, %s", phone, VALID_PHONE_MSG));
 		}
 		this.phone1 = phone;
 	}
 
 	public void setPhone2(BigInteger phone) {
-		if (phone == null || !User.validatePhone(phone.toString())) {
+		if (phone != null && !User.validatePhone(phone.toString())) {
 			throw new IllegalArgumentException(String.format("Невалидный номер телефона %s, %s", phone, VALID_PHONE_MSG));
 		}
 		this.phone2 = phone;
 	}
 
 	public void setPhone3(BigInteger phone) {
-		if (phone == null || !User.validatePhone(phone.toString())) {
+		if (phone != null && !User.validatePhone(phone.toString())) {
 			throw new IllegalArgumentException(String.format("Невалидный номер телефона %s, %s", phone, VALID_PHONE_MSG));
 		}
 		this.phone3 = phone;
