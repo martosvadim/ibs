@@ -13,8 +13,6 @@ import edu.ibs.core.operation.UserOperations;
 import edu.ibs.core.utils.ServerConstants;
 import edu.ibs.core.utils.ServletUtils;
 import edu.ibs.core.utils.ValidationUtils;
-import nl.captcha.Captcha;
-import org.apache.log4j.Logger;
 
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
@@ -26,7 +24,6 @@ public class AuthServiceImpl implements IAuthService {
 	private static final String PASSWORD_NOT_EQUAL_MSG = "Пароль не соответствует введённому.";
 	private static final String CANNOT_LOGIN_MSG = "Неверный логин или пароль.";
 	private static final String NO_PERMISSION_MSG = "У вас нет прав для выполнения данной операции.";
-
 	private UserOperations userLogic;
 	private AdminOperations adminLogic;
 
@@ -35,32 +32,32 @@ public class AuthServiceImpl implements IAuthService {
 		AccountDTO dto = null;
 		// Если есть куки
 		if (name.equals(ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_LOGIN))) {
-            dto  = (AccountDTO) ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_ACC);
+			dto = (AccountDTO) ServletUtils.getRequest().getSession().getAttribute(ServerConstants.SESSION_ACC);
 			return dto;
-		} else  if (!ValidationUtils.isEmpty(name) && !ValidationUtils.isEmpty(pass)) {
-            try {
+		} else if (!ValidationUtils.isEmpty(name) && !ValidationUtils.isEmpty(pass)) {
+			try {
 				Account account = userLogic.login(name, pass);
 				if (account != null) {
 					dto = EntityTransformer.transformAccount(account);
 					ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, name);
-                    ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_ACC, dto);
+					ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_ACC, dto);
 					ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR,
 							AccountRole.ADMIN.equals(dto.getRole()));
 					return dto;
 				} else {
 					throw new IbsServiceException(CANNOT_LOGIN_MSG);
 				}
-            } catch (NoResultException e) {
-                throw new IbsServiceException(CANNOT_LOGIN_MSG);
-            }
+			} catch (NoResultException e) {
+				throw new IbsServiceException(CANNOT_LOGIN_MSG);
+			}
 		}
 		return dto;
 	}
 
 	@Override
-	public void logout(final String login) throws IbsServiceException{
+	public void logout(final String login) throws IbsServiceException {
 		ServletUtils.getRequest().getSession().setAttribute(ServerConstants.SESSION_LOGIN, "");
-        ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR, false);
+		ServletUtils.getRequest().getSession().setAttribute(ServerConstants.ADMIN_ATTR, false);
 	}
 
 	@Override
@@ -68,13 +65,15 @@ public class AuthServiceImpl implements IAuthService {
 			throws IbsServiceException {
 
 		if (ValidationUtils.isEmpty(name) || ValidationUtils.isEmpty(password)
-				|| ValidationUtils.isEmpty(passwordConfirm) /*|| ValidationUtils.isEmpty(captchaText)*/) {
+				|| ValidationUtils.isEmpty(passwordConfirm) /*
+				 * || ValidationUtils.isEmpty(captchaText)
+				 */) {
 			throw new IbsServiceException(EMPTY_CREDENTIALS_MSG);
 		} else if (!password.equals(passwordConfirm)) {
 			throw new IbsServiceException(PASSWORD_NOT_EQUAL_MSG);
 		} else {
 			try {
-			// Верификация текста капчи
+				// Верификация текста капчи
 //			Captcha captcha = (Captcha) ServletUtils.getRequest().getSession().getAttribute(Captcha.NAME);
 //			if (captcha != null && captcha.isCorrect(captchaText)) {
 				return EntityTransformer.transformAccount(register(name, password));
@@ -124,10 +123,30 @@ public class AuthServiceImpl implements IAuthService {
 				throw new IbsServiceException(
 						"Неверный номер паспорта. Должно быть заполнено 2 латинских буквы и 7 цифр без пробелов.");
 			} catch (Throwable e) {
-				throw new IbsServiceException("Не удалось обновить информацию о пользователе.");
+				throw new IbsServiceException("Не удалось заполнить информацию о пользователе.");
 			}
 		}
 		return userDTO;
+	}
+
+	@Override
+	public UserDTO updateUser(UserDTO dto) throws IbsServiceException {
+		try {
+			adminLogic.update(new User(dto));
+		} catch (Throwable e) {
+			throw new IbsServiceException("Не удалось обновить информацию о пользователе.");
+		}
+		return dto;
+	}
+
+	@Override
+	public UserDTO getUserByPassport(String passportNumber) throws IbsServiceException {
+		try {
+			User user = adminLogic.getUserByPassport(passportNumber);
+			return EntityTransformer.transformUser(user);
+		} catch (Throwable e) {
+			throw new IbsServiceException("Не удалось получить данные пользователя. Проверьте корректность ввода номера паспорта");
+		}
 	}
 
 	private Account register(String email, String passwd) throws PersistenceException {
@@ -135,18 +154,18 @@ public class AuthServiceImpl implements IAuthService {
 	}
 
 	public UserOperations getUserLogic() {
-        return userLogic;
-    }
+		return userLogic;
+	}
 
-    public void setUserLogic(UserOperations userLogic) {
-        this.userLogic = userLogic;
-    }
+	public void setUserLogic(UserOperations userLogic) {
+		this.userLogic = userLogic;
+	}
 
-    public AdminOperations getAdminLogic() {
-        return adminLogic;
-    }
+	public AdminOperations getAdminLogic() {
+		return adminLogic;
+	}
 
-    public void setAdminLogic(AdminOperations adminLogic) {
-        this.adminLogic = adminLogic;
-    }
+	public void setAdminLogic(AdminOperations adminLogic) {
+		this.adminLogic = adminLogic;
+	}
 }

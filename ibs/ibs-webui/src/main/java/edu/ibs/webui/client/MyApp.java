@@ -1,7 +1,6 @@
 package edu.ibs.webui.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.ui.Widget;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
@@ -34,32 +33,30 @@ import edu.ibs.webui.client.utils.JS;
 
 public class MyApp implements EntryPoint {
 
-    private static final int HEADER_HEIGHT = 85;
+	private static final int HEADER_HEIGHT = 85;
 	public static final String LOGIN_COOKIE_NAME = "ibs.login";
-    public static final String IS_ADMIN_COOKIE = "ibs.admin";
-
+	public static final String IS_ADMIN_COOKIE = "ibs.admin";
 	private VLayout mainLayout;
-    private VLayout adminLayout;
+	private VLayout adminLayout;
 	private Window loginWindow;
 	private Window registerWindow;
-
-    /**
-     * Основное окно
-     */
-    private Canvas bg = new Canvas();
+	/**
+	 * Основное окно
+	 */
+	private Canvas bg = new Canvas();
 	private CurrenciesGrid currenciesGrid = new CurrenciesGrid();
 
 	public void onModuleLoad() {
 
-        com.google.gwt.user.client.Window.enableScrolling(false);
-        com.google.gwt.user.client.Window.setMargin("0px");
+		com.google.gwt.user.client.Window.enableScrolling(false);
+		com.google.gwt.user.client.Window.setMargin("0px");
 
-        bg.setWidth100();
-        bg.setHeight100();
+		bg.setWidth100();
+		bg.setHeight100();
 
-        bg.draw();
+		bg.draw();
 		loadUser();
-    }
+	}
 
 	private void loadUser() {
 		String login = JS.getCookie(LOGIN_COOKIE_NAME);
@@ -67,6 +64,7 @@ public class MyApp implements EntryPoint {
 			login();
 		} else {
 			IAuthServiceAsync.Util.getInstance().login(login, "", new AppCallback<AccountDTO>() {
+
 				@Override
 				public void onFailure(final Throwable throwable) {
 					super.onFailure(throwable);
@@ -78,13 +76,13 @@ public class MyApp implements EntryPoint {
 					if (dto == null) {
 						login();
 					} else {
-                        JS.setCookie(LOGIN_COOKIE_NAME, dto.getEmail());
-                        if (AccountRole.ADMIN.equals(dto.getRole())) {
-                            JS.setCookie(IS_ADMIN_COOKIE, Boolean.TRUE.toString());
-                        } else {
-                            JS.setCookie(IS_ADMIN_COOKIE, Boolean.FALSE.toString());
-                        }
-                        ApplicationManager.getInstance().setAccount(dto);
+						JS.setCookie(LOGIN_COOKIE_NAME, dto.getEmail());
+						if (AccountRole.ADMIN.equals(dto.getRole())) {
+							JS.setCookie(IS_ADMIN_COOKIE, Boolean.TRUE.toString());
+						} else {
+							JS.setCookie(IS_ADMIN_COOKIE, Boolean.FALSE.toString());
+						}
+						ApplicationManager.getInstance().setAccount(dto);
 						bg.addChild(getMainLayoutForRole());
 					}
 				}
@@ -108,6 +106,7 @@ public class MyApp implements EntryPoint {
 
 			final IButton regButton = new IButton("Зарегистрироваться");
 			regButton.addClickHandler(new ClickHandler() {
+
 				@Override
 				public void onClick(final ClickEvent clickEvent) {
 					String name = (String) login.unbind();
@@ -126,6 +125,7 @@ public class MyApp implements EntryPoint {
 						regButton.setDisabled(true);
 						IAuthServiceAsync.Util.getInstance().register(name, password, passwordAgain, null,
 								new AppCallback<AccountDTO>() {
+
 									@Override
 									public void onFailure(Throwable t) {
 										super.onFailure(t);
@@ -135,18 +135,18 @@ public class MyApp implements EntryPoint {
 									@Override
 									public void onSuccess(AccountDTO s) {
 										regButton.setDisabled(false);
-                                        if (s != null) {
-                                            JS.setCookie(LOGIN_COOKIE_NAME, s.getEmail());
-                                            if (AccountRole.ADMIN.equals(s.getRole())) {
-                                                JS.setCookie(IS_ADMIN_COOKIE, Boolean.TRUE.toString());
-                                            } else {
-                                                JS.setCookie(IS_ADMIN_COOKIE, Boolean.FALSE.toString());
-                                            }
-                                            ApplicationManager.getInstance().setAccount(s);
-                                            SC.say("Вы зарегестрировались, " + s.getEmail() + "!");
-                                            registerWindow.hide();
-                                            bg.addChild(getMainLayoutForRole());
-                                        }
+										if (s != null) {
+											JS.setCookie(LOGIN_COOKIE_NAME, s.getEmail());
+											if (AccountRole.ADMIN.equals(s.getRole())) {
+												JS.setCookie(IS_ADMIN_COOKIE, Boolean.TRUE.toString());
+											} else {
+												JS.setCookie(IS_ADMIN_COOKIE, Boolean.FALSE.toString());
+											}
+											ApplicationManager.getInstance().setAccount(s);
+											SC.say("Вы зарегестрировались, " + s.getEmail() + "!");
+											registerWindow.hide();
+											bg.addChild(getMainLayoutForRole());
+										}
 									}
 								});
 					}
@@ -181,6 +181,7 @@ public class MyApp implements EntryPoint {
 
 			registerWindow.addItem(view);
 			registerWindow.addCloseClickHandler(new CloseClickHandler() {
+
 				@Override
 				public void onCloseClick(final CloseClickEvent closeClickEvent) {
 					registerWindow.hide();
@@ -190,19 +191,20 @@ public class MyApp implements EntryPoint {
 
 		}
 
-        return registerWindow;
-    }
+		return registerWindow;
+	}
 
-    private Window getLoginWindow() {
+	private Window getLoginWindow() {
 		if (loginWindow == null) {
 			loginWindow = Components.getWindow();
-            loginWindow.setShowCloseButton(false);
+			loginWindow.setShowCloseButton(false);
 			final GenericController login = Components.getTextItem();
 			final GenericController pass = Components.getPasswordItem();
 
 			IButton loginButton = new IButton("Войти");
 			loginButton.setWidth(80);
 			loginButton.addClickHandler(new ClickHandler() {
+
 				@Override
 				public void onClick(final ClickEvent clickEvent) {
 					final String loginText = ((String) login.unbind());
@@ -214,16 +216,17 @@ public class MyApp implements EntryPoint {
 					} else {
 						IAuthServiceAsync.Util.getInstance().login(loginText, passText,
 								new AppCallback<AccountDTO>() {
+
 									@Override
 									public void onSuccess(final AccountDTO s) {
 										if (s != null) {
 											JS.setCookie(LOGIN_COOKIE_NAME, loginText);
-                                            if (AccountRole.ADMIN.equals(s.getRole())) {
-                                                JS.setCookie(IS_ADMIN_COOKIE, Boolean.TRUE.toString());
-                                            } else {
+											if (AccountRole.ADMIN.equals(s.getRole())) {
+												JS.setCookie(IS_ADMIN_COOKIE, Boolean.TRUE.toString());
+											} else {
 												JS.setCookie(IS_ADMIN_COOKIE, Boolean.FALSE.toString());
 											}
-                                            ApplicationManager.getInstance().setAccount(s);
+											ApplicationManager.getInstance().setAccount(s);
 											loginWindow.hide();
 											bg.addChild(getMainLayoutForRole());
 										} else {
@@ -239,6 +242,7 @@ public class MyApp implements EntryPoint {
 			linkItem.setShowTitle(false);
 			linkItem.setLinkTitle("Регистрация");
 			linkItem.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
 				@Override
 				public void onClick(final com.smartgwt.client.widgets.form.fields.events.ClickEvent clickEvent) {
 					loginWindow.hide();
@@ -260,11 +264,12 @@ public class MyApp implements EntryPoint {
 			buttons.addMember(loginButton);
 			buttons.addMember(regForm);
 
-            layout.addMember(buttons);
+			layout.addMember(buttons);
 			layout.setShowResizeBar(false);
 
 			loginWindow.addItem(layout);
 			loginWindow.addCloseClickHandler(new CloseClickHandler() {
+
 				@Override
 				public void onCloseClick(CloseClickEvent closeClickEvent) {
 					//
@@ -274,53 +279,56 @@ public class MyApp implements EntryPoint {
 		}
 
 		return loginWindow;
-    }
+	}
 
-    private Canvas getMainLayoutForRole() {
-        boolean admin = Boolean.TRUE.toString().equals(JS.getCookie(IS_ADMIN_COOKIE));
-        if (admin) {
-            return getAdminLayout();
-        } else {
-            AccountDTO acc = ApplicationManager.getInstance().getAccount();
-            if (acc != null && acc.getUser() != null && acc.getUser().getId() > 0) {
-                return getMainLayout();
-            } else {
-                final FillUserInfoController controller = new FillUserInfoController();
-                final String loginStr = ApplicationManager.getInstance().getAccount().getEmail();
-                // Действие по закрытию окна на кнопку "Х"
-                controller.getWindow().addCloseClickHandler(new CloseClickHandler() {
-                    @Override
-                    public void onCloseClick(CloseClickEvent closeClickEvent) {
-                        IAuthServiceAsync.Util.getInstance().logout(loginStr, new AppCallback<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                JS.goToLoginPage();
-                            }
-                        });
-                    }
-                });
-                // Действие при успешном закрытии окна и завершении работы с формой
-                controller.setCloseAction(new IAction<Object>() {
-                    @Override
-                    public void execute(Object data) {
-                        bg.removeChild(controller.getWindow());
-                        bg.addChild(getMainLayout());
-                    }
-                });
-                return controller.getWindow();
-            }
-        }
-    }
+	private Canvas getMainLayoutForRole() {
+		boolean admin = Boolean.TRUE.toString().equals(JS.getCookie(IS_ADMIN_COOKIE));
+		if (admin) {
+			return getAdminLayout();
+		} else {
+			AccountDTO acc = ApplicationManager.getInstance().getAccount();
+			if (acc != null && acc.getUser() != null && acc.getUser().getId() > 0) {
+				return getMainLayout();
+			} else {
+				final FillUserInfoController controller = new FillUserInfoController();
+				final String loginStr = ApplicationManager.getInstance().getAccount().getEmail();
+				// Действие по закрытию окна на кнопку "Х"
+				controller.getWindow().addCloseClickHandler(new CloseClickHandler() {
 
-    private Canvas getAdminLayout() {
-        if (adminLayout == null) {
-            adminLayout = new VLayout();
-            adminLayout.setWidth100();
-            adminLayout.setHeight100();
+					@Override
+					public void onCloseClick(CloseClickEvent closeClickEvent) {
+						IAuthServiceAsync.Util.getInstance().logout(loginStr, new AppCallback<Void>() {
 
-            VLayout vLayout = new VLayout();
-            vLayout.setHeight(HEADER_HEIGHT);
-            vLayout.addMember(new Masthead());
+							@Override
+							public void onSuccess(Void aVoid) {
+								JS.goToLoginPage();
+							}
+						});
+					}
+				});
+				// Действие при успешном закрытии окна и завершении работы с формой
+				controller.setCloseAction(new IAction<Object>() {
+
+					@Override
+					public void execute(Object data) {
+						bg.removeChild(controller.getWindow());
+						bg.addChild(getMainLayout());
+					}
+				});
+				return controller.getWindow();
+			}
+		}
+	}
+
+	private Canvas getAdminLayout() {
+		if (adminLayout == null) {
+			adminLayout = new VLayout();
+			adminLayout.setWidth100();
+			adminLayout.setHeight100();
+
+			VLayout vLayout = new VLayout();
+			vLayout.setHeight(HEADER_HEIGHT);
+			vLayout.addMember(new Masthead());
 
 			VLayout links = new VLayout();
 			links.setWidth("20%");
@@ -330,6 +338,7 @@ public class MyApp implements EntryPoint {
 			Label addUser = new Label("Добавить пользователя");
 			addUser.setStyleName(adminLinkStyleName);
 			final ClickHandler addUserClickHandler = new ClickHandler() {
+
 				@Override
 				public void onClick(ClickEvent clickEvent) {
 					CreateNewUserController controller = new CreateNewUserController();
@@ -339,17 +348,18 @@ public class MyApp implements EntryPoint {
 			addUser.addClickHandler(addUserClickHandler);
 			links.addMember(addUser);
 
-            Label editUser = new Label("Редактировать данные пользователя");
-            editUser.setStyleName(adminLinkStyleName);
-            final ClickHandler editUserClickHandler = new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent clickEvent) {
-                    SearchUserController controller = new SearchUserController();
-                    controller.getWindow().draw();
-                }
-            };
-            editUser.addClickHandler(editUserClickHandler);
-            links.addMember(editUser);
+			Label editUser = new Label("Редактировать данные пользователя");
+			editUser.setStyleName(adminLinkStyleName);
+			final ClickHandler editUserClickHandler = new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent clickEvent) {
+					SearchUserController controller = new SearchUserController();
+					controller.getWindow().draw();
+				}
+			};
+			editUser.addClickHandler(editUserClickHandler);
+			links.addMember(editUser);
 
 //			Label deleteUser = new Label("Удалить пользователя");
 //			deleteUser.setStyleName(adminLinkStyleName);
@@ -358,6 +368,7 @@ public class MyApp implements EntryPoint {
 			Label createBankBook = new Label("Создать банковский счёт");
 			createBankBook.setStyleName(adminLinkStyleName);
 			final ClickHandler createBankBookClickHandler = new ClickHandler() {
+
 				@Override
 				public void onClick(ClickEvent clickEvent) {
 					CreateBankBookController controller = new CreateBankBookController();
@@ -370,6 +381,7 @@ public class MyApp implements EntryPoint {
 			Label addMoney = new Label("Пополнить счёт");
 			addMoney.setStyleName(adminLinkStyleName);
 			final ClickHandler addMoneyClickHandler = new ClickHandler() {
+
 				@Override
 				public void onClick(ClickEvent clickEvent) {
 					AddMoneyController controller = new AddMoneyController();
@@ -382,9 +394,11 @@ public class MyApp implements EntryPoint {
 			Label refreshCurrencies = new Label("Обновить курсы валют");
 			refreshCurrencies.setStyleName(adminLinkStyleName);
 			final ClickHandler rcCH = new ClickHandler() {
+
 				@Override
 				public void onClick(ClickEvent clickEvent) {
 					IPaymentServiceAsync.Util.getInstance().refreshCurrencies(new AppCallback<Void>() {
+
 						@Override
 						public void onSuccess(Void aVoid) {
 							SC.say("Курсы валют обновлены.");
@@ -427,45 +441,45 @@ public class MyApp implements EntryPoint {
 			view.addMember(adminContentLayout);
 			view.addMember(currenciesLayout);
 
-            adminLayout.addMember(vLayout);
-            adminLayout.addMember(view);
+			adminLayout.addMember(vLayout);
+			adminLayout.addMember(view);
 			adminLayout.setStyleName("crm-ContextArea");
-        }
+		}
 
-        return adminLayout;
-    }
+		return adminLayout;
+	}
 
-    private Canvas getMainLayout() {
-        if (mainLayout == null) {
+	private Canvas getMainLayout() {
+		if (mainLayout == null) {
 
-            mainLayout = new VLayout();
-            mainLayout.setWidth100();
-            mainLayout.setHeight100();
+			mainLayout = new VLayout();
+			mainLayout.setWidth100();
+			mainLayout.setHeight100();
 
-            HLayout northLayout = new HLayout();
+			HLayout northLayout = new HLayout();
 
-            VLayout vLayout = new VLayout();
-            vLayout.addMember(new Masthead());
+			VLayout vLayout = new VLayout();
+			vLayout.addMember(new Masthead());
 
-            northLayout.addMember(vLayout);
+			northLayout.addMember(vLayout);
 
-            VLayout westLayout = new NavigationPane();
-            westLayout.setWidth("15%");
-            westLayout.setHeight("40%");
+			VLayout westLayout = new NavigationPane();
+			westLayout.setWidth("15%");
+			westLayout.setHeight("40%");
 
-            VLayout eastLayout = new AccountView();
-            eastLayout.setWidth("85%");
+			VLayout eastLayout = new AccountView();
+			eastLayout.setWidth("85%");
 
 			((NavigationPane) westLayout).setAccountView((AccountView) eastLayout);
 
-            HLayout southLayout = new HLayout();
-            southLayout.setMembers(westLayout, eastLayout);
+			HLayout southLayout = new HLayout();
+			southLayout.setMembers(westLayout, eastLayout);
 			southLayout.setHeight100();
 
-            mainLayout.addMember(northLayout);
-            mainLayout.addMember(southLayout);
-        }
+			mainLayout.addMember(northLayout);
+			mainLayout.addMember(southLayout);
+		}
 
-        return mainLayout;
-    }
+		return mainLayout;
+	}
 }
