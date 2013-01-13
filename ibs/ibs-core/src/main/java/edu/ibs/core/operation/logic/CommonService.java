@@ -132,6 +132,9 @@ public final class CommonService implements UserOperations, AdminOperations {
 			throw new IllegalArgumentException("Данной валюты не существует");
 		}
 		CardBook to = dataSource.select(CardBook.class, toCardBookID);
+		if (to == null) {
+			throw new IllegalArgumentException(String.format("Карт-счета с номером %s не существует", toCardBookID));
+		}
 		return dataSource.pay(from, to, money, type, description);
 	}
 
