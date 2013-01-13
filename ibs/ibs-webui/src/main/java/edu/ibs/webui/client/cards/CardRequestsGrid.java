@@ -21,7 +21,7 @@ public class CardRequestsGrid extends ListGrid {
 		super();
 		Components.prepareGrid(this);
 		this.setShowAllRecords(false);
-        this.setShowFilterEditor(true);
+//        this.setShowFilterEditor(true);
 
 		ListGridField idField = new ListGridField("id", "ID", 50);
 		ListGridField userField = new ListGridField("user", "Пользователь");

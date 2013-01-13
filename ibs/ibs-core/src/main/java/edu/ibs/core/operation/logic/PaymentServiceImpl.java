@@ -138,6 +138,20 @@ public class PaymentServiceImpl implements IPaymentService {
 		return result;
 	}
 
+    @Override
+	public List<CardRequestDTO> getCardRequests(String passport) throws IbsServiceException {
+        try {
+            User user = adminLogic.getUserByPassport(passport);
+            List<CardRequestDTO> ret = new ArrayList<CardRequestDTO>();
+            for (CardRequest cr : userLogic.getCardRequestsOf(user, false)) {
+                ret.add(EntityTransformer.transformCardRequest(cr));
+            }
+            return ret;
+        } catch (Throwable throwable) {
+            throw new IbsServiceException(throwable.getLocalizedMessage());
+        }
+    }
+
 	@Override
 	public List<CardRequestDTO> getCardRequests() throws IbsServiceException {
 		List<CardRequestDTO> result = new LinkedList<CardRequestDTO>();

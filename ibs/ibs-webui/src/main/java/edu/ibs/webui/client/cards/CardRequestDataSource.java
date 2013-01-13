@@ -21,8 +21,9 @@ import java.util.List;
 public class CardRequestDataSource extends GwtRpcDataSource {
 
 	private IPaymentServiceAsync service = IPaymentServiceAsync.Util.getInstance();
+    private String passwordNumber;
 
-	@Override
+    @Override
 	public void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
 		AsyncCallback<List<CardRequestDTO>> callback = new AppCallback<List<CardRequestDTO>>() {
 			@Override
@@ -36,7 +37,8 @@ public class CardRequestDataSource extends GwtRpcDataSource {
 						CardRequestDTO dto = list.get(i);
 						ListGridRecord record = new ListGridRecord();
 						record.setAttribute("id", dto.getId());
-						record.setAttribute("user", dto.getUser().getId());
+						record.setAttribute("user", dto.getUser().getFirstName() + " " + dto.getUser().getLastName()
+                                + " " + dto.getUser().getPassportNumber());
 						record.setAttribute("cardbooktype", dto.getType());
 						record.setAttribute("bankbookid", dto.getBankBook().getId());
 						record.setAttribute("cardrequestdto", dto);
@@ -49,6 +51,14 @@ public class CardRequestDataSource extends GwtRpcDataSource {
 			}
 		};
 
-		service.getCardRequests(callback);
+        if (passwordNumber == null || passwordNumber.length() == 0) {
+		    service.getCardRequests(callback);
+        } else {
+            service.getCardRequests(passwordNumber, callback);
+        }
 	}
+
+    public void setPasswordNumber(String passwordNumber) {
+        this.passwordNumber = passwordNumber;
+    }
 }

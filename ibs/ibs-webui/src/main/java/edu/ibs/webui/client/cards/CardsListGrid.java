@@ -25,7 +25,7 @@ public class CardsListGrid extends ListGrid {
         this.setSortField(1);
 		Components.localizeGrid(this);
 		this.setSelectionType(SelectionStyle.SINGLE);
-        this.setShowFilterEditor(true);
+//        this.setShowFilterEditor(true);
 
         ListGridField iconField = new ListGridField("icon", "#", 27);
         iconField.setImageSize(16);

@@ -24,6 +24,7 @@ public interface IPaymentService extends RemoteService {
 	void requestCard(UserDTO userDTO, String bankBookId, CardBookType cardBookType) throws IbsServiceException;
     List<BankBookDTO> getBankBooks(final UserDTO userDTO) throws IbsServiceException;
 	List<CardRequestDTO> getCardRequests() throws IbsServiceException;
+    List<CardRequestDTO> getCardRequests(String passport) throws IbsServiceException;
 	CardBookDTO approveCardRequest(CardRequestDTO dto) throws IbsServiceException;
 	void declineCardRequest(CardRequestDTO dto, String reason) throws IbsServiceException;
 	Boolean addMoney(BankBookDTO bankBookDTO, Float amount) throws IbsServiceException;
