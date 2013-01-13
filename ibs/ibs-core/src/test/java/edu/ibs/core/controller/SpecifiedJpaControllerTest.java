@@ -92,7 +92,7 @@ public class SpecifiedJpaControllerTest {
 	@Test(expected = NotEnoughMoneyException.class)
 	public void payTest() throws Exception {
 		Money money = new Money(5000, to.getBankBook().getCurrency());
-		Transaction tr = controller.pay(from, to, money, TransactionType.PAYMENT);
+		Transaction tr = controller.pay(from, to, money, TransactionType.PAYMENT, null);
 		assertNotNull(tr);
 		long tid = tr.getId();
 		assertNotNull(from.getBankBook());
@@ -100,14 +100,14 @@ public class SpecifiedJpaControllerTest {
 		assertEquals(controller.select(BankBook.class, from.getBankBook().getId()).getMoney().integer(), 0);
 		assertEquals(controller.select(BankBook.class, to.getBankBook().getId()).getMoney().integer(), 150);
 		controller.delete(Transaction.class, tid);
-		tr = controller.pay(from, to, money, TransactionType.PAYMENT);
+		tr = controller.pay(from, to, money, TransactionType.PAYMENT, null);
 //		assertNull(tr);
 	}
 
 	@Test
 	public void rollbackTest() throws Exception {
 		Money money = new Money(5000, to.getBankBook().getCurrency());
-		Transaction tr = controller.pay(from, to, money, TransactionType.PAYMENT);
+		Transaction tr = controller.pay(from, to, money, TransactionType.PAYMENT, null);
 		Transaction rollback = controller.rollback(tr);
 		assertNotNull(rollback);
 		assertEquals(rollback.getMoney().integer(), 50);
@@ -133,7 +133,7 @@ public class SpecifiedJpaControllerTest {
 		Transaction tr = null;
 		try {
 			Date d1 = new Date();
-			tr = controller.pay(to, to, new Money(0, to.getBankBook().getCurrency()), TransactionType.PAYMENT);
+			tr = controller.pay(to, to, new Money(0, to.getBankBook().getCurrency()), TransactionType.PAYMENT, null);
 			Date d2 = new Date();
 			List<Transaction> transactions = controller.getAllHistory(user);
 			assertNotNull(transactions);

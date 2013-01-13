@@ -37,9 +37,9 @@ public interface UserOperations extends CommonOperations {
 
 	public boolean checkIfReassignmentIsAvailable(String toUserWithEmail);
 
-	public Transaction pay(CardBook from, long toCardBookID, Money money, TransactionType type) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException;
+	public Transaction pay(CardBook from, long toCardBookID, Money money, TransactionType type, String description) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException;
 
-	public Transaction pay(SavedPayment savedPayment, Money money) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException;
+	public Transaction pay(SavedPayment savedPayment, Money money, String description) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException;
 
 	public SavedPayment savePayment(Transaction transaction, User owner);
 

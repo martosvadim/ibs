@@ -52,7 +52,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		}
 	}
 
-	public Transaction pay(CardBook from, CardBook to, Money money, TransactionType type) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
+	public Transaction pay(CardBook from, CardBook to, Money money, TransactionType type, String description) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
 		EntityManager em = null;
 		try {
 			Transaction tr = null;
@@ -85,6 +85,9 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 						fromEntity.subtract(money);
 						toEntity.add(money);
 						tr = new Transaction(money, type, from, to);
+						if (description != null) {
+							tr.setDescription(description);
+						}
 						em.persist(tr);
 					} else {
 						em.getTransaction().rollback();
@@ -116,7 +119,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 				em.getTransaction().rollback();
 				throw new IllegalArgumentException("Transaction doesn't exist");
 			}
-			Transaction rollback = pay(tr.getTo(), tr.getFrom(), tr.getMoney(), TransactionType.PAYMENT);
+			Transaction rollback = pay(tr.getTo(), tr.getFrom(), tr.getMoney(), TransactionType.PAYMENT, "rollback");
 			em.getTransaction().commit();
 			return rollback;
 		} catch (RuntimeException e) {
@@ -681,7 +684,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 		List<Transaction> transactions = new ArrayList<Transaction>(autopays.size());
 		for (Autopay pay : autopays) {
 			try {
-				Transaction tr = pay(pay.getFrom(), pay.getTo(), pay.getMoney(), TransactionType.PAYMENT);
+				Transaction tr = pay(pay.getFrom(), pay.getTo(), pay.getMoney(), TransactionType.PAYMENT, null);
 				pay.setLastPayed(System.currentTimeMillis());
 				this.update(pay);
 				transactions.add(tr);

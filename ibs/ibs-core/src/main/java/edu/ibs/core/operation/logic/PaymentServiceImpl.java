@@ -19,13 +19,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * User: EgoshinME
- * Date: 27.12.12
- * Time: 4:30
+ * User: EgoshinME Date: 27.12.12 Time: 4:30
  */
 public class PaymentServiceImpl implements IPaymentService {
 
-    private UserOperations userLogic;
+	private UserOperations userLogic;
 	private AdminOperations adminLogic;
 	private CurrenciesCache currenciesCache;
 
@@ -57,7 +55,8 @@ public class PaymentServiceImpl implements IPaymentService {
 
 		try {
 			Money money = parseMoney(amount, new Currency(from.getBankBook().getCurrency()));
-			userLogic.pay(new CardBook(from), Long.parseLong(toId), money, ttype);
+			//todo fill transaction description here
+			userLogic.pay(new CardBook(from), Long.parseLong(toId), money, ttype, null);
 		} catch (FreezedException e) {
 			throw new IbsServiceException("Счёт заморожен.");
 		} catch (NotEnoughMoneyException e) {
@@ -67,9 +66,9 @@ public class PaymentServiceImpl implements IPaymentService {
 		}
 	}
 
-    @Override
-    public List<CardBookDTO> getCardBooks(final UserDTO userDto) throws IbsServiceException {
-        List<CardBookDTO> list = new LinkedList<CardBookDTO>();
+	@Override
+	public List<CardBookDTO> getCardBooks(final UserDTO userDto) throws IbsServiceException {
+		List<CardBookDTO> list = new LinkedList<CardBookDTO>();
 		if (userDto != null && userDto.getId() > 0) {
 			User user = new User(userDto);
 			try {
@@ -80,8 +79,8 @@ public class PaymentServiceImpl implements IPaymentService {
 				throw new IbsServiceException("Ошибка при получении списка карт.");
 			}
 		}
-        return list;
-    }
+		return list;
+	}
 
 	@Override
 	public List<CurrencyDTO> getCurrencies() throws IbsServiceException {
@@ -103,9 +102,9 @@ public class PaymentServiceImpl implements IPaymentService {
 	public void requestCard(UserDTO userDTO, String bankBookId, CardBookType cardBookType)
 			throws IbsServiceException {
 
-        try {
-            if (bankBookId != null && bankBookId.length() > 0) {
-                if (CardBookType.DEBIT.equals(cardBookType)) {
+		try {
+			if (bankBookId != null && bankBookId.length() > 0) {
+				if (CardBookType.DEBIT.equals(cardBookType)) {
 					User user = new User(userDTO);
 					for (BankBook bankBook : userLogic.getBankBooks(user)) {
 						if (bankBook.getId() == Long.parseLong(bankBookId)) {
@@ -114,26 +113,25 @@ public class PaymentServiceImpl implements IPaymentService {
 						}
 					}
 
-                } else if (CardBookType.CREDIT.equals(cardBookType)) {
-
-                }
-            }
-        } catch (Throwable t) {
-            throw new IbsServiceException("Ошибка при обработке запроса на карт-счет.");
-        }
+				} else if (CardBookType.CREDIT.equals(cardBookType)) {
+				}
+			}
+		} catch (Throwable t) {
+			throw new IbsServiceException("Ошибка при обработке запроса на карт-счет.");
+		}
 	}
 
-    @Override
-    public List<BankBookDTO> getBankBooks(UserDTO userDTO) throws IbsServiceException {
-        List<BankBookDTO> result = new LinkedList<BankBookDTO>();
-        if (userDTO != null) {
-            User user = new User(userDTO);
-            for (BankBook bankBook : userLogic.getBankBooks(user)) {
-                result.add(EntityTransformer.transformBankBook(bankBook));
-            }
-        }
-        return result;
-    }
+	@Override
+	public List<BankBookDTO> getBankBooks(UserDTO userDTO) throws IbsServiceException {
+		List<BankBookDTO> result = new LinkedList<BankBookDTO>();
+		if (userDTO != null) {
+			User user = new User(userDTO);
+			for (BankBook bankBook : userLogic.getBankBooks(user)) {
+				result.add(EntityTransformer.transformBankBook(bankBook));
+			}
+		}
+		return result;
+	}
 
 	@Override
 	public List<CardRequestDTO> getCardRequests() throws IbsServiceException {
@@ -186,20 +184,20 @@ public class PaymentServiceImpl implements IPaymentService {
 	}
 
 	private Money parseMoney(Float amount, Currency currency) throws IbsServiceException {
-        try {
-            BigDecimal bd = new BigDecimal(amount.toString());
-            long part1 = amount.longValue();
-            String part2Str = bd.subtract(new BigDecimal(part1)).toString();
-            int index = part2Str.indexOf('.');
-            if (index == 0) {
-                index = part2Str.indexOf(',');
-            }
-            part2Str = part2Str.substring(index + 1);
+		try {
+			BigDecimal bd = new BigDecimal(amount.toString());
+			long part1 = amount.longValue();
+			String part2Str = bd.subtract(new BigDecimal(part1)).toString();
+			int index = part2Str.indexOf('.');
+			if (index == 0) {
+				index = part2Str.indexOf(',');
+			}
+			part2Str = part2Str.substring(index + 1);
 //            int part2 = Integer.valueOf(part2Str);
-            return Money.parseMoney(String.valueOf(part1), part2Str, currency);
-        } catch (Throwable t) {
-            throw new IbsServiceException("Неверный формат суммы.");
-        }
+			return Money.parseMoney(String.valueOf(part1), part2Str, currency);
+		} catch (Throwable t) {
+			throw new IbsServiceException("Неверный формат суммы.");
+		}
 	}
 
 	@Override
@@ -219,7 +217,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
 	@Override
 	public void refreshCurrencies() throws IbsServiceException {
-		try	{
+		try {
 			getCurrenciesCache().setList(adminLogic.getCurrencies());
 			getCurrenciesCache().fillCurrencies();
 		} catch (Throwable t) {
@@ -227,73 +225,73 @@ public class PaymentServiceImpl implements IPaymentService {
 		}
 	}
 
-    @Override
-    public UserDTO getUser(String email) throws IbsServiceException {
-        UserDTO userDTO = null;
-        if (email != null && email.length() > 0) {
-            try {
-                userDTO = EntityTransformer.transformUser(adminLogic.getUser(email));
-            } catch (Throwable t) {
-                throw new IbsServiceException("Ошибка при получении пользователя.");
-            }
-        }
-        return userDTO;
-    }
+	@Override
+	public UserDTO getUser(String email) throws IbsServiceException {
+		UserDTO userDTO = null;
+		if (email != null && email.length() > 0) {
+			try {
+				userDTO = EntityTransformer.transformUser(adminLogic.getUser(email));
+			} catch (Throwable t) {
+				throw new IbsServiceException("Ошибка при получении пользователя.");
+			}
+		}
+		return userDTO;
+	}
 
-    @Override
-    public List<CardBookDTO> getContragentList() throws IbsServiceException {
-        List<CardBookDTO> list = new ArrayList<CardBookDTO>();
-        try {
-            for (Provider provider : adminLogic.getProviderList()) {
-                list.add(EntityTransformer.transformCardBook(provider.getCard()));
-            }
-        } catch (Throwable t) {
-            throw new IbsServiceException("Ошибка получения списка контрагентов.");
-        }
-        return list;
-    }
+	@Override
+	public List<CardBookDTO> getContragentList() throws IbsServiceException {
+		List<CardBookDTO> list = new ArrayList<CardBookDTO>();
+		try {
+			for (Provider provider : adminLogic.getProviderList()) {
+				list.add(EntityTransformer.transformCardBook(provider.getCard()));
+			}
+		} catch (Throwable t) {
+			throw new IbsServiceException("Ошибка получения списка контрагентов.");
+		}
+		return list;
+	}
 
-    public List<TransactionDTO> getHistory(UserDTO userDto, TransactionType tt) throws IbsServiceException {
-        try {
-            List<Transaction> list = userLogic.getAllHistory(new User(userDto));
-            List<TransactionDTO> ret = new ArrayList<TransactionDTO>();
-            for (Transaction t : list) {
-                ret.add(EntityTransformer.transformTransaction(t));
-            }
-            return ret;
-        } catch (Throwable t) {
-            throw new IbsServiceException("Ошибка при получении выписки.");
-        }
-    }
+	public List<TransactionDTO> getHistory(UserDTO userDto, TransactionType tt) throws IbsServiceException {
+		try {
+			List<Transaction> list = userLogic.getAllHistory(new User(userDto));
+			List<TransactionDTO> ret = new ArrayList<TransactionDTO>();
+			for (Transaction t : list) {
+				ret.add(EntityTransformer.transformTransaction(t));
+			}
+			return ret;
+		} catch (Throwable t) {
+			throw new IbsServiceException("Ошибка при получении выписки.");
+		}
+	}
 
-    public List<TransactionDTO> getHistory(UserDTO userDto, Date from, Date to) throws IbsServiceException {
-        try {
-            List<Transaction> list = userLogic.getAllHistory(new User(userDto), from, to);
-            List<TransactionDTO> ret = new ArrayList<TransactionDTO>();
-            for (Transaction t : list) {
-                ret.add(EntityTransformer.transformTransaction(t));
-            }
-            return ret;
-        } catch (Throwable t) {
-            throw new IbsServiceException("Ошибка при получении выписки.");
-        }
-    }
+	public List<TransactionDTO> getHistory(UserDTO userDto, Date from, Date to) throws IbsServiceException {
+		try {
+			List<Transaction> list = userLogic.getAllHistory(new User(userDto), from, to);
+			List<TransactionDTO> ret = new ArrayList<TransactionDTO>();
+			for (Transaction t : list) {
+				ret.add(EntityTransformer.transformTransaction(t));
+			}
+			return ret;
+		} catch (Throwable t) {
+			throw new IbsServiceException("Ошибка при получении выписки.");
+		}
+	}
 
-    public UserOperations getUserLogic() {
-        return userLogic;
-    }
+	public UserOperations getUserLogic() {
+		return userLogic;
+	}
 
-    public void setUserLogic(final UserOperations userLogic) {
-        this.userLogic = userLogic;
-    }
+	public void setUserLogic(final UserOperations userLogic) {
+		this.userLogic = userLogic;
+	}
 
-    public AdminOperations getAdminLogic() {
-        return adminLogic;
-    }
+	public AdminOperations getAdminLogic() {
+		return adminLogic;
+	}
 
-    public void setAdminLogic(final AdminOperations adminLogic) {
-        this.adminLogic = adminLogic;
-    }
+	public void setAdminLogic(final AdminOperations adminLogic) {
+		this.adminLogic = adminLogic;
+	}
 
 	public CurrenciesCache getCurrenciesCache() {
 		return currenciesCache;

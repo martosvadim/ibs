@@ -126,23 +126,23 @@ public final class CommonService implements UserOperations, AdminOperations {
 	}
 
 	@Override
-	public Transaction pay(CardBook from, long toCardBookID, Money money, TransactionType type) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
+	public Transaction pay(CardBook from, long toCardBookID, Money money, TransactionType type, String description) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
 		if (!dataSource.exist(money.currency().getClass(), money.currency().getId())) {
 			throw new IllegalArgumentException("Currency does not present in db, can't pay");
 		}
 		CardBook to = dataSource.select(CardBook.class, toCardBookID);
-		return dataSource.pay(from, to, money, type);
+		return dataSource.pay(from, to, money, type, description);
 	}
 
 	@Override
-	public Transaction pay(SavedPayment savedPayment, Money money) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
+	public Transaction pay(SavedPayment savedPayment, Money money, String description) throws IllegalArgumentException, FreezedException, NotEnoughMoneyException {
 		CardBook from = savedPayment.getTransaction().getFrom();
 		CardBook to = savedPayment.getTransaction().getTo();
 		TransactionType type = savedPayment.getTransaction().getType();
 		if (!dataSource.exist(money.currency().getClass(), money.currency().getId())) {
 			throw new IllegalArgumentException("Currency does not present in db, can't pay");
 		}
-		return dataSource.pay(from, to, money, type);
+		return dataSource.pay(from, to, money, type, description);
 	}
 
 	@Override
