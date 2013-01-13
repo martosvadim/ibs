@@ -66,4 +66,6 @@ public interface AdminOperations extends CommonOperations {
 	public void deleteProvider(Provider provider);
 
 	public User getUserByPassport(String passportNumber);
+
+	public <T extends AbstractEntity> List<T> selectEntities(Class<T> clazz, int from, int to);
 }

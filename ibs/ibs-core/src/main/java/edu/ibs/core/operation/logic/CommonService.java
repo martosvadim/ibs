@@ -12,6 +12,7 @@ import edu.ibs.core.entity.*;
 import edu.ibs.core.operation.AdminOperations;
 import edu.ibs.core.operation.UserOperations;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
@@ -468,5 +469,19 @@ public final class CommonService implements UserOperations, AdminOperations {
 	@Override
 	public void deleteProvider(Provider provider) {
 		dataSource.delete(Provider.class, provider.getId());
+	}
+
+	@Override
+	public <T extends AbstractEntity> List<T> selectEntities(Class<T> clazz, int from, int to) {
+		if (from < 0) {
+			throw new IllegalArgumentException(String.format("Параметр [from - %s] должен быть положительным", from));
+		} else if (to < 0) {
+			throw new IllegalArgumentException(String.format("Параметр [to - %s] должен быть положительным", to));
+		} else if (from > to) {
+			throw new IllegalArgumentException(String.format("Параметр [from - %s] больше параметра [to - %s]", from, to));
+		} else if (to == 0) {
+			return new LinkedList<T>();
+		}
+		return dataSource.selectAll(clazz, to - from, from);
 	}
 }
