@@ -29,7 +29,9 @@ import edu.ibs.webui.client.admin.CreateBankBookController;
 import edu.ibs.webui.client.admin.CreateNewUserController;
 import edu.ibs.webui.client.admin.CurrenciesGrid;
 import edu.ibs.webui.client.cards.CardRequestsGrid;
+import edu.ibs.webui.client.controller.FillUserInfoController;
 import edu.ibs.webui.client.controller.GenericController;
+import edu.ibs.webui.client.controller.IAction;
 import edu.ibs.webui.client.utils.AppCallback;
 import edu.ibs.webui.client.utils.Components;
 import edu.ibs.webui.client.utils.JS;
@@ -283,7 +285,34 @@ public class MyApp implements EntryPoint {
         if (admin) {
             return getAdminLayout();
         } else {
-            return getMainLayout();
+            AccountDTO acc = ApplicationManager.getInstance().getAccount();
+            if (acc != null && acc.getUser() != null && acc.getUser().getId() > 0) {
+                return getMainLayout();
+            } else {
+                final FillUserInfoController controller = new FillUserInfoController();
+                final String loginStr = ApplicationManager.getInstance().getAccount().getEmail();
+                // Действие по закрытию окна на кнопку "Х"
+                controller.getWindow().addCloseClickHandler(new CloseClickHandler() {
+                    @Override
+                    public void onCloseClick(CloseClickEvent closeClickEvent) {
+                        IAuthServiceAsync.Util.getInstance().logout(loginStr, new AppCallback<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                JS.goToLoginPage();
+                            }
+                        });
+                    }
+                });
+                // Действие при успешном закрытии окна и завершении работы с формой
+                controller.setCloseAction(new IAction<Object>() {
+                    @Override
+                    public void execute(Object data) {
+                        bg.removeChild(controller.getWindow());
+                        bg.addChild(getMainLayout());
+                    }
+                });
+                return controller.getWindow();
+            }
         }
     }
 
@@ -313,10 +342,6 @@ public class MyApp implements EntryPoint {
 			};
 			addUser.addClickHandler(addUserClickHandler);
 			links.addMember(addUser);
-
-//			Label deleteUser = new Label("Удалить пользователя");
-//			deleteUser.setStyleName(adminLinkStyleName);
-//			links.addMember(deleteUser);
 
 			Label createBankBook = new Label("Создать банковский счёт");
 			createBankBook.setStyleName(adminLinkStyleName);
