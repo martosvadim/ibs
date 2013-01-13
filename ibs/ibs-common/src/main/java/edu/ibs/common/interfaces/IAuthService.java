@@ -5,7 +5,10 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.enums.AccountRole;
+import edu.ibs.common.enums.ProviderField;
 import edu.ibs.common.exceptions.IbsServiceException;
+
+import java.util.List;
 
 /**
  * User: EgoshinME Date: 05.12.12 Time: 5:34
@@ -27,5 +30,6 @@ public interface IAuthService extends RemoteService {
 
 	UserDTO getUserByPassport(String passportNumber) throws IbsServiceException;
 	
-	void createProvider(String providerName, String bookDescription, String currency, ArrayList<ProviderField> providerFields) throws IbsServiceException;
+	void createProvider(String providerName, String bookDescription, String currency,
+                        List<ProviderField> providerFields) throws IbsServiceException;
 }

@@ -3,9 +3,11 @@ package edu.ibs.core.operation.logic;
 import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.dto.UserDTO;
 import edu.ibs.common.enums.AccountRole;
+import edu.ibs.common.enums.ProviderField;
 import edu.ibs.common.exceptions.IbsServiceException;
 import edu.ibs.common.interfaces.IAuthService;
 import edu.ibs.core.entity.Account;
+import edu.ibs.core.entity.Currency;
 import edu.ibs.core.entity.User;
 import edu.ibs.core.gwt.EntityTransformer;
 import edu.ibs.core.operation.AdminOperations;
@@ -16,6 +18,7 @@ import edu.ibs.core.utils.ValidationUtils;
 
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
+import java.util.List;
 
 public class AuthServiceImpl implements IAuthService {
 
@@ -151,7 +154,7 @@ public class AuthServiceImpl implements IAuthService {
 	}
 
 	@Override
-    public void createProvider(String providerName, String bookDescription, String currency, ArrayList<ProviderField> providerFields) throws IbsServiceException {
+    public void createProvider(String providerName, String bookDescription, String currency, List<ProviderField> providerFields) throws IbsServiceException {
         try {
             Currency cur = new Currency();
             if("BR".equals(currency.toUpperCase().trim())){
