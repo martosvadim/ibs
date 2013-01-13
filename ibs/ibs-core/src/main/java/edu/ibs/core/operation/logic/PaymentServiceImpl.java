@@ -66,6 +66,8 @@ public class PaymentServiceImpl implements IPaymentService {
 			throw new IbsServiceException("Счёт заморожен.");
 		} catch (NotEnoughMoneyException e) {
 			throw new IbsServiceException("Не достаточно средств.");
+        } catch (IllegalArgumentException e) {
+            throw new IbsServiceException(e.getLocalizedMessage());
 		} catch (Throwable t) {
 			throw new IbsServiceException("При оплате возникла ошибка.");
 		}
