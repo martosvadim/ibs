@@ -39,8 +39,13 @@ public class CardRequestsGrid extends ListGrid {
 							@Override
 							public void onSuccess(CardBookDTO cardBookDTO) {
 								if (cardBookDTO != null) {
+                                    String owner = "";
+                                    if (cardBookDTO.getBankBook().getOwner() != null && cardBookDTO.getBankBook().getOwner().getId() != 0) {
+									    owner = cardBookDTO.getBankBook().getOwner().getFirstName() + " "
+                                                + cardBookDTO.getBankBook().getOwner().getLastName();
+								    }
 									SC.say("Создан карт счёт " + cardBookDTO.getId()
-											+ " для пользователя " + cardBookDTO.getBankBook().getOwner().getId());
+											+ " для пользователя " + owner);
 									invalidateCache();
 									fetchData();
 								}

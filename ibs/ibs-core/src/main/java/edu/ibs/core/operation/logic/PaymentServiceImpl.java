@@ -66,6 +66,8 @@ public class PaymentServiceImpl implements IPaymentService {
 			throw new IbsServiceException("Счёт заморожен.");
 		} catch (NotEnoughMoneyException e) {
 			throw new IbsServiceException("Не достаточно средств.");
+        } catch (IllegalArgumentException e) {
+            throw new IbsServiceException(e.getLocalizedMessage());
 		} catch (Throwable t) {
 			throw new IbsServiceException("При оплате возникла ошибка.");
 		}
@@ -285,12 +287,17 @@ public class PaymentServiceImpl implements IPaymentService {
 
 	public List<TransactionDTO> getHistory(UserDTO userDto, Date from, Date to) throws IbsServiceException {
 		try {
-            Calendar c = Calendar.getInstance();
-            c.setTime(to);
-            c.set(Calendar.HOUR_OF_DAY, 23);
-            c.set(Calendar.MINUTE, 59);
-            c.set(Calendar.SECOND, 59);
-			List<Transaction> list = userLogic.getAllHistory(new User(userDto), from, c.getTime());
+            Calendar toCalendar = Calendar.getInstance();
+            toCalendar.setTime(to);
+            toCalendar.set(Calendar.HOUR_OF_DAY, 23);
+            toCalendar.set(Calendar.MINUTE, 59);
+            toCalendar.set(Calendar.SECOND, 59);
+            Calendar fromCalendar = Calendar.getInstance();
+            fromCalendar.setTime(from);
+            fromCalendar.set(Calendar.HOUR_OF_DAY, 0);
+            fromCalendar.set(Calendar.MINUTE, 0);
+            fromCalendar.set(Calendar.SECOND, 0);
+			List<Transaction> list = userLogic.getAllHistory(new User(userDto), fromCalendar.getTime(), toCalendar.getTime());
 			List<TransactionDTO> ret = new ArrayList<TransactionDTO>();
 			for (Transaction t : list) {
 				ret.add(EntityTransformer.transformTransaction(t));
