@@ -7,6 +7,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import edu.ibs.common.dto.BankBookDTO;
 import edu.ibs.common.dto.CardBookDTO;
 import edu.ibs.common.dto.CurrencyDTO;
+import edu.ibs.common.dto.ProviderDTO;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.ds.GwtRpcDataSource;
 import edu.ibs.webui.client.utils.AppCallback;
@@ -23,16 +24,16 @@ public class BankBooksDataSource extends GwtRpcDataSource {
 
     @Override
 	public void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
-		AsyncCallback<List<CardBookDTO>> callback = new AppCallback<List<CardBookDTO>>() {
+		AsyncCallback<List<ProviderDTO>> callback = new AppCallback<List<ProviderDTO>>() {
 			@Override
-			public void onSuccess(List<CardBookDTO> list) {
+			public void onSuccess(List<ProviderDTO> list) {
 				int size = 0;
 				if (list != null && list.size() > 0) {
 					size = list.size();
 					ListGridRecord[] listGridRecords = new ListGridRecord[size];
 					for (int i = 0; i < size; i++) {
-						CardBookDTO cardBookDTO = list.get(i);
-                        BankBookDTO dto = cardBookDTO.getBankBook();
+						ProviderDTO providerDTO = list.get(i);
+                        BankBookDTO dto = providerDTO.getCard().getBankBook();
                         if (dto != null) {
                             ListGridRecord record = new ListGridRecord();
                             record.setAttribute("id", dto.getId());

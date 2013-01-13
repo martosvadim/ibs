@@ -51,7 +51,7 @@ public class PaymentServiceImpl implements IPaymentService {
 	}
 
 	@Override
-	public void pay(CardBookDTO from, String toId, Float amount, TransactionType ttype) throws IbsServiceException {
+	public void pay(CardBookDTO from, String toId, Float amount, TransactionType ttype, String desc) throws IbsServiceException {
 
 		try {
 			Money money = parseMoney(amount, new Currency(from.getBankBook().getCurrency()));
@@ -238,18 +238,18 @@ public class PaymentServiceImpl implements IPaymentService {
 		return userDTO;
 	}
 
-	@Override
-	public List<CardBookDTO> getContragentList() throws IbsServiceException {
-		List<CardBookDTO> list = new ArrayList<CardBookDTO>();
-		try {
-			for (Provider provider : adminLogic.getProviderList()) {
-				list.add(EntityTransformer.transformCardBook(provider.getCard()));
-			}
-		} catch (Throwable t) {
-			throw new IbsServiceException("Ошибка получения списка контрагентов.");
-		}
-		return list;
-	}
+    @Override
+    public List<ProviderDTO> getContragentList() throws IbsServiceException {
+        List<ProviderDTO> list = new ArrayList<ProviderDTO>();
+        try {
+            for (Provider provider : adminLogic.getProviderList()) {
+                list.add(EntityTransformer.transformProvider(provider));
+            }
+        } catch (Throwable t) {
+            throw new IbsServiceException("Ошибка получения списка контрагентов.");
+        }
+        return list;
+    }
 
 	public List<TransactionDTO> getHistory(UserDTO userDto, TransactionType tt) throws IbsServiceException {
 		try {

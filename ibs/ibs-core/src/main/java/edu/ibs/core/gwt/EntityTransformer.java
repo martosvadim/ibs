@@ -154,4 +154,14 @@ public final class EntityTransformer {
         }
         return dto;
     }
+
+    public static ProviderDTO transformProvider(Provider provider) {
+        ProviderDTO dto = new ProviderDTO();
+        if (dto != null) {
+            dto.setId(provider.getId());
+            dto.setCard(transformCardBook(provider.getCard()));
+            dto.setFieldList(provider.getFields());
+        }
+        return dto;
+    }
 }
