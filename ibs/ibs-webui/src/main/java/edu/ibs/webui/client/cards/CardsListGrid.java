@@ -36,7 +36,7 @@ public class CardsListGrid extends ListGrid {
 
 		ListGridField bankBookId = new ListGridField("bankbook.id", "Номер банковского счёта", 150);
         ListGridField cardTypeField = new ListGridField("card.type", "Тип");
-        ListGridField cardNumberField = new ListGridField("cardbook.id", "Номер");
+        ListGridField cardNumberField = new ListGridField("cardbook.id", "Номер карт-счета");
         ListGridField currencyField = new ListGridField("currency.name", "Валюта", 50);
         ListGridField balanceField = new ListGridField("bankbook.balance", "Остаток");
         ListGridField infoField = new ListGridField("date.expire", "Срок действия карты", 180);
