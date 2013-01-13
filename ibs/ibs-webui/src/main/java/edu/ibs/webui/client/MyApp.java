@@ -23,11 +23,7 @@ import edu.ibs.common.dto.AccountDTO;
 import edu.ibs.common.enums.AccountRole;
 import edu.ibs.common.interfaces.IAuthServiceAsync;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
-import edu.ibs.webui.client.admin.AddMoneyController;
-import edu.ibs.webui.client.admin.BankBooksGrid;
-import edu.ibs.webui.client.admin.CreateBankBookController;
-import edu.ibs.webui.client.admin.CreateNewUserController;
-import edu.ibs.webui.client.admin.CurrenciesGrid;
+import edu.ibs.webui.client.admin.*;
 import edu.ibs.webui.client.cards.CardRequestsGrid;
 import edu.ibs.webui.client.controller.FillUserInfoController;
 import edu.ibs.webui.client.controller.GenericController;
@@ -342,6 +338,22 @@ public class MyApp implements EntryPoint {
 			};
 			addUser.addClickHandler(addUserClickHandler);
 			links.addMember(addUser);
+
+            Label editUser = new Label("Редактировать данные пользователя");
+            editUser.setStyleName(adminLinkStyleName);
+            final ClickHandler editUserClickHandler = new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    SearchUserController controller = new SearchUserController();
+                    controller.getWindow().draw();
+                }
+            };
+            editUser.addClickHandler(editUserClickHandler);
+            links.addMember(editUser);
+
+//			Label deleteUser = new Label("Удалить пользователя");
+//			deleteUser.setStyleName(adminLinkStyleName);
+//			links.addMember(deleteUser);
 
 			Label createBankBook = new Label("Создать банковский счёт");
 			createBankBook.setStyleName(adminLinkStyleName);
