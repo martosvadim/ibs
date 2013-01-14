@@ -39,7 +39,7 @@ public class CardsListGrid extends ListGrid {
 		ListGridField currencyField = new ListGridField("currency.name", "Валюта", 50);
 		ListGridField balanceField = new ListGridField("bankbook.balance", "Остаток");
 		ListGridField infoField = new ListGridField("date.expire", "Срок действия карты", 180);
-		ListGridField freezedField = new ListGridField("cardbook.freezed", "Заморожен");
+		ListGridField freezedField = new ListGridField("cardbook.freezed", "Заморожена");
 		infoField.setType(ListGridFieldType.DATE);
 		infoField.setCanFilter(false);
 		infoField.setCellFormatter(new CellFormatter() {
