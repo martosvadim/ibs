@@ -50,4 +50,10 @@ public interface IPaymentService extends RemoteService {
 	List<TransactionDTO> getHistory(UserDTO userDto, TransactionType tt) throws IbsServiceException;
 
 	List<TransactionDTO> getHistory(UserDTO userDto, CardBookDTO card, Date from, Date to) throws IbsServiceException;
+
+    void freeze(CardBookDTO dto) throws IbsServiceException;
+
+    List<CardBookDTO> getCards(String passportNumber) throws IbsServiceException;
+
+    List<CardBookDTO> getCards() throws IbsServiceException;
 }

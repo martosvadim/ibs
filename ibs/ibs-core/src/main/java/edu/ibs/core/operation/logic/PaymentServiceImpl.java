@@ -308,7 +308,45 @@ public class PaymentServiceImpl implements IPaymentService {
 		}
 	}
 
-	public UserOperations getUserLogic() {
+    @Override
+    public void freeze(CardBookDTO dto) throws IbsServiceException {
+        try {
+            adminLogic.freeze(new CardBook(dto));
+        } catch (Throwable t) {
+            throw new IbsServiceException(t.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public List<CardBookDTO> getCards(String passportNumber) throws IbsServiceException {
+        List<CardBookDTO> ret = new ArrayList<CardBookDTO>();
+
+        try {
+            User user = adminLogic.getUserByPassport(passportNumber);
+            for (CardBook cb : userLogic.getCardBooks(user)) {
+                ret.add(EntityTransformer.transformCardBook(cb));
+            }
+        } catch (Throwable t) {
+            throw new IbsServiceException(t.getLocalizedMessage());
+        }
+        return ret;
+    }
+
+    @Override
+    public List<CardBookDTO> getCards() throws IbsServiceException {
+        List<CardBookDTO> ret = new ArrayList<CardBookDTO>();
+
+        try {
+            for (CardBook cb : adminLogic.selectEntities(CardBook.class, 0, adminLogic.count(CardBook.class))) {
+                ret.add(EntityTransformer.transformCardBook(cb));
+            }
+        } catch (Throwable t) {
+            throw new IbsServiceException(t.getLocalizedMessage());
+        }
+        return ret;
+    }
+
+    public UserOperations getUserLogic() {
 		return userLogic;
 	}
 

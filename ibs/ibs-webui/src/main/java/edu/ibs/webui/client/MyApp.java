@@ -29,6 +29,8 @@ import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.admin.*;
 import edu.ibs.webui.client.cards.CardRequestDataSource;
 import edu.ibs.webui.client.cards.CardRequestsGrid;
+import edu.ibs.webui.client.cards.UsersCardsDataSource;
+import edu.ibs.webui.client.cards.UsersCardsGrid;
 import edu.ibs.webui.client.controller.FillUserInfoController;
 import edu.ibs.webui.client.controller.GenericController;
 import edu.ibs.webui.client.controller.IAction;
@@ -52,8 +54,9 @@ public class MyApp implements EntryPoint {
 	 */
 	private Canvas bg = new Canvas();
 	private CurrenciesGrid currenciesGrid = new CurrenciesGrid();
-    private HLayout searchByPasswordLayout;
+    private HLayout searchByPasswordLayout1, searchByPasswordLayout2;
     private CardRequestsGrid cardRequestGrid = new CardRequestsGrid();
+    private UsersCardsGrid usersCardsGrid = new UsersCardsGrid();
 
     public void onModuleLoad() {
 
@@ -452,15 +455,23 @@ public class MyApp implements EntryPoint {
 			Tab tTab1 = new Tab("Заявки", "icons/16/contacts.png");
             VLayout pane1Layout = new VLayout();
             pane1Layout.setMembersMargin(5);
-            pane1Layout.addMember(getSearchByPasswordLayout());
+            pane1Layout.addMember(getSearchByPasswordLayout1());
             pane1Layout.addMember(cardRequestGrid);
 			tTab1.setPane(pane1Layout);
 
 			Tab tTab2 = new Tab("Счета", "icons/16/datamanagement.png");
 			tTab2.setPane(new BankBooksGrid());
 
+            Tab tTab3 = new Tab("Карты", "icons/16/sales.png");
+            VLayout pane2Layout = new VLayout();
+            pane2Layout.setMembersMargin(5);
+            pane2Layout.addMember(getSearchByPasswordLayout2());
+            pane2Layout.addMember(usersCardsGrid);
+			tTab3.setPane(pane2Layout);
+
 			topTabSet.addTab(tTab1);
 			topTabSet.addTab(tTab2);
+            topTabSet.addTab(tTab3);
 
 			adminContentLayout.addMember(topTabSet);
 
@@ -477,11 +488,11 @@ public class MyApp implements EntryPoint {
 		return adminLayout;
 	}
 
-    private Canvas getSearchByPasswordLayout() {
-        if (searchByPasswordLayout == null) {
-            searchByPasswordLayout = new HLayout();
-            searchByPasswordLayout.setWidth("50%");
-            searchByPasswordLayout.setMembersMargin(5);
+    private Canvas getSearchByPasswordLayout1() {
+        if (searchByPasswordLayout1 == null) {
+            searchByPasswordLayout1 = new HLayout();
+            searchByPasswordLayout1.setWidth("50%");
+            searchByPasswordLayout1.setMembersMargin(5);
             IButton searchBtn = new IButton("Поиск");
             final GenericController searchText = Components.getTextItem();
             searchBtn.addClickHandler(new ClickHandler() {
@@ -497,10 +508,36 @@ public class MyApp implements EntryPoint {
                     }
                 }
             });
-            searchByPasswordLayout.addMember(Components.addTitle("№ пасспорта", searchText.getView()));
-            searchByPasswordLayout.addMember(searchBtn);
+            searchByPasswordLayout1.addMember(Components.addTitle("№ пасспорта", searchText.getView()));
+            searchByPasswordLayout1.addMember(searchBtn);
         }
-        return searchByPasswordLayout;
+        return searchByPasswordLayout1;
+    }
+
+    private Canvas getSearchByPasswordLayout2() {
+        if (searchByPasswordLayout2 == null) {
+            searchByPasswordLayout2 = new HLayout();
+            searchByPasswordLayout2.setWidth("50%");
+            searchByPasswordLayout2.setMembersMargin(5);
+            IButton searchBtn = new IButton("Поиск");
+            final GenericController searchText = Components.getTextItem();
+            searchBtn.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    String unbinded = (String) searchText.unbind();
+                    if (ProviderField.PASSPORT.validate(unbinded)) {
+                        ((UsersCardsDataSource) usersCardsGrid.getDataSource()).setPasswordNumber(unbinded);
+                        usersCardsGrid.invalidateCache();
+                        usersCardsGrid.fetchData();
+                    } else {
+                        SC.say(ProviderField.PASSPORT.validPattern());
+                    }
+                }
+            });
+            searchByPasswordLayout2.addMember(Components.addTitle("№ пасспорта", searchText.getView()));
+            searchByPasswordLayout2.addMember(searchBtn);
+        }
+        return searchByPasswordLayout2;
     }
 
 	private Canvas getMainLayout() {
