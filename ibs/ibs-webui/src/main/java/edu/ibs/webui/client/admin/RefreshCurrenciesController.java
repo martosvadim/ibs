@@ -57,17 +57,10 @@ public class RefreshCurrenciesController extends GenericWindowController {
 			}
 		});
 
-
-		HLayout hl = new HLayout();
-		hl.setMembersMargin(MARGIN);
-		hl.setMargin(15);
-		hl.addMember(refreshBtn);
-		hl.setWidth100();
-		hl.setHeight100();
 		VLayout vl = new VLayout();
 		vl.setMembersMargin(MARGIN);
 		vl.setMargin(15);
-		vl.addMember(hl);
+		vl.addMember(refreshBtn);
 		vl.addMember(label);
 		vl.setWidth100();
 		vl.setHeight100();
