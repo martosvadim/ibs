@@ -22,7 +22,7 @@ public enum ProviderField {
 	public static final String BOOK_REGEXP = "^[0-9]{1,16}$";
 	public static final String VALID_PASSPORT_MSG = "номер паспорта должен содержать серия - две латинские буквы в верхнем регистре, и 7-значный номер";
 	public static final String VALID_PHONE_MSG = "номер должен начинаться с 375, далее две цифры - код оператора, далее - семизначный номер";
-	public static final String VALID_NAME_MSG = "имя должно начинаться с заглавной буквы, может содержать любые символы кириллицы, и один дефис, от 2 до 65 символов";
+	public static final String VALID_NAME_MSG = "имя должно начинаться с заглавной буквы, может содержать любые символы кириллицы, и один дефис, от 3 до 65 символов";
 	public static final String VALID_ADDRESS_MSG = "адрес может содержать любые символы кириллицы, цифры, пробелы, запятые и точки, от 2 до 64 символов";
 	public static final String VALID_BOOK_MSG = "номер счета может содержать от 1 до 16 цифр";
 //	private static final RegExp PASSPORT_PATTERN = RegExp.compile(PASSPORT_NUMBER_REGEXP);
