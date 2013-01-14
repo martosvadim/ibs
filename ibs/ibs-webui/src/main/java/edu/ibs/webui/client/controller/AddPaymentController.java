@@ -2,6 +2,7 @@ package edu.ibs.webui.client.controller;
 
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -24,8 +25,9 @@ public class AddPaymentController extends GenericWindowController {
 
 	private CardBookDTO cardBookDTO = null;
     private IAction<Object> closeAction= null;
+    private Label currencyLbl = new Label();
 
-	public AddPaymentController() {
+    public AddPaymentController() {
 		getWindow().setTitle("Перевод средств");
 		final IButton payButton = new IButton("Перевести");
 		payButton.setWidth(80);
@@ -76,7 +78,11 @@ public class AddPaymentController extends GenericWindowController {
 		layoutForm.setHeight100();
 
 		layoutForm.addMember(Components.addTitle("Получатель", reciepient.getView()));
-		layoutForm.addMember(Components.addTitle("Сумма", amount.getView()));
+        HLayout layout = new HLayout();
+        layout.setHeight(30);
+        layout.addMember(Components.addTitle("Сумма", amount.getView()));
+        layout.addMember(currencyLbl);
+		layoutForm.addMember(layout);
 
 		HLayout buttons = new HLayout();
 		buttons.addMember(payButton);
@@ -100,6 +106,7 @@ public class AddPaymentController extends GenericWindowController {
         DynamicForm form = ((DynamicForm)amount.getView());
         ((TextItem) form.getFields()[0]).setShowHintInField(true);
         form.getFields()[0].setHint(Components.getCurrencyHint(cardBookDTO.getBankBook().getCurrency()));
+        currencyLbl.setContents(getCardBookDTO().getBankBook().getCurrency().getName());
 	}
 
     public IAction<Object> getCloseAction() {
