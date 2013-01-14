@@ -428,15 +428,8 @@ public class MyApp implements EntryPoint {
 
 				@Override
 				public void onClick(ClickEvent clickEvent) {
-					IPaymentServiceAsync.Util.getInstance().refreshCurrencies(new AppCallback<Void>() {
-
-						@Override
-						public void onSuccess(Void aVoid) {
-							SC.say("Курсы валют обновлены.");
-							currenciesGrid.invalidateCache();
-							currenciesGrid.fetchData();
-						}
-					});
+					RefreshCurrenciesController controller = new RefreshCurrenciesController();
+                    controller.getWindow().draw();
 				}
 			};
 			refreshCurrencies.addClickHandler(rcCH);
