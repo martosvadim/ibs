@@ -227,11 +227,12 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public BankBook createBankBook(User user, Money money) {
-		if (!dataSource.exist(user.getClass(), user.getId())) {
-			throw new IllegalArgumentException("User does not exist");
-		}
-		if (!dataSource.exist(money.currency().getClass(), money.currency().getId())) {
-			throw new IllegalArgumentException("Currency does not exsist");
+		if ((user = dataSource.select(user.getClass(), user.getId())) == null) {
+			throw new IllegalArgumentException("Пользователь не существует");
+		} else if (!dataSource.exist(money.currency().getClass(), money.currency().getId())) {
+			throw new IllegalArgumentException("Валюта не существует");
+		} else if (user.isFreezed()) {
+			throw new IllegalArgumentException(String.format("Пользователь %s заморожен", user));
 		}
 		BankBook bankBook = new BankBook(user, money);
 		dataSource.insert(bankBook);
@@ -241,6 +242,11 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public CardBook createDebitCardBook(User user, BankBook bankBook) {
+		if ((user = dataSource.select(user.getClass(), user.getId())) == null) {
+			throw new IllegalArgumentException("Пользователь не существует");
+		} else if (user.isFreezed()) {
+			throw new IllegalArgumentException(String.format("Пользователь %s заморожен", user));
+		}
 		return dataSource.createCardBook(user, bankBook, null);
 	}
 
@@ -248,6 +254,10 @@ public final class CommonService implements UserOperations, AdminOperations {
 	public CardBook createCreditCardBook(User user, BankBook bankBook, CreditPlan credit) {
 		if (credit == null) {
 			throw new NullPointerException("Credit plan can't be null for credit card");
+		} else if ((user = dataSource.select(user.getClass(), user.getId())) == null) {
+			throw new IllegalArgumentException("Пользователь не существует");
+		} else if (user.isFreezed()) {
+			throw new IllegalArgumentException(String.format("Пользователь %s заморожен", user));
 		}
 		return dataSource.createCardBook(user, bankBook, credit);
 	}
@@ -313,13 +323,22 @@ public final class CommonService implements UserOperations, AdminOperations {
 
 	@Override
 	public CardRequest requestDebitCard(User user, BankBook bankBook) throws IllegalArgumentException {
+		if ((user = dataSource.select(user.getClass(), user.getId())) == null) {
+			throw new IllegalArgumentException("Пользователь не существует");
+		} else if (user.isFreezed()) {
+			throw new IllegalArgumentException(String.format("Пользователь %s заморожен", user));
+		}
 		return dataSource.requestCard(user, bankBook, null);
 	}
 
 	@Override
 	public CardRequest requestCreditCard(User user, BankBook bankBook, CreditPlan plan) throws IllegalArgumentException {
 		if (plan == null) {
-			throw new NullPointerException("Credit plan is null");
+			throw new NullPointerException("Кредитный план не существует");
+		} else if ((user = dataSource.select(user.getClass(), user.getId())) == null) {
+			throw new IllegalArgumentException("Пользователь не существует");
+		} else if (user.isFreezed()) {
+			throw new IllegalArgumentException(String.format("Пользователь %s заморожен", user));
 		}
 		return dataSource.requestCard(user, bankBook, plan);
 	}

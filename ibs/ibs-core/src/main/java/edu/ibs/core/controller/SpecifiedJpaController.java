@@ -81,6 +81,12 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 			} else if (from.getBankBook().isFreezed()) {
 				em.getTransaction().rollback();
 				throw new FreezedException(String.format("Банк-счет %s заморожен", from.getBankBook()));
+			} else if (from.getOwner().isFreezed()) {
+				em.getTransaction().rollback();
+				throw new FreezedException(String.format("Пользователь %s заморожен", from.getOwner()));
+			} else if (to.getOwner().isFreezed()) {
+				em.getTransaction().rollback();
+				throw new FreezedException(String.format("Пользователь %s заморожен", to.getOwner()));
 			} else if (to.getBankBook().isFreezed()) {
 				em.getTransaction().rollback();
 				throw new FreezedException(String.format("Банк-счет %s заморожен", to.getBankBook()));
@@ -426,6 +432,9 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 			} else if (bankBook.isFreezed()) {
 				em.getTransaction().rollback();
 				throw new FreezedException(String.format("Банк-счет %s заморожен", bankBook));
+			} else if (bankBook.getOwner().isFreezed()) {
+				em.getTransaction().rollback();
+				throw new FreezedException(String.format("Пользователь %s заморожен", bankBook.getOwner()));
 			} else {
 				bankBook.add(money);
 				em.getTransaction().commit();
@@ -574,7 +583,7 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 					}
 					default: {
 						em.getTransaction().rollback();
-						throw new IllegalArgumentException(String.format("Unknown card book type %s", request.getType()));
+						throw new IllegalArgumentException(String.format("Неизвестный тип карт-счета %s", request.getType()));
 					}
 				}
 				request.approve(cardBook);
@@ -599,23 +608,25 @@ public final class SpecifiedJpaController extends CSUIDJpaController implements 
 			em.getTransaction().begin();
 			user = em.find(user.getClass(), user.getId());
 			if (user == null) {
-				throw new IllegalArgumentException("User doesn't exist");
+				throw new IllegalArgumentException("Пользователь не существует");
+			} else if (user.isFreezed()) {
+				throw new IllegalArgumentException(String.format("Пользователь %s заморожен", user));
 			}
 			book = em.find(book.getClass(), book.getId());
 			if (book == null) {
-				throw new IllegalArgumentException("Book doesn't exist");
+				throw new IllegalArgumentException("Банк-счет не существует");
 			}
 			if (em.find(book.getCurrency().getClass(), book.getCurrency().getId()) == null) {
-				throw new IllegalArgumentException("Currency doesn't exist");
+				throw new IllegalArgumentException("Валюта не существует");
 			}
 			CardBook cardBook;
 			if (plan != null) {
 				plan = em.find(plan.getClass(), plan.getId());
 				if (plan == null) {
-					throw new IllegalArgumentException("Credit plan doesn't exist");
+					throw new IllegalArgumentException("Кредитный план не существует");
 				}
 				if (!book.getCurrency().equals(plan.getCurrency())) {
-					throw new IllegalArgumentException(String.format("Currency of bank book [%s] doesn't equals to currency of credit plan [%s]", book.getCurrency().getName(), plan.getCurrency().getName()));
+					throw new IllegalArgumentException(String.format("Валюта банк счета [%s] не соответствеут валюте кредитного плана [%s]", book.getCurrency().getName(), plan.getCurrency().getName()));
 				}
 				Credit credit = new Credit(plan);
 				em.persist(credit);

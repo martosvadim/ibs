@@ -3,18 +3,14 @@ package edu.ibs.core.currencies;
 import edu.ibs.core.entity.Currency;
 import edu.ibs.core.operation.AdminOperations;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.xml.soap.*;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 
 /**
@@ -28,7 +24,7 @@ public class CurrenciesCache {
 	public CurrenciesCache() {
 	}
 
-	public void fillCurrencies() {
+	public void fillCurrencies() throws Throwable {
 		SOAPConnectionFactory sfc = null;
 		try {
 			sfc = SOAPConnectionFactory.newInstance();
@@ -80,16 +76,9 @@ public class CurrenciesCache {
 				}
 				adminLogic.update(getList());
 			}
-		} catch (SOAPException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Throwable e) {
+			System.err.println(e.getLocalizedMessage());
+			throw e;
 		}
 	}
 
