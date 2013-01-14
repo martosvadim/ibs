@@ -34,8 +34,9 @@ public class AddMoneyController extends GenericWindowController {
 	final IButton addMoneyBtn = new IButton("Пополнить");
 	private boolean checked = false;
 	private BankBookDTO bankBookDTO;
+    private Label currencyLbl = new Label();
 
-	public AddMoneyController() {
+    public AddMoneyController() {
 		getWindow().setTitle("Пополнение счёта");
 
 		bankBookIdControl.addOnChange(new IAction() {
@@ -181,7 +182,13 @@ public class AddMoneyController extends GenericWindowController {
 					Components.addTitle("Владелец счета",
 							new Label(getBankBookDTO().getOwner().getFirstName()
 									+ " " + getBankBookDTO().getOwner().getLastName())));
-			layoutForm.addMember(Components.addTitle("Сумма", amountControl.getView()));
+
+            currencyLbl.setContents(getBankBookDTO().getCurrency().getName());
+            HLayout layout = new HLayout();
+            layout.setHeight(30);
+            layout.addMember(Components.addTitle("Сумма", amountControl.getView()));
+            layout.addMember(currencyLbl);
+			layoutForm.addMember(layout);
 
 			HLayout buttons = new HLayout();
 			buttons.addMember(addMoneyBtn);

@@ -63,7 +63,7 @@ public class PaymentServiceImpl implements IPaymentService {
 			Money money = parseMoney(amount, new Currency(from.getBankBook().getCurrency()));
 			userLogic.pay(new CardBook(from), Long.parseLong(toId), money, ttype, desc);
 		} catch (FreezedException e) {
-			throw new IbsServiceException("Счёт заморожен.");
+			throw new IbsServiceException(e.getLocalizedMessage());
 		} catch (NotEnoughMoneyException e) {
 			throw new IbsServiceException("Не достаточно средств.");
 		} catch (IllegalArgumentException e) {

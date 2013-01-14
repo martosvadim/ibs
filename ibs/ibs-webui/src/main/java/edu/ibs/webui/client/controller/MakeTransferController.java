@@ -3,6 +3,7 @@ package edu.ibs.webui.client.controller;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -35,12 +36,12 @@ public class MakeTransferController extends GenericWindowController {
 	private VLayout providerFieldsLayout = new VLayout();
 	private List<Canvas> providerFieldViews = new ArrayList<Canvas>();
 	private Map<ProviderField, GenericController> fieldsMap = new HashMap<ProviderField, GenericController>();
+    private Label currencyLbl = new Label();
 
-	public MakeTransferController() {
+    public MakeTransferController() {
 		getWindow().setTitle("Оплата");
 		final IButton payButton = new IButton("Оплатить");
 		payButton.setWidth(80);
-
 		IPaymentServiceAsync.Util.getInstance().getContragentList(new AppCallback<List<ProviderDTO>>() {
 
 			@Override
@@ -87,7 +88,6 @@ public class MakeTransferController extends GenericWindowController {
 
 					providerFieldsLayout.redraw();
 				}
-
 			}
 		});
 
@@ -153,7 +153,11 @@ public class MakeTransferController extends GenericWindowController {
 		providerFieldsLayout.setVisible(false);
 		VLayout amountLayout = new VLayout();
 		amountLayout.setHeight100();
-		amountLayout.addMember(Components.addTitle("Сумма", amount.getView()));
+        HLayout layout = new HLayout();
+        layout.setHeight(30);
+        layout.addMember(Components.addTitle("Сумма", amount.getView()));
+        layout.addMember(currencyLbl);
+		amountLayout.addMember(layout);
 		layoutForm.addMember(amountLayout);
 
 		HLayout buttons = new HLayout();
@@ -206,6 +210,7 @@ public class MakeTransferController extends GenericWindowController {
 		DynamicForm form = ((DynamicForm) amount.getView());
 		((TextItem) form.getFields()[0]).setShowHintInField(true);
 		form.getFields()[0].setHint(Components.getCurrencyHint(cardBookDTO.getBankBook().getCurrency()));
+        currencyLbl.setContents(getCardBookDTO().getBankBook().getCurrency().getName());
 	}
 
 	public IAction<Object> getCloseAction() {
