@@ -44,7 +44,12 @@ public class UsersCardsDataSource extends GwtRpcDataSource {
                         record.setAttribute("user", dto.getBankBook().getOwner().getFirstName() + " "
                                 + dto.getBankBook().getOwner().getLastName()
                                 + " " + dto.getBankBook().getOwner().getPassportNumber());
-                        record.setAttribute("isFreezed", dto.isFreezed());
+                        record.setAttribute("freezed", dto.isFreezed());
+                        if (dto.isFreezed()) {
+                            record.setAttribute("icon", "assign");
+                        } else {
+                            record.setAttribute("icon", "delete");
+                        }
 						listGridRecords[i] = record;
 					}
 					response.setData(listGridRecords);

@@ -318,6 +318,15 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     @Override
+    public void unfreeze(CardBookDTO dto) throws IbsServiceException {
+        try {
+            adminLogic.unfreeze(new CardBook(dto));
+        } catch (Throwable t) {
+            throw new IbsServiceException(t.getLocalizedMessage());
+        }
+    }
+
+    @Override
     public List<CardBookDTO> getCards(String passportNumber) throws IbsServiceException {
         List<CardBookDTO> ret = new ArrayList<CardBookDTO>();
 
@@ -338,7 +347,9 @@ public class PaymentServiceImpl implements IPaymentService {
 
         try {
             for (CardBook cb : adminLogic.selectEntities(CardBook.class, 0, adminLogic.count(CardBook.class))) {
-                ret.add(EntityTransformer.transformCardBook(cb));
+                if (!adminLogic.isProvider(cb)) {
+                    ret.add(EntityTransformer.transformCardBook(cb));
+                }
             }
         } catch (Throwable t) {
             throw new IbsServiceException(t.getLocalizedMessage());

@@ -369,6 +369,21 @@ public class Components {
 		return field;
 	}
 
+    public static ListGridField getImageGridField(final String element, final String hover, final int width,
+                                                  final int imageSize, final String imgPrefix,
+                                                  final String imgSuffix, final RecordClickHandler handler) {
+        TreeGridField field = Components.getTreeGridFieldWithPrompt(element, null, width);
+        field.setAlign(Alignment.CENTER);
+        field.setType(ListGridFieldType.IMAGE);
+        field.setImageURLPrefix(JS.getImgPath(imgPrefix));
+        field.setImageURLSuffix(imgSuffix);
+        field.setImageSize(imageSize);
+        field.setCanSort(false);
+        field.setHoverCustomizer(Components.getHover(hover, element));
+        field.addRecordClickHandler(handler);
+        return field;
+    }
+
 	public static TreeGridField getTreeGridFieldWithPrompt(final String name, final String title, final int width) {
 		TreeGridField result = new TreeGridField(name, title, width);
 		result.setPrompt(title);
@@ -383,6 +398,22 @@ public class Components {
 			}
 		};
 	}
+
+    public static HoverCustomizer getHover(final String hover, final String attr) {
+        return new HoverCustomizer() {
+            public String hoverHTML(final Object value,
+                                    final ListGridRecord record,
+                                    final int rowNum,
+                                    final int colNum) {
+                String attrValue = record.getAttribute(attr);
+                if (attrValue == null || attrValue.trim().length() == 0 || attrValue.equals("false")) {
+                    return null;
+                } else {
+                    return hover;
+                }
+            }
+        };
+    }
 
 	/**
 	 * Создаём контрол для выбора элемента из списка

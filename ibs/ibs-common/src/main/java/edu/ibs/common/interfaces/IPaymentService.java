@@ -53,6 +53,8 @@ public interface IPaymentService extends RemoteService {
 
     void freeze(CardBookDTO dto) throws IbsServiceException;
 
+    void unfreeze(CardBookDTO dto) throws IbsServiceException;
+
     List<CardBookDTO> getCards(String passportNumber) throws IbsServiceException;
 
     List<CardBookDTO> getCards() throws IbsServiceException;

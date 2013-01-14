@@ -466,6 +466,7 @@ public class MyApp implements EntryPoint {
             VLayout pane2Layout = new VLayout();
             pane2Layout.setMembersMargin(5);
             pane2Layout.addMember(getSearchByPasswordLayout2());
+            usersCardsGrid.setHeight100();
             pane2Layout.addMember(usersCardsGrid);
 			tTab3.setPane(pane2Layout);
 
