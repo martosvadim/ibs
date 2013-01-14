@@ -43,7 +43,7 @@ public class CardsDataSource extends GwtRpcDataSource {
 						record.setAttribute("currency.name", dto.getBankBook().getCurrency().getName());
 						record.setAttribute("dto", dto);
 						record.setAttribute("icon", "sales");
-						record.setAttribute("cardbook.freezed", dto.isFreezed());
+						record.setAttribute("cardbook.freezed", dto.isFreezed() ? "да" : "нет");
 						record.setAttribute("date.expire", new Date(dto.getDateExpire()));
 						listGridRecords[i] = record;
 					}
