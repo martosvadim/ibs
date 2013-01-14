@@ -172,14 +172,12 @@ public class CommonServiceTest {
 	@Test
 	public void requestCardTest() {
 		CardRequest request = null;
-		BankBook bb = null;
 		try {
 			int count = service.getAllRequests().size();
-			bb = new BankBook(u1, new Money(2, usd));
 			Date from = new Date();
-			request = service.requestDebitCard(u1, bb);
+			request = service.requestDebitCard(u1, bb1);
 			Date to = new Date();
-			bb = request.getBankBook();
+			BankBook bb = request.getBankBook();
 			assertNotNull(bb);
 			assertFalse(request.isWatched());
 			assertFalse(request.isApproved());
@@ -191,7 +189,7 @@ public class CommonServiceTest {
 
 			List<BankBook> bankBooks = service.getBankBooks(u1);
 			assertNotNull(bankBooks);
-			assertEquals(2, bankBooks.size());
+			assertEquals(1, bankBooks.size());
 
 			requests = service.getAllRequests();
 			assertNotNull(requests);
@@ -216,9 +214,7 @@ public class CommonServiceTest {
 			assertNotNull(requests);
 			assertEquals(count, requests.size());
 		} finally {
-			if (bb != null && bb.getId() > 0) {
-				controller.delete(bb.getClass(), bb.getId());
-			} else if (request != null && request.getId() > 0) {
+			if (request != null && request.getId() > 0) {
 				controller.delete(request.getClass(), request.getId());
 			}
 		}
