@@ -1,11 +1,8 @@
 package edu.ibs.webui.client;
 
 /**
- * User: Максим
- * Date: 29.10.12
- * Time: 23:00
+ * User: Максим Date: 29.10.12 Time: 23:00
  */
-
 import com.google.gwt.core.client.GWT;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.util.SC;
@@ -37,80 +34,76 @@ import edu.ibs.webui.client.utils.Components;
 
 import java.util.List;
 
-
 public class NavigationPane extends SectionStack {
 
-    private static final int WEST_WIDTH = 200;
+	private static final int WEST_WIDTH = 200;
 	private static final Integer MARGIN = 5;
-
 	private VStack userInfoStack = new VStack();
-	private SectionStackSection userInfoSection = new SectionStackSection("Настройки");
+	private SectionStackSection userInfoSection = new SectionStackSection("Личные данные");
 	private AccountView accountView;
-    private SectionStackSection section1;
-    private SectionStackSection section2;
+	private SectionStackSection section1;
+	private SectionStackSection section2;
 
-    public NavigationPane() {
-        super();
-        GWT.log("init NavigationPane()...", null);
-        this.setWidth(WEST_WIDTH);
-        this.setVisibilityMode(VisibilityMode.MUTEX);
-        this.setShowExpandControls(false);
-        this.setAnimateSections(true);
+	public NavigationPane() {
+		super();
+		GWT.log("init NavigationPane()...", null);
+		this.setWidth(WEST_WIDTH);
+		this.setVisibilityMode(VisibilityMode.MUTEX);
+		this.setShowExpandControls(false);
+		this.setAnimateSections(true);
 
-        section1 = new SectionStackSection("Платежи");
-        section1.setExpanded(true);
+		section1 = new SectionStackSection("Платежи");
+		section1.setExpanded(true);
 		VStack stack1 = new VStack();
 		stack1.addMember(getAddPaymentLink());
-        stack1.addMember(getAddTransferLink());
+		stack1.addMember(getAddTransferLink());
 		section1.setItems(stack1);
 
-        section2 = new SectionStackSection("Карты");
-        section2.setExpanded(true);
+		section2 = new SectionStackSection("Карты");
+		section2.setExpanded(true);
 		VStack stack2 = new VStack();
 		stack2.addMember(getAddCardLink());
 		stack2.addMember(getBankStatementLink());
 //		stack2.addMember(getAutoPaymentLink());
 		section2.setItems(stack2);
 
-        userInfoSection.setExpanded(true);
+		userInfoSection.setExpanded(true);
 		defineUserInfoStack();
 		userInfoSection.setItems(userInfoStack);
 
-        if (userHasBankBooks()) {
-            addSectionsForPayment();
-        } else {
-            UserDTO userDTO = ApplicationManager.getInstance().getAccount().getUser();
-            IPaymentServiceAsync.Util.getInstance().getBankBooks(userDTO, new AppCallback<List<BankBookDTO>>() {
-                @Override
-                public void onSuccess(List<BankBookDTO> bankBookDTOs) {
-                    ApplicationManager.getInstance().setBankBookDTOList(bankBookDTOs);
-                    if (userHasBankBooks()) {
-                        addSectionsForPayment();
-                    } else {
-                        addSectionsWithoutBankBook();
-                        SC.warn("Обратитесь к администратору для создания банковского счёта.");
-                    }
-                }
+		if (userHasBankBooks()) {
+			addSectionsForPayment();
+		} else {
+			UserDTO userDTO = ApplicationManager.getInstance().getAccount().getUser();
+			IPaymentServiceAsync.Util.getInstance().getBankBooks(userDTO, new AppCallback<List<BankBookDTO>>() {
 
+				@Override
+				public void onSuccess(List<BankBookDTO> bankBookDTOs) {
+					ApplicationManager.getInstance().setBankBookDTOList(bankBookDTOs);
+					if (userHasBankBooks()) {
+						addSectionsForPayment();
+					} else {
+						addSectionsWithoutBankBook();
+						SC.warn("Обратитесь к администратору для создания банковского счёта.");
+					}
+				}
+			});
+		}
+	}
 
+	private void addSectionsWithoutBankBook() {
+		this.addSection(userInfoSection);
+		this.redraw();
+	}
 
-            });
-        }
-    }
+	private void addSectionsForPayment() {
+		this.addSection(section1);
+		this.addSection(section2);
+		this.addSection(userInfoSection);
+		this.redraw();
+	}
 
-    private void addSectionsWithoutBankBook() {
-        this.addSection(userInfoSection);
-        this.redraw();
-    }
-
-    private void addSectionsForPayment() {
-        this.addSection(section1);
-        this.addSection(section2);
-        this.addSection(userInfoSection);
-        this.redraw();
-    }
-
-    private void defineUserInfoStack() {
+	private void defineUserInfoStack() {
 
 		userInfoStack.removeMembers(userInfoStack.getMembers());
 
@@ -144,10 +137,12 @@ public class NavigationPane extends SectionStack {
 
 	private Canvas getFillUserLink() {
 		return getLink("Заполнить информацию о пользователе", new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				FillUserInfoController controller = new FillUserInfoController();
 				controller.setCloseAction(new IAction<Object>() {
+
 					@Override
 					public void execute(Object data) {
 						defineUserInfoStack();
@@ -161,6 +156,7 @@ public class NavigationPane extends SectionStack {
 
 	private Canvas getAddCardLink() {
 		return getLink("Заявка на карту", new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				UserDTO userDTO = ApplicationManager.getInstance().getAccount().getUser();
@@ -176,16 +172,16 @@ public class NavigationPane extends SectionStack {
 
 	private Canvas getBankStatementLink() {
 		return getLink("Выписка по карте", new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent clickEvent) {
-                MainHistoryController controller = new MainHistoryController();
-                ListGridRecord record = getAccountView().getContextAreaListGrid().getSelectedRecord();
+				MainHistoryController controller = new MainHistoryController();
+				ListGridRecord record = getAccountView().getContextAreaListGrid().getSelectedRecord();
 				CardBookDTO cardBookDTO = null;
 				if (record != null) {
 					try {
 						cardBookDTO = (CardBookDTO) record.getAttributeAsObject("dto");
 					} catch (Throwable t) {
-
 					}
 				}
 				if (cardBookDTO != null) {
@@ -200,32 +196,33 @@ public class NavigationPane extends SectionStack {
 
 	private Canvas getAutoPaymentLink() {
 		return getLink("Автооплата", new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent clickEvent) {
-
 			}
 		});
 	}
 
 	private Canvas getAddPaymentLink() {
 		return getLink("Оплатить", new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent clickEvent) {
-                MakeTransferController controller = new MakeTransferController();
-                controller.setCloseAction(new IAction<Object>() {
-                    @Override
-                    public void execute(Object data) {
-                        getAccountView().getContextAreaListGrid().invalidateCache();
-                        getAccountView().getContextAreaListGrid().fetchData();
-                    }
-                });
+				MakeTransferController controller = new MakeTransferController();
+				controller.setCloseAction(new IAction<Object>() {
+
+					@Override
+					public void execute(Object data) {
+						getAccountView().getContextAreaListGrid().invalidateCache();
+						getAccountView().getContextAreaListGrid().fetchData();
+					}
+				});
 				ListGridRecord record = getAccountView().getContextAreaListGrid().getSelectedRecord();
 				CardBookDTO cardBookDTO = null;
 				if (record != null) {
 					try {
 						cardBookDTO = (CardBookDTO) record.getAttributeAsObject("dto");
 					} catch (Throwable t) {
-
 					}
 				}
 				if (cardBookDTO != null) {
@@ -238,25 +235,26 @@ public class NavigationPane extends SectionStack {
 		});
 	}
 
-    private Canvas getAddTransferLink() {
+	private Canvas getAddTransferLink() {
 		return getLink("Перевод", new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				AddPaymentController controller = new AddPaymentController();
-                controller.setCloseAction(new IAction<Object>() {
-                    @Override
-                    public void execute(Object data) {
-                        getAccountView().getContextAreaListGrid().invalidateCache();
-                        getAccountView().getContextAreaListGrid().fetchData();
-                    }
-                });
+				controller.setCloseAction(new IAction<Object>() {
+
+					@Override
+					public void execute(Object data) {
+						getAccountView().getContextAreaListGrid().invalidateCache();
+						getAccountView().getContextAreaListGrid().fetchData();
+					}
+				});
 				ListGridRecord record = getAccountView().getContextAreaListGrid().getSelectedRecord();
 				CardBookDTO cardBookDTO = null;
 				if (record != null) {
 					try {
 						cardBookDTO = (CardBookDTO) record.getAttributeAsObject("dto");
 					} catch (Throwable t) {
-
 					}
 				}
 				if (cardBookDTO != null) {
@@ -271,6 +269,7 @@ public class NavigationPane extends SectionStack {
 
 	private Canvas getFindPaymentLink() {
 		return getLink("Сохраненные", new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				//todo Показать форму с платежами
@@ -311,9 +310,8 @@ public class NavigationPane extends SectionStack {
 		return accountView;
 	}
 
-    public boolean userHasBankBooks() {
-        List<BankBookDTO> list = ApplicationManager.getInstance().getBankBookDTOList();
-        return list != null && list.size() > 0;
-    }
+	public boolean userHasBankBooks() {
+		List<BankBookDTO> list = ApplicationManager.getInstance().getBankBookDTOList();
+		return list != null && list.size() > 0;
+	}
 }
-

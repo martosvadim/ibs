@@ -5,6 +5,7 @@ import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import edu.ibs.common.dto.CardBookDTO;
 import edu.ibs.common.dto.TransactionDTO;
+import edu.ibs.common.dto.TransactionType;
 import edu.ibs.common.interfaces.IPaymentServiceAsync;
 import edu.ibs.webui.client.ApplicationManager;
 import edu.ibs.webui.client.ds.GwtRpcDataSource;
@@ -43,6 +44,7 @@ public class HistoryDataSource extends GwtRpcDataSource {
 								+ " " + dto.getMoney().getCurrency().getName());
 						record.setAttribute("date", new Date(dto.getDate()));
 						record.setAttribute("desc", dto.getDesc());
+						record.setAttribute("type", dto.getType() == TransactionType.PAYMENT ? "Платеж" : "Перевод");
 						listGridRecords[i] = record;
 					}
 					response.setData(listGridRecords);

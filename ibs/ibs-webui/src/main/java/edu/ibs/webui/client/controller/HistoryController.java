@@ -28,6 +28,7 @@ public class HistoryController extends GenericWindowController {
 		ListGridField amountF = new ListGridField("amount", "Сумма");
 		ListGridField descF = new ListGridField("desc", "Данные");
 		ListGridField whenF = new ListGridField("date", "Дата");
+		ListGridField typeF = new ListGridField("type", "Вид");
 		whenF.setType(ListGridFieldType.DATE);
 		whenF.setCellFormatter(new CellFormatter() {
 
@@ -37,7 +38,7 @@ public class HistoryController extends GenericWindowController {
 				return fmt.format(arg1.getAttributeAsDate("date"));
 			}
 		});
-		lg.setFields(new ListGridField[]{fromF, toF, amountF, whenF, descF});
+		lg.setFields(new ListGridField[]{fromF, toF, amountF, typeF, whenF, descF});
 		lg.setDataSource(dataSource);
 		getWindow().addItem(lg);
 	}
