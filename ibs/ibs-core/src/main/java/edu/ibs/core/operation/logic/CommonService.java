@@ -549,4 +549,9 @@ public final class CommonService implements UserOperations, AdminOperations {
 	public boolean cardBookExist(long cardBookID) {
 		return dataSource.exist(CardBook.class, cardBookID);
 	}
+
+	@Override
+	public boolean isProvider(CardBook book) {
+		return dataSource.isBookOfProvider(book);
+	}
 }
