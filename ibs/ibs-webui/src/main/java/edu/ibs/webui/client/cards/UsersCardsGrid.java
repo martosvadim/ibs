@@ -5,6 +5,7 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.CellFormatter;
+import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -28,6 +29,7 @@ public class UsersCardsGrid extends ListGrid {
 		this.setAutoFetchData(true);
         this.setSortField(1);
 		Components.localizeGrid(this);
+        this.setShowHover(true);
 
         ListGridField bankBookId = new ListGridField("bankbook.id", "Номер банковского счёта", 150);
         ListGridField ownerField = new ListGridField("user", "Владелец");
@@ -55,7 +57,17 @@ public class UsersCardsGrid extends ListGrid {
         iconField.setType(ListGridFieldType.IMAGE);
         iconField.setImageURLPrefix("toolbar/");
         iconField.setImageURLSuffix(".png");
-        iconField.setPrompt("Заблокировать карт-счет");
+        iconField.setShowHover(true);
+        iconField.setHoverCustomizer(new HoverCustomizer() {
+            @Override
+            public String hoverHTML(Object o, ListGridRecord listGridRecord, int i, int i1) {
+                if (listGridRecord.getAttributeAsBoolean("freezed")) {
+                    return "Разморозить счет.";
+                } else {
+                    return "Заморозить счет";
+                }
+            }
+        });
         iconField.addRecordClickHandler(new RecordClickHandler() {
             @Override
             public void onRecordClick(RecordClickEvent event) {
