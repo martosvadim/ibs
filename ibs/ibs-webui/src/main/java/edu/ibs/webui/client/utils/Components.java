@@ -21,6 +21,7 @@ import com.smartgwt.client.widgets.tree.TreeGridField;
 import edu.ibs.common.dto.CurrencyDTO;
 import edu.ibs.common.dto.VocDTO;
 import edu.ibs.webui.client.controller.GenericController;
+import edu.ibs.webui.client.controller.IAction;
 import edu.ibs.webui.client.controller.SelectController;
 
 import java.util.LinkedHashMap;
@@ -423,6 +424,53 @@ public class Components {
 	public static SelectController getComboBoxControll() {
 		return new SelectController();
 	}
+
+    public static GenericController getCheckBoxControll(final IAction onChange, final String title) {
+        return new GenericController() {
+            /**
+             * Поле для ввода если контрол редактируемый
+             */
+            private CheckboxItem checkboxItem = new CheckboxItem();
+
+            @Override
+            protected Canvas createView() {
+                checkboxItem.setShowTitle(false);
+                checkboxItem.setTitle(title);
+                if (!isEnabled()) {
+                    checkboxItem.setDisabled(true);
+                }
+                checkboxItem.addChangedHandler(new ChangedHandler() {
+                    public void onChanged(final ChangedEvent changedEvent) {
+                        if (onChange != null) {
+                            onChange.execute(unbind());
+                        }
+                    }
+                });
+                DynamicForm form = createForm(checkboxItem);
+                form.setColWidths(1);
+                form.setWidth(1);
+                return form;
+            }
+
+            @Override
+            public void bind(final Object dto) {
+                Boolean aBoolean = (Boolean) dto;
+                if (aBoolean == null) {
+                    aBoolean = false;
+                }
+                checkboxItem.setValue(aBoolean);
+            }
+
+            @Override
+            public Object unbind() {
+                if (isEnabled() && checkboxItem.getValue() != null) {
+                    return checkboxItem.getValue();
+                }
+                return Boolean.FALSE;
+            }
+
+        };
+    }
 
     public static Canvas addTitle(final String title, final Canvas control) {
 

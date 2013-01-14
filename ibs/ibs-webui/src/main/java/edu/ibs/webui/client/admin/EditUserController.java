@@ -21,24 +21,22 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: Rimsky
  * Date: 13.01.13
  * Time: 14:35
- * To change this template use File | Settings | File Templates.
  */
 public class EditUserController extends GenericWindowController{
     private final GenericController firstname = Components.getTextItem();
     private final GenericController lastname = Components.getTextItem();
     private final GenericController passport = Components.getTextItem();
- //   private final GenericController email = Components.getTextItem();
+    private final GenericController blocked = Components.getCheckBoxControll(null, "");
 
     public EditUserController(final UserDTO dto) {
         getWindow().setTitle("Редактирование данных пользователя");
         firstname.bind(dto.getFirstName());
         lastname.bind(dto.getLastName());
         passport.bind(dto.getPassportNumber());
-   //     email.bind(dto.getEmail());
+        blocked.bind(dto.isFreezed());
         final IButton saveButton = new IButton("Сохранить");
         saveButton.setWidth(80);
         saveButton.addClickHandler(new ClickHandler() {
@@ -46,23 +44,18 @@ public class EditUserController extends GenericWindowController{
             public void onClick(final ClickEvent clickEvent) {
                 String firstnameText = ((String) firstname.unbind());
                 String lastnameText = ((String) lastname.unbind());
-         //       String emailText = ((String) email.unbind());
                 String passportText = ((String) passport.unbind());
-               // String roleTxt = ((VocDTO<String, String>) role.unbind()).getId();
-               // final String roleDisplayName = ((VocDTO<String, String>) role.unbind()).getValue();
                 if (firstnameText == null || "".equals(firstnameText) || firstnameText.length() == 0) {
                     SC.warn("Поле 'Имя' не заполнено.");
                 } else if (lastnameText == null || "".equals(lastnameText) || lastnameText.length() == 0){
                     SC.warn("Поле 'Фамилия' не заполнено.");
                 } else if (passportText == null || "".equals(passportText) || passportText.length() == 0) {
                     SC.warn("Поле '№ паспорта' не заполнено.");
-             //   } else if (emailText == null || "".equals(emailText) || emailText.length() == 0) {
-             //       SC.warn("Поле 'Email' не заполнено.");
                 } else {
-             //       dto.setEmail(emailText);
                     dto.setFirstName(firstnameText);
                     dto.setLastName(lastnameText);
                     dto.setPassportNumber(passportText);
+                    dto.setFreezed((Boolean) blocked.unbind());
                     saveButton.setDisabled(true);
                     IAuthServiceAsync.Util.getInstance().updateUser(dto,
                             new AppCallback<UserDTO>() {
@@ -90,7 +83,7 @@ public class EditUserController extends GenericWindowController{
         layoutForm.addMember(Components.addTitle("Имя", firstname.getView()));
         layoutForm.addMember(Components.addTitle("Фамилия", lastname.getView()));
         layoutForm.addMember(Components.addTitle("№ паспорта", passport.getView()));
-       // layoutForm.addMember(Components.addTitle("E-mail", email.getView()));
+        layoutForm.addMember(Components.addTitle("Заблокирован", blocked.getView()));
 
         HLayout buttons = new HLayout();
         buttons.addMember(saveButton);
@@ -106,10 +99,9 @@ public class EditUserController extends GenericWindowController{
     }
 
     @Override
-      public void reload() {          //Если будет использоваться, нужно добавить инициализацию значениями
+    public void reload() {          //Если будет использоваться, нужно добавить инициализацию значениями
         firstname.bind("");
         lastname.bind("");
-     //   email.bind("");
         passport.bind("");
     }
 }
