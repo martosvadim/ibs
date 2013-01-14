@@ -101,18 +101,19 @@ public class NavigationPane extends SectionStack {
 		this.addSection(section2);
 		this.addSection(userInfoSection);
 		this.redraw();
-        // Если у пользователя нет карт-счёта
-        UserDTO userDTO = ApplicationManager.getInstance().getAccount().getUser();
-        if (userDTO != null) {
-            IPaymentServiceAsync.Util.getInstance().getCardBooks(userDTO, new AppCallback<List<CardBookDTO>>() {
-                @Override
-                public void onSuccess(List<CardBookDTO> cardBookDTOs) {
-                    if (cardBookDTOs == null || cardBookDTOs.size() == 0) {
-                        SC.say("У вас нет ни одного карт-счета. Добавьте заявку в разделе \"Карты\".");
-                    }
-                }
-            });
-        }
+		// Если у пользователя нет карт-счёта
+		UserDTO userDTO = ApplicationManager.getInstance().getAccount().getUser();
+		if (userDTO != null) {
+			IPaymentServiceAsync.Util.getInstance().getCardBooks(userDTO, new AppCallback<List<CardBookDTO>>() {
+
+				@Override
+				public void onSuccess(List<CardBookDTO> cardBookDTOs) {
+					if (cardBookDTOs == null || cardBookDTOs.size() == 0) {
+						SC.say("У вас нет ни одного карт-счета. Добавьте заявку в разделе \"Карты\".");
+					}
+				}
+			});
+		}
 	}
 
 	private void defineUserInfoStack() {
@@ -143,6 +144,9 @@ public class NavigationPane extends SectionStack {
 
 			Label passportNumberLbl = new Label(user.getPassportNumber());
 			userInfoStack.addMember(Components.addTitle("№ пасспорта", passportNumberLbl));
+
+			Label freezed = new Label(user.isFreezed() ? "да" : "нет");
+			userInfoStack.addMember(Components.addTitle("Заморожен", freezed));
 
 		}
 	}
