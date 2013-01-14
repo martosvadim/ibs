@@ -246,6 +246,10 @@ public final class CommonService implements UserOperations, AdminOperations {
 			throw new IllegalArgumentException("Пользователь не существует");
 		} else if (user.isFreezed()) {
 			throw new IllegalArgumentException(String.format("Пользователь %s заморожен", user));
+		} else if ((bankBook = dataSource.select(bankBook.getClass(), bankBook.getId())) == null) {
+			throw new IllegalArgumentException("Банк-счет не существует");
+		} else if (bankBook.isFreezed()) {
+			throw new IllegalArgumentException(String.format("Банк-счет %s заморожен", bankBook));
 		}
 		return dataSource.createCardBook(user, bankBook, null);
 	}
@@ -258,6 +262,10 @@ public final class CommonService implements UserOperations, AdminOperations {
 			throw new IllegalArgumentException("Пользователь не существует");
 		} else if (user.isFreezed()) {
 			throw new IllegalArgumentException(String.format("Пользователь %s заморожен", user));
+		} else if ((bankBook = dataSource.select(bankBook.getClass(), bankBook.getId())) == null) {
+			throw new IllegalArgumentException("Банк-счет не существует");
+		} else if (bankBook.isFreezed()) {
+			throw new IllegalArgumentException(String.format("Банк-счет %s заморожен", bankBook));
 		}
 		return dataSource.createCardBook(user, bankBook, credit);
 	}
@@ -327,6 +335,10 @@ public final class CommonService implements UserOperations, AdminOperations {
 			throw new IllegalArgumentException("Пользователь не существует");
 		} else if (user.isFreezed()) {
 			throw new IllegalArgumentException(String.format("Пользователь %s заморожен", user));
+		} else if ((bankBook = dataSource.select(bankBook.getClass(), bankBook.getId())) == null) {
+			throw new IllegalArgumentException("Банк-счет не существует");
+		} else if (bankBook.isFreezed()) {
+			throw new IllegalArgumentException(String.format("Банк-счет %s заморожен", bankBook));
 		}
 		return dataSource.requestCard(user, bankBook, null);
 	}
@@ -339,6 +351,10 @@ public final class CommonService implements UserOperations, AdminOperations {
 			throw new IllegalArgumentException("Пользователь не существует");
 		} else if (user.isFreezed()) {
 			throw new IllegalArgumentException(String.format("Пользователь %s заморожен", user));
+		} else if ((bankBook = dataSource.select(bankBook.getClass(), bankBook.getId())) == null) {
+			throw new IllegalArgumentException("Банк-счет не существует");
+		} else if (bankBook.isFreezed()) {
+			throw new IllegalArgumentException(String.format("Банк-счет %s заморожен", bankBook));
 		}
 		return dataSource.requestCard(user, bankBook, plan);
 	}
