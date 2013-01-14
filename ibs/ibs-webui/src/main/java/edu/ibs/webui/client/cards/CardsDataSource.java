@@ -15,9 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * User: EgoshinME
- * Date: 03.01.13
- * Time: 6:00
+ * User: EgoshinME Date: 03.01.13 Time: 6:00
  */
 public class CardsDataSource extends GwtRpcDataSource {
 
@@ -26,6 +24,7 @@ public class CardsDataSource extends GwtRpcDataSource {
 	@Override
 	public void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
 		AsyncCallback<List<CardBookDTO>> callback = new AppCallback<List<CardBookDTO>>() {
+
 			@Override
 			public void onSuccess(List<CardBookDTO> list) {
 				int size = 0;
@@ -44,7 +43,8 @@ public class CardsDataSource extends GwtRpcDataSource {
 						record.setAttribute("currency.name", dto.getBankBook().getCurrency().getName());
 						record.setAttribute("dto", dto);
 						record.setAttribute("icon", "sales");
-                        record.setAttribute("date.expire", new Date(dto.getDateExpire()));
+						record.setAttribute("cardbook.freezed", dto.isFreezed());
+						record.setAttribute("date.expire", new Date(dto.getDateExpire()));
 						listGridRecords[i] = record;
 					}
 					response.setData(listGridRecords);
